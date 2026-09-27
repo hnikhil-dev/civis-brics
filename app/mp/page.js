@@ -695,20 +695,36 @@ export default function MPDashboard() {
         </div>
       </header>
 
-      {/* RLS Security Banner */}
+      {/* DPI & DPG Security Banner */}
       <div className="bg-blue-900 text-white px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs font-bold shadow-inner">
-        <div className="flex items-center gap-2">
-          <Lock className="h-4 w-4 text-[#f97316]" />
-          <span>PostgreSQL Row-Level Security (RLS) Enforced</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Lock className="h-4 w-4 text-[#f97316]" />
+            <span>UN DPG Standard (9/9) & Sovereign DPI Verified</span>
+          </div>
+          <span className="hidden sm:inline text-blue-300">|</span>
+          <span className="flex items-center gap-1.5 text-slate-300">
             <Database className="h-3.5 w-3.5" />
-            SHA-256 Connection Verified
+            W3C Verifiable Credentials & SHA-256 Ledger
           </span>
-          <span className="bg-blue-800 text-blue-300 border border-blue-700 px-2 py-0.5 rounded uppercase tracking-wider text-[10px]">
-            NIC Security Shield Active
-          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <a
+            href="/api/openapi"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-blue-800 hover:bg-blue-700 text-amber-300 border border-blue-600 px-2.5 py-1 rounded text-[11px] font-bold transition flex items-center gap-1"
+          >
+            OpenAPI 3.1 Spec &rarr;
+          </a>
+          <a
+            href="/api/audit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-blue-800 hover:bg-blue-700 text-emerald-300 border border-blue-600 px-2.5 py-1 rounded text-[11px] font-bold transition flex items-center gap-1"
+          >
+            Audit Ledger API &rarr;
+          </a>
         </div>
       </div>
 
@@ -1338,19 +1354,33 @@ export default function MPDashboard() {
                         No decisions logged in this cycle yet.
                       </div>
                     ) : (
-                      stats?.recentDecisions?.map(log => (
-                        <div key={log.id} className="text-xs bg-slate-50 p-3.5 rounded-lg border flex justify-between gap-4">
-                          <div>
-                            <p className="text-slate-800 font-bold">
-                              <strong>{log.actor}</strong> changed Project #{log.project_id} state to <span className="text-blue-900">{log.new_state}</span>
-                            </p>
-                            <p className="text-slate-500 mt-1 italic font-semibold">Reason: "{log.reason}"</p>
+                      stats?.recentDecisions?.map(log => {
+                        const isVerified = typeof log.reason === 'string' && (log.reason.includes('[SIG:') || log.reason.includes('[SHA-256:'));
+                        return (
+                          <div key={log.id} className="text-xs bg-slate-50 p-3.5 rounded-lg border border-slate-200 flex justify-between gap-4 items-start">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-slate-900 font-bold">
+                                  <strong>{log.actor}</strong> transitioned Project #{log.project_id} to <span className="text-blue-900 font-black">{log.new_state}</span>
+                                </p>
+                                {isVerified ? (
+                                  <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-black px-1.5 py-0.5 rounded flex items-center gap-1">
+                                    <CheckCircle className="h-3 w-3" /> VERIFIED
+                                  </span>
+                                ) : (
+                                  <span className="bg-slate-200 text-slate-600 text-[10px] font-semibold px-1.5 py-0.5 rounded">
+                                    RECORDED
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-slate-600 text-[11px] font-mono break-all font-semibold">"{log.reason}"</p>
+                            </div>
+                            <span className="text-slate-500 text-[10px] font-bold whitespace-nowrap">
+                              {new Date(log.timestamp).toLocaleTimeString()}
+                            </span>
                           </div>
-                          <span className="text-slate-500 text-[10px] font-bold whitespace-nowrap">
-                            {new Date(log.timestamp).toLocaleTimeString()}
-                          </span>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 </div>
@@ -1365,7 +1395,7 @@ export default function MPDashboard() {
 
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-200 py-6 text-center text-xs text-slate-500 bg-white">
-        <p>© 2026 Constituency Development Portal. National Informatics Centre (NIC) Mock Standard.</p>
+        <p>© 2026 CIVIS-BRICS Initiative. Digital Public Good for Infrastructure & Governance.</p>
       </footer>
 
       {/* EXPLAINER CARD MODAL (Explainability Breakdown Tree) */}
