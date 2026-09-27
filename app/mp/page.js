@@ -549,8 +549,8 @@ export default function MPDashboard() {
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col min-h-screen bg-slate-105 font-sans">
-        {/* Top Ashoka Stripe */}
-        <div className="h-2 w-full bg-gradient-to-r from-[#f97316] via-white to-[#16a34a]"></div>
+        {/* Top BRICS Multi-Nation Gradient Stripe */}
+        <div className="h-2 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
         
         <header className="border-b border-slate-200 bg-white px-6 py-4 flex items-center gap-4 shadow-sm">
           <div className="h-12 w-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
@@ -576,7 +576,7 @@ export default function MPDashboard() {
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">Policymaker Passcode / पासवर्ड</label>
+                <label className="text-xs font-bold text-slate-700">Policymaker Passcode / Código de Acesso / Пароль (brics2026)</label>
                 <input 
                   type="password" 
                   value={passcode}
@@ -729,8 +729,8 @@ export default function MPDashboard() {
       </div>
 
       {/* Navigation Tabs (CTO Layout spacing) */}
-      <div className="bg-white border-b border-slate-200 shadow-sm px-6">
-        <div className="max-w-7xl mx-auto w-full flex overflow-x-auto gap-2 py-1">
+      <div className="bg-white border-b border-slate-200 shadow-sm px-4 sm:px-6 lg:px-8">
+        <div className="w-full flex overflow-x-auto gap-2 py-1">
           <button
             onClick={() => setActiveTab('map')}
             className={`px-5 py-3 text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
@@ -740,7 +740,7 @@ export default function MPDashboard() {
             }`}
           >
             <Map className="h-4 w-4" />
-            1. Constituency Map & Demographics
+            1. Sovereign GIS Hotspots & Demographics
           </button>
           
           <button
@@ -782,7 +782,7 @@ export default function MPDashboard() {
       </div>
 
       {/* Main Body */}
-      <main className="flex-1 p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 w-full">
         
         {/* KPI Summary Row (Common) */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">

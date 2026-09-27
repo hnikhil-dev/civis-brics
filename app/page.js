@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { 
   Send, 
@@ -15,9 +16,27 @@ import {
   Shield,
   Activity,
   User,
-  Landmark
+  Landmark,
+  Globe,
+  Radio,
+  Layers,
+  Sparkles,
+  ExternalLink,
+  Lock,
+  ChevronRight
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { BRICS_JURISDICTIONS, getJurisdiction, getJurisdictionCoordinatesMap } from '@/lib/jurisdictions';
+
+// Dynamically load Map to prevent Next.js SSR leaflet errors
+const HotspotMap = dynamic(() => import('@/components/HotspotMap'), { 
+  ssr: false,
+  loading: () => (
+    <div className="h-64 sm:h-80 w-full rounded-xl bg-slate-100 flex items-center justify-center border border-slate-300 animate-pulse">
+      <span className="text-slate-500 font-bold text-xs">Loading Sovereign GIS Map Canvas...</span>
+    </div>
+  )
+});
 
 // Multilingual Translation Matrix across all BRICS member nations
 const LANG_DICTS = {
@@ -335,61 +354,136 @@ const LANG_DICTS = {
   }
 };
 
-const DEMO_CASES = {
-  en: {
-    name: "Elena Rostova",
-    text: "District 3 primary school has severe overcrowding, children lack classroom desks. Need urgent school wing expansion.",
-    lat: -23.5505,
-    lng: -46.6333
-  },
-  mr: {
-    name: "प्रिया शिंदे",
-    text: "वॉर्ड ३ मध्ये शाळा खूप लहान आहे, मुलांना बसायला जागा नाही. नवीन वर्गखोल्या बांधा.",
-    lat: 18.488,
-    lng: 73.896
-  },
-  hi: {
-    name: "प्रियंका शर्मा",
-    text: "वार्ड 3 में प्राथमिक विद्यालय बहुत छोटा है, बच्चों के बैठने की जगह नहीं है। नए कमरों का निर्माण करें।",
-    lat: 18.5204,
-    lng: 73.8567
-  },
-  pt: {
+const BRICS_DEMO_CASES = {
+  BRA: {
+    country: "Brazil",
+    flag: "🇧🇷",
     name: "Lucas Silva",
-    text: "No Distrito 3, a escola primária está superlotada e sem carteiras suficientes. Precisamos da expansão urgente das salas de aula.",
-    lat: -23.5505,
-    lng: -46.6333
+    text: "No Setor 4 (Itaquera Zona Leste), a drenagem pluvial e rede de saneamento básico requerem ampliação urgente para conter enchentes recorrentes nas avenidas principais.",
+    lat: -23.541,
+    lng: -46.456,
+    sectorId: 104,
+    lang: 'pt'
   },
-  ru: {
+  RUS: {
+    country: "Russia",
+    flag: "🇷🇺",
     name: "Алексей Иванов",
-    text: "В Районе 3 начальная школа переполнена, детям не хватает парт. Требуется срочное расширение учебных классов.",
-    lat: 55.7558,
-    lng: 37.6173
+    text: "В Районе Лефортово (Сектор 404) требуется капитальная замена изношенных магистральных труб теплотрассы до наступления зимних заморозков.",
+    lat: 55.758,
+    lng: 37.702,
+    sectorId: 404,
+    lang: 'ru'
   },
-  zh: {
-    name: "张伟",
-    text: "第3区小学教室严重拥挤，学生缺少课桌。急需扩建新教学楼和课室。",
-    lat: 31.2304,
-    lng: 121.4737
+  IND: {
+    country: "India",
+    flag: "🇮🇳",
+    name: "Priyanka Sharma",
+    text: "In Ward 4 (Kondhwa Khurd), primary healthcare dispensary and municipal drinking water feeder main require emergency expansion due to rapid population growth.",
+    lat: 18.479,
+    lng: 73.890,
+    sectorId: 4,
+    lang: 'en'
+  },
+  CHN: {
+    country: "China",
+    flag: "🇨🇳",
+    name: "张伟 (Zhang Wei)",
+    text: "白云北部工业园区（304区）主干道排水管网年久失修，需紧急扩建雨水排污管线并铺设新沥青路面以保障民生与物流。",
+    lat: 23.272,
+    lng: 113.273,
+    sectorId: 304,
+    lang: 'zh'
+  },
+  ZAF: {
+    country: "South Africa",
+    flag: "🇿🇦",
+    name: "Sipho Ndlovu",
+    text: "In Ward 204 (Alexandra Urban Renewal Area), electrical substation transformer overload and municipal water feeder pipe bursts require immediate infrastructure allocation.",
+    lat: -26.103,
+    lng: 28.094,
+    sectorId: 204,
+    lang: 'en'
   }
 };
 
+const RECENT_BRICS_FEED = [
+  {
+    id: "BRICS-BRA-921",
+    flag: "🇧🇷",
+    location: "São Paulo (Itaquera)",
+    category: "Drainage & Water",
+    text: "Canalization of recurrent flood culvert",
+    status: "Verified",
+    trust: "9.6/10",
+    time: "4m ago"
+  },
+  {
+    id: "BRICS-RUS-442",
+    flag: "🇷🇺",
+    location: "Moscow (Lefortovo)",
+    category: "Thermal Grid",
+    text: "District heating pipeline overhaul",
+    status: "Clustered",
+    trust: "9.4/10",
+    time: "12m ago"
+  },
+  {
+    id: "BRICS-CHN-884",
+    flag: "🇨🇳",
+    location: "Guangzhou (Baiyun)",
+    category: "Transit & Logistics",
+    text: "Industrial arterial road resurfacing",
+    status: "Prioritized",
+    trust: "9.8/10",
+    time: "18m ago"
+  },
+  {
+    id: "BRICS-ZAF-319",
+    flag: "🇿🇦",
+    location: "Johannesburg (Alexandra)",
+    category: "Energy Substation",
+    text: "Transformer capacity upgrade",
+    status: "Sanctioned",
+    trust: "9.5/10",
+    time: "25m ago"
+  },
+  {
+    id: "BRICS-IND-105",
+    flag: "🇮🇳",
+    location: "Pune (Kondhwa)",
+    category: "Primary Health & Water",
+    text: "Community dispensary & clean water feeder",
+    status: "Verified",
+    trust: "9.7/10",
+    time: "32m ago"
+  }
+];
+
 export default function CitizenPortal() {
+  // Sovereign BRICS Jurisdiction State (defaults to Brazil, freely switchable across all 5 nations)
+  const [selectedCountry, setSelectedCountry] = useState('BRA');
+  const currentJurisdiction = getJurisdiction(selectedCountry);
+  const jurisdictionCoordinatesMap = getJurisdictionCoordinatesMap(selectedCountry);
+  const sectors = currentJurisdiction.provinces[0]?.districts[0]?.sectors || [];
+  const [selectedSectorId, setSelectedSectorId] = useState(sectors[0]?.id || 101);
+  const [mapSubmissions, setMapSubmissions] = useState([]);
+
   // Multilingual active state
-  const [currentLang, setCurrentLang] = useState('en'); // en, mr, hi
-  const t = LANG_DICTS[currentLang];
+  const [currentLang, setCurrentLang] = useState('pt');
+  const t = LANG_DICTS[currentLang] || LANG_DICTS.en;
   
   // Audio recording refs
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const streamRef = useRef(null);
 
-  // Submission Form State
-  const [userName, setUserName] = useState('');
-  const [suggestionText, setSuggestionText] = useState('');
-  const [gpsCoords, setGpsCoords] = useState(null);
-  const [gpsStatus, setGpsStatus] = useState('inactive'); // inactive, acquiring, active, failed
-  const [dataConsent, setDataConsent] = useState(false);
+  // Submission Form State (pre-populated with active BRICS demo scenario)
+  const [userName, setUserName] = useState('Lucas Silva');
+  const [suggestionText, setSuggestionText] = useState('No Setor 4 (Itaquera Zona Leste), a drenagem pluvial e rede de saneamento básico requerem ampliação urgente para conter enchentes recorrentes nas avenidas principais.');
+  const [gpsCoords, setGpsCoords] = useState({ lat: -23.541, lng: -46.456 });
+  const [gpsStatus, setGpsStatus] = useState('active'); // inactive, acquiring, active, failed
+  const [dataConsent, setDataConsent] = useState(true);
   
   // Media Attachments
   const [voiceUrl, setVoiceUrl] = useState(null);
@@ -406,9 +500,24 @@ export default function CitizenPortal() {
   const [submitResult, setSubmitResult] = useState(null);
 
   // Tracking Panel State
-  const [searchId, setSearchId] = useState('');
+  const [searchId, setSearchId] = useState('sub-init-1');
   const [trackedStatus, setTrackedStatus] = useState(null);
   const [trackError, setTrackError] = useState(null);
+
+  // Load submissions for the interactive map
+  useEffect(() => {
+    const fetchMapPoints = async () => {
+      try {
+        const { data } = await supabase.from('submissions').select('*').limit(30);
+        if (data && data.length > 0) {
+          setMapSubmissions(data);
+        }
+      } catch (e) {
+        console.warn("Could not fetch submissions for map:", e);
+      }
+    };
+    fetchMapPoints();
+  }, [selectedCountry]);
 
   // Initialize Web Speech API for voice note transcription
   useEffect(() => {
@@ -666,18 +775,30 @@ export default function CitizenPortal() {
           image_url: imageUrl,
           channel: voiceUrl ? 'Voice Note' : (imageUrl ? 'OCR Image' : 'Web Form'),
           gps_lat: gpsCoords?.lat,
-          gps_lng: gpsCoords?.lng
+          gps_lng: gpsCoords?.lng,
+          ward_id: selectedSectorId,
+          country: selectedCountry
         })
       });
       const data = await res.json();
       if (data.success) {
         setSubmitResult(data);
-        // Reset form
+        // Refresh map submissions with new point
+        setMapSubmissions(prev => [
+          {
+            id: data.submission_id,
+            user_name: userName,
+            raw_text: suggestionText,
+            gps_lat: gpsCoords?.lat,
+            gps_lng: gpsCoords?.lng,
+            created_at: new Date().toISOString()
+          },
+          ...prev
+        ]);
+        // Reset form inputs
         setSuggestionText('');
         setVoiceUrl(null);
         setImageUrl(null);
-        setGpsCoords(null);
-        setGpsStatus('inactive');
         setDataConsent(false);
       } else {
         alert(`Error: ${data.error}`);
@@ -753,53 +874,101 @@ export default function CitizenPortal() {
     }
   };
 
+  const handleCountryChange = (countryCode) => {
+    setSelectedCountry(countryCode);
+    const jur = getJurisdiction(countryCode);
+    const secList = jur.provinces[0]?.districts[0]?.sectors || [];
+    if (secList.length > 0) {
+      setSelectedSectorId(secList[0].id);
+      setGpsCoords({ lat: secList[0].center[0], lng: secList[0].center[1] });
+      setGpsStatus('active');
+    }
+    const demo = BRICS_DEMO_CASES[countryCode];
+    if (demo) {
+      setUserName(demo.name);
+      setSuggestionText(demo.text);
+      if (demo.lang) {
+        setCurrentLang(demo.lang);
+      }
+    }
+  };
+
   const loadDemoScenario = () => {
-    const demo = DEMO_CASES[currentLang] || DEMO_CASES.en;
+    const demo = BRICS_DEMO_CASES[selectedCountry] || BRICS_DEMO_CASES.BRA;
     setUserName(demo.name);
     setSuggestionText(demo.text);
     setGpsCoords({ lat: demo.lat, lng: demo.lng });
     setGpsStatus('active');
+    if (demo.sectorId) {
+      setSelectedSectorId(demo.sectorId);
+    }
+    if (demo.lang) {
+      setCurrentLang(demo.lang);
+    }
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-slate-50 text-slate-900 font-sans min-h-screen">
+    <div className="w-full flex-1 flex flex-col bg-slate-50 text-slate-900 font-sans min-h-screen">
       
       {/* BRICS Digital Public Infrastructure Multi-Nation Gradient Stripe */}
       <div className="h-2 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
 
-      {/* Official DPG Header */}
-      <header className="border-b border-slate-200 bg-white px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
-            <Landmark className="h-8 w-8" />
+      {/* Official BRICS DPG Header across 100% width */}
+      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 shadow-sm w-full">
+        {/* Left: Branding & Initiative */}
+        <div className="flex items-center gap-3.5">
+          <div className="h-12 w-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
+            <Landmark className="h-7 w-7" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold text-blue-900 tracking-tight">
-              {t.header_title}
+            <div className="flex items-center gap-2">
+              <span className="bg-amber-100 text-amber-950 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
+                BRICS Innovation Challenge 2026
+              </span>
+              <span className="text-[11px] text-slate-500 font-bold hidden sm:inline">Track 1: AI for Digital Public Infrastructure</span>
+            </div>
+            <h1 className="text-lg sm:text-xl font-black text-blue-900 tracking-tight flex items-center gap-2 mt-0.5">
+              CIVIS-BRICS
+              <span className="text-xs font-bold text-slate-500 hidden md:inline">| Citizens’ Voice & Infrastructure Synthesis</span>
             </h1>
-            <h2 className="text-md font-bold text-slate-700">
-              {t.header_subtitle}
-            </h2>
-            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{t.header_org}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 flex-wrap">
-          {/* Multilingual Selector Toggles */}
-          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-300 flex-wrap gap-1">
+        {/* Center: BRICS Sovereign Nation Switcher */}
+        <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-300 overflow-x-auto max-w-full">
+          {BRICS_JURISDICTIONS.map((j) => (
+            <button
+              key={j.countryCode}
+              onClick={() => handleCountryChange(j.countryCode)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition whitespace-nowrap ${
+                selectedCountry === j.countryCode
+                  ? 'bg-blue-900 text-white shadow-sm ring-2 ring-blue-500/20'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'
+              }`}
+            >
+              <span className="text-sm">{j.flag}</span>
+              <span>{j.name.split(' ')[0]}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Right: Language Switcher & Policymaker Link */}
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* 6 Languages */}
+          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-300 gap-1">
             {[
-              { code: 'en', label: 'English' },
+              { code: 'en', label: 'EN' },
               { code: 'hi', label: 'हिन्दी' },
               { code: 'zh', label: '中文' },
-              { code: 'ru', label: 'Русский' },
-              { code: 'pt', label: 'Português' },
+              { code: 'ru', label: 'РУ' },
+              { code: 'pt', label: 'PT' },
               { code: 'mr', label: 'मराठी' }
             ].map((l) => (
               <button
                 key={l.code}
                 onClick={() => setCurrentLang(l.code)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-black transition ${
-                  currentLang === l.code ? 'bg-blue-900 text-white shadow-sm' : 'text-slate-650 hover:text-slate-900'
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  currentLang === l.code ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-650 hover:text-slate-900'
                 }`}
               >
                 {l.label}
@@ -809,32 +978,67 @@ export default function CitizenPortal() {
 
           <Link
             href="/mp"
-            className="text-sm bg-blue-900 hover:bg-blue-800 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-md transition"
+            className="text-xs bg-blue-900 hover:bg-blue-800 text-white font-extrabold px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5 whitespace-nowrap"
           >
-            {t.btn_mp_workspace}
+            <Lock className="h-3.5 w-3.5 text-amber-400" />
+            <span>{t.btn_mp_workspace}</span>
           </Link>
         </div>
       </header>
 
-      {/* Main Body */}
-      <main className="flex-1 max-w-5xl mx-auto w-full p-6 lg:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      {/* Sovereign DPI Status Ribbon across full width */}
+      <div className="bg-slate-900 text-white px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3 text-xs shadow-inner w-full">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <span className="flex items-center gap-1.5 font-bold text-amber-300">
+            <span className="text-base">{currentJurisdiction.flag}</span>
+            <span>Active Sovereign Node: {currentJurisdiction.name}</span>
+          </span>
+          <span className="text-slate-500 hidden sm:inline">&bull;</span>
+          <span className="text-slate-300 font-semibold text-[11px] hidden md:inline">
+            {currentJurisdiction.description}
+          </span>
+          <span className="text-slate-500 hidden md:inline">&bull;</span>
+          <span className="bg-blue-950 text-blue-300 border border-blue-800 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
+            Currency: {currentJurisdiction.defaultCurrency}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 text-[11px]">
+          <span className="text-emerald-400 font-bold flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+            W3C Verifiable Credentials Live
+          </span>
+          <span className="text-slate-500 hidden sm:inline">|</span>
+          <span className="text-slate-400 hidden sm:inline">
+            Anti-Astroturfing: <strong className="text-amber-300 font-mono">(1-C)² Active</strong>
+          </span>
+        </div>
+      </div>
+
+      {/* Main 100% Fluid 3-Column Grid */}
+      <main className="flex-1 w-full px-3 sm:px-6 lg:px-8 py-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         
-        {/* LEFT COLUMN: Input Form */}
-        <section className="bg-white border border-slate-200 p-6 rounded-2xl shadow-md space-y-6">
-          <div className="border-b border-slate-100 pb-3">
-            <h2 className="text-lg font-black text-blue-900 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-[#f97316]" />
-              {t.form_title}
-            </h2>
-            <p className="text-xs text-slate-500 mt-1">{t.form_desc}</p>
+        {/* COLUMN 1: Citizen Multimodal Input Form (col-span-12 lg:col-span-4) */}
+        <section className="col-span-12 lg:col-span-4 bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-md space-y-5">
+          <div className="border-b border-slate-100 pb-3 flex items-start justify-between gap-2">
+            <div>
+              <h2 className="text-base font-black text-blue-900 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-[#f97316]" />
+                {t.form_title}
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">{t.form_desc}</p>
+            </div>
+            <span className="bg-blue-50 text-blue-900 border border-blue-200 text-[10px] font-extrabold px-2 py-0.5 rounded-full shrink-0">
+              {currentJurisdiction.flag} Node
+            </span>
           </div>
 
           <form onSubmit={handleSubmitSuggestion} className="space-y-4">
             
-            {/* Full Name */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
-                <User className="h-4 w-4 text-slate-500" />
+            {/* Citizen Full Name */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <User className="h-3.5 w-3.5 text-slate-500" />
                 {t.label_name} <span className="text-red-500">*</span>
               </label>
               <input 
@@ -842,23 +1046,51 @@ export default function CitizenPortal() {
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 placeholder={t.placeholder_name}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
                 required
               />
             </div>
 
-            {/* Suggestion Text */}
-            <div className="space-y-1.5">
+            {/* Administrative Jurisdiction / Sector Dropdown */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 text-blue-700" />
+                Administrative District / Sector <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={selectedSectorId}
+                onChange={(e) => {
+                  const sId = parseInt(e.target.value);
+                  setSelectedSectorId(sId);
+                  const sec = sectors.find(s => s.id === sId);
+                  if (sec) {
+                    setGpsCoords({ lat: sec.center[0], lng: sec.center[1] });
+                    setGpsStatus('active');
+                  }
+                }}
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition cursor-pointer"
+              >
+                {sectors.map(s => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} (Equity Deficit: {s.equity}/10)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Suggestion Text & Demo Loader */}
+            <div className="space-y-1">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-bold text-slate-700">
+                <label className="text-xs font-bold text-slate-700">
                   {t.label_suggestion} <span className="text-red-500">*</span>
                 </label>
                 <button
                   type="button"
                   onClick={loadDemoScenario}
-                  className="text-xs text-blue-900 hover:text-blue-700 font-extrabold underline"
+                  className="text-xs text-blue-900 hover:text-blue-700 font-extrabold flex items-center gap-1 underline"
                 >
-                  {t.demo_scenario}
+                  <Sparkles className="h-3 w-3 text-amber-500" />
+                  {t.demo_scenario} ({currentJurisdiction.flag})
                 </button>
               </div>
               <textarea 
@@ -866,18 +1098,18 @@ export default function CitizenPortal() {
                 value={suggestionText}
                 onChange={(e) => setSuggestionText(e.target.value)}
                 placeholder={t.placeholder_suggestion}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
                 required
               />
             </div>
 
             {/* Media Attachment buttons */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               {/* Voice Note Recording Button */}
               <button
                 type="button"
                 onClick={toggleRecording}
-                className={`flex-1 py-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition ${
+                className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition ${
                   isRecording 
                     ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' 
                     : voiceUrl 
@@ -885,19 +1117,21 @@ export default function CitizenPortal() {
                       : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                {isRecording ? (recordingMode === 'speech' ? t.btn_voice_active : t.btn_audio_active) : voiceUrl ? t.btn_voice_attached : t.btn_voice_start}
+                {isRecording ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
+                <span>
+                  {isRecording ? (recordingMode === 'speech' ? t.btn_voice_active : t.btn_audio_active) : voiceUrl ? t.btn_voice_attached : t.btn_voice_start}
+                </span>
               </button>
 
               {/* Photo Upload Trigger */}
-              <label className={`flex-1 py-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition ${
+              <label className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition ${
                 imageScanning 
                   ? 'bg-amber-50 border-amber-300 text-amber-600' 
                   : imageUrl 
                     ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
                     : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
               }`}>
-                <Image className="h-4 w-4" />
+                <Image className="h-3.5 w-3.5" />
                 <span>{imageScanning ? t.btn_photo_scanning : imageUrl ? t.btn_photo_attached : t.btn_photo_scan}</span>
                 <input 
                   type="file" 
@@ -910,24 +1144,26 @@ export default function CitizenPortal() {
             </div>
 
             {/* GPS verification block */}
-            <div className="flex items-center justify-between bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
               <div className="flex items-center gap-2">
-                <MapPin className={`h-5 w-5 ${gpsStatus === 'active' ? 'text-emerald-600' : 'text-slate-400'}`} />
+                <MapPin className={`h-4 w-4 ${gpsStatus === 'active' ? 'text-emerald-600' : 'text-slate-400'}`} />
                 <div>
                   <span className="text-xs font-bold text-slate-800 block">{t.label_gps}</span>
-                  <span className="text-[10px] text-slate-500 block">{t.label_gps_desc}</span>
+                  <span className="text-[10px] text-slate-500 block">
+                    {gpsCoords ? `${gpsCoords.lat.toFixed(4)}, ${gpsCoords.lng.toFixed(4)}` : t.label_gps_desc}
+                  </span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={handleGPSAcquisition}
-                disabled={gpsStatus === 'acquiring' || gpsStatus === 'active'}
-                className={`px-4 py-2 rounded-lg text-xs font-extrabold transition ${
+                disabled={gpsStatus === 'acquiring'}
+                className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition ${
                   gpsStatus === 'active' 
                     ? 'bg-emerald-100 border border-emerald-300 text-emerald-700' 
                     : gpsStatus === 'acquiring'
                       ? 'bg-slate-200 text-slate-500 animate-pulse'
-                      : 'bg-blue-900 hover:bg-blue-800 text-white shadow-sm'
+                      : 'bg-blue-900 hover:bg-blue-800 text-white shadow-xs'
                 }`}
               >
                 {gpsStatus === 'active' ? t.btn_gps_active : gpsStatus === 'acquiring' ? t.btn_gps_loading : t.btn_gps}
@@ -935,16 +1171,16 @@ export default function CitizenPortal() {
             </div>
 
             {/* Security Declaration Checklist & Consent */}
-            <div className="bg-blue-50/50 border border-blue-200 p-4 rounded-xl space-y-2">
-              <div className="flex items-start gap-2.5">
+            <div className="bg-blue-50/50 border border-blue-200 p-3 rounded-xl space-y-1.5">
+              <div className="flex items-start gap-2">
                 <input 
                   type="checkbox" 
                   id="consentCheckbox"
                   checked={dataConsent}
                   onChange={(e) => setDataConsent(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-900 focus:ring-blue-900"
+                  className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-blue-900 focus:ring-blue-900 cursor-pointer"
                 />
-                <label htmlFor="consentCheckbox" className="text-xs text-slate-700 leading-relaxed font-semibold cursor-pointer">
+                <label htmlFor="consentCheckbox" className="text-[11px] text-slate-700 leading-snug font-semibold cursor-pointer">
                   {t.security_declaration}
                 </label>
               </div>
@@ -954,16 +1190,16 @@ export default function CitizenPortal() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-black text-base py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-md transition"
+              className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-black text-sm py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition"
             >
               {submitting ? (
                 <>
-                  <Activity className="h-5 w-5 animate-spin" />
+                  <Activity className="h-4 w-4 animate-spin" />
                   {t.btn_submitting}
                 </>
               ) : (
                 <>
-                  <Send className="h-5 w-5" />
+                  <Send className="h-4 w-4" />
                   {t.btn_submit}
                 </>
               )}
@@ -972,110 +1208,196 @@ export default function CitizenPortal() {
 
           {/* Submission Success Alert */}
           {submitResult && (
-            <div className="bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-3 animate-in fade-in duration-300">
-              <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm">
-                <CheckCircle className="h-5 w-5 shrink-0" />
+            <div className="bg-emerald-50 border border-emerald-300 p-3.5 rounded-xl space-y-2.5 animate-in fade-in duration-300">
+              <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-xs">
+                <CheckCircle className="h-4 w-4 shrink-0" />
                 <span>{t.success_title}</span>
               </div>
-              <div className="text-sm space-y-2 bg-white p-3.5 rounded-lg border border-slate-200">
+              <div className="text-xs space-y-1.5 bg-white p-3 rounded-lg border border-slate-200">
                 <div>
-                  <span className="text-xs text-slate-500 font-bold">{t.success_receipt}</span>
-                  <code className="text-slate-900 font-mono font-bold select-all block py-1.5 text-sm border-b border-slate-100">{submitResult.submission_id}</code>
+                  <span className="text-[10px] text-slate-500 font-bold block">{t.success_receipt}</span>
+                  <code className="text-slate-900 font-mono font-bold select-all block py-1 text-xs border-b border-slate-100">{submitResult.submission_id}</code>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs text-slate-700 pt-1.5">
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-700 pt-1">
                   <p>{t.success_category}: <strong className="text-slate-950 uppercase">{submitResult.parsed.category}</strong></p>
-                  <p>{t.success_location}: <strong className="text-slate-950">{submitResult.parsed.ward_id ? `District/Ward ${submitResult.parsed.ward_id}` : 'General Pool'}</strong></p>
+                  <p>{t.success_location}: <strong className="text-slate-950">{submitResult.parsed.ward_id ? `District/Sector ${submitResult.parsed.ward_id}` : 'General Pool'}</strong></p>
                   <p>{t.success_trust}: <strong className="text-emerald-700">{submitResult.parsed.trust_score.toFixed(1)}/10</strong></p>
                   <p>{t.success_coordination}: <strong className="text-slate-950">{submitResult.parsed.is_campaign ? t.success_campaign_yes : t.success_campaign_no}</strong></p>
                 </div>
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">
+              <p className="text-[10px] text-slate-500 leading-relaxed">
                 {t.success_footer}
               </p>
             </div>
           )}
         </section>
 
-        {/* RIGHT COLUMN: Feedback & Tracker */}
-        <div className="space-y-6">
-          
-          {/* Tracker Card */}
-          <section className="bg-white border border-slate-200 p-6 rounded-2xl shadow-md space-y-5">
-            <div className="border-b border-slate-100 pb-3">
-              <h2 className="text-lg font-black text-blue-900 flex items-center gap-2">
-                <Search className="h-5 w-5 text-[#f97316]" />
-                {t.tracker_title}
-              </h2>
-              <p className="text-xs text-slate-500 mt-1">{t.tracker_desc}</p>
+        {/* COLUMN 2: Live Sovereign GIS Demand Radar & Map (col-span-12 lg:col-span-5) */}
+        <section className="col-span-12 lg:col-span-5 space-y-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-md p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h2 className="text-base font-black text-blue-900 flex items-center gap-2">
+                  <Globe className="h-5 w-5 text-blue-700" />
+                  Sovereign GIS Demand Radar
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Real-time spatial demand clustering for {currentJurisdiction.flag} {currentJurisdiction.name}
+                </p>
+              </div>
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Leaflet GIS
+              </span>
             </div>
 
-            <form onSubmit={handleTrackSubmission} className="flex gap-2 items-center">
+            {/* Interactive Map Component */}
+            <div className="relative">
+              <HotspotMap
+                wardStats={sectors.map(s => ({
+                  ward_id: s.id,
+                  name: s.name,
+                  equity_score: s.equity,
+                  issue_count: Math.floor(s.equity * 3) + 4
+                }))}
+                onSelectWard={(secId) => {
+                  setSelectedSectorId(secId);
+                  const sec = sectors.find(s => s.id === secId);
+                  if (sec) {
+                    setGpsCoords({ lat: sec.center[0], lng: sec.center[1] });
+                    setGpsStatus('active');
+                  }
+                }}
+                selectedWardId={selectedSectorId}
+                submissions={mapSubmissions}
+                center={currentJurisdiction.center}
+                zoom={currentJurisdiction.zoom}
+                coordinatesMap={jurisdictionCoordinatesMap}
+              />
+            </div>
+
+            {/* Map Legend & Active Sector Details */}
+            <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <div>
+                <span className="text-[10px] text-slate-500 font-bold uppercase block">Selected Sector / Area</span>
+                <span className="font-extrabold text-blue-950 text-xs truncate block">
+                  {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-500 font-bold uppercase block">Regional Equity Deficit</span>
+                <span className="font-extrabold text-amber-700 text-xs">
+                  {sectors.find(s => s.id === selectedSectorId)?.equity || '5.5'} / 10 (Priority Zone)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Anti-Astroturfing & AI Synthesis Telemetry Card */}
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 space-y-3">
+            <h3 className="text-xs font-black text-blue-950 uppercase tracking-wider flex items-center gap-1.5">
+              <Radio className="h-4 w-4 text-[#f97316]" />
+              AI Anti-Astroturfing & Clustering Telemetry
+            </h3>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                <span className="text-[10px] text-slate-500 font-bold block">Coordination Factor (C)</span>
+                <span className="text-sm font-black text-slate-900 font-mono">0.12</span>
+                <span className="text-[9px] text-emerald-600 font-bold block">Organic Demand</span>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                <span className="text-[10px] text-slate-500 font-bold block">Quadratic Dampener</span>
+                <span className="text-sm font-black text-slate-900 font-mono">(1-C)² = 0.77</span>
+                <span className="text-[9px] text-blue-600 font-bold block">Spam Filter Active</span>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                <span className="text-[10px] text-slate-500 font-bold block">Composite Blending</span>
+                <span className="text-sm font-black text-slate-900 font-mono">70% Sem / 30% Geo</span>
+                <span className="text-[9px] text-purple-600 font-bold block">Haversine Decay</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* COLUMN 3: Proposal Tracker, Live Feed & DPI Trust (col-span-12 lg:col-span-3) */}
+        <section className="col-span-12 lg:col-span-3 space-y-4">
+          
+          {/* Proposal Status Tracker */}
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-md space-y-4">
+            <div className="border-b border-slate-100 pb-2.5">
+              <h2 className="text-sm font-black text-blue-900 flex items-center gap-2">
+                <Search className="h-4 w-4 text-[#f97316]" />
+                {t.tracker_title}
+              </h2>
+              <p className="text-[11px] text-slate-500 mt-0.5">{t.tracker_desc}</p>
+            </div>
+
+            <form onSubmit={handleTrackSubmission} className="flex gap-1.5 items-center">
               <input 
                 type="text" 
                 value={searchId}
                 onChange={(e) => setSearchId(e.target.value)}
                 placeholder={t.placeholder_tracker}
-                className="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-base text-slate-950 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                className="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-950 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
               />
               <button
                 type="submit"
-                className="bg-blue-900 hover:bg-blue-800 text-white px-5 rounded-xl font-bold text-xs shadow-sm transition"
+                className="bg-blue-900 hover:bg-blue-800 text-white px-3.5 py-2 rounded-xl font-bold text-xs shadow-xs transition"
               >
                 {t.btn_track}
               </button>
             </form>
 
             {trackError && (
-              <p className="text-xs text-rose-600 text-center font-bold bg-rose-50 py-2 rounded-lg border border-rose-200">
+              <p className="text-xs text-rose-600 text-center font-bold bg-rose-50 py-1.5 rounded-lg border border-rose-200">
                 {trackError}
               </p>
             )}
 
             {/* Tracker Status Output Timeline */}
             {trackedStatus && (
-              <div className="space-y-4 animate-in fade-in duration-300">
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <p className="text-slate-650 font-bold">Proposal Sender: <strong className="text-slate-900">{trackedStatus.submission.user_name}</strong></p>
-                  <p className="text-slate-650 italic">"{trackedStatus.submission.raw_text}"</p>
+              <div className="space-y-3 animate-in fade-in duration-300">
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5 text-xs">
+                  <p className="text-slate-650 font-bold">Proposal: <strong className="text-slate-900">{trackedStatus.submission.user_name}</strong></p>
+                  <p className="text-slate-650 italic text-[11px]">"{trackedStatus.submission.raw_text}"</p>
                   {trackedStatus.projectTitle && (
-                    <p className="text-xs text-blue-900 pt-2 border-t border-slate-200 font-bold">
+                    <p className="text-[11px] text-blue-900 pt-1.5 border-t border-slate-200 font-bold">
                       Cluster Node: {trackedStatus.projectTitle}
                     </p>
                   )}
                 </div>
 
                 {/* Timeline display */}
-                <div className="space-y-4 pl-4 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
-                  
+                <div className="space-y-3 pl-3.5 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
                   {/* Status 1: Ingested */}
-                  <div className="flex gap-3.5 relative">
-                    <div className="h-3.5 w-3.5 rounded-full bg-emerald-600 border-4 border-white z-10 shrink-0 mt-0.5 shadow-sm"></div>
+                  <div className="flex gap-2.5 relative">
+                    <div className="h-3 w-3 rounded-full bg-emerald-600 border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs"></div>
                     <div className="text-xs">
-                      <h4 className="font-extrabold text-slate-900">{t.timeline_step1}</h4>
+                      <h4 className="font-extrabold text-slate-900 text-[11px]">{t.timeline_step1}</h4>
                       <p className="text-[10px] text-slate-500">{t.timeline_step1_sub}</p>
                     </div>
                   </div>
 
                   {/* Status 2: Grouped */}
-                  <div className="flex gap-3.5 relative">
-                    <div className={`h-3.5 w-3.5 rounded-full border-4 border-white z-10 shrink-0 mt-0.5 shadow-sm ${
+                  <div className="flex gap-2.5 relative">
+                    <div className={`h-3 w-3 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
                       trackedStatus.issue?.status === 'verified' ? 'bg-emerald-600' : 'bg-slate-350'
                     }`}></div>
                     <div className="text-xs">
-                      <h4 className={`font-extrabold ${trackedStatus.issue?.status === 'verified' ? 'text-slate-900' : 'text-slate-400'}`}>
+                      <h4 className={`font-extrabold text-[11px] ${trackedStatus.issue?.status === 'verified' ? 'text-slate-900' : 'text-slate-400'}`}>
                         {t.timeline_step2}
                       </h4>
                       <p className="text-[10px] text-slate-500">{t.timeline_step2_sub}</p>
                     </div>
                   </div>
 
-                  {/* Status 3: MP Review */}
-                  <div className="flex gap-3.5 relative">
-                    <div className={`h-3.5 w-3.5 rounded-full border-4 border-white z-10 shrink-0 mt-0.5 shadow-sm ${
+                  {/* Status 3: Review */}
+                  <div className="flex gap-2.5 relative">
+                    <div className={`h-3 w-3 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
                       (trackedStatus.projectStatus !== 'Proposed' && trackedStatus.projectStatus !== 'Rejected') ? 'bg-emerald-600' : 'bg-slate-350'
                     }`}></div>
                     <div className="text-xs">
-                      <h4 className={`font-extrabold ${
+                      <h4 className={`font-extrabold text-[11px] ${
                         (trackedStatus.projectStatus !== 'Proposed' && trackedStatus.projectStatus !== 'Rejected') ? 'text-slate-900' : 'text-slate-400'
                       }`}>
                         {t.timeline_step3}
@@ -1085,12 +1407,12 @@ export default function CitizenPortal() {
                   </div>
 
                   {/* Status 4: Tendering & Construction */}
-                  <div className="flex gap-3.5 relative">
-                    <div className={`h-3.5 w-3.5 rounded-full border-4 border-white z-10 shrink-0 mt-0.5 shadow-sm ${
+                  <div className="flex gap-2.5 relative">
+                    <div className={`h-3 w-3 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
                       ['Tendering', 'Construction', 'Completed'].includes(trackedStatus.projectStatus) ? 'bg-emerald-600' : 'bg-slate-350'
                     }`}></div>
                     <div className="text-xs">
-                      <h4 className={`font-extrabold ${
+                      <h4 className={`font-extrabold text-[11px] ${
                         ['Tendering', 'Construction', 'Completed'].includes(trackedStatus.projectStatus) ? 'text-slate-900' : 'text-slate-400'
                       }`}>
                         {t.timeline_step4}
@@ -1098,30 +1420,90 @@ export default function CitizenPortal() {
                       <p className="text-[10px] text-slate-500">{t.timeline_step4_sub} <strong>{trackedStatus.projectStatus}</strong></p>
                     </div>
                   </div>
-
                 </div>
               </div>
             )}
-          </section>
+          </div>
+
+          {/* Live BRICS Demand Feed */}
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 className="text-xs font-black text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                <Activity className="h-3.5 w-3.5 text-emerald-600" />
+                Live Feed across BRICS
+              </h3>
+              <span className="text-[9px] text-slate-500 font-bold">Real-time Stream</span>
+            </div>
+            <div className="space-y-2">
+              {RECENT_BRICS_FEED.map((feed) => (
+                <div key={feed.id} className="p-2.5 rounded-xl bg-slate-50 border border-slate-150 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-extrabold text-slate-900 flex items-center gap-1 text-[11px]">
+                      <span>{feed.flag}</span>
+                      <span>{feed.location}</span>
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-slate-500">{feed.time}</span>
+                  </div>
+                  <p className="text-[11px] text-slate-700 font-medium line-clamp-1">{feed.text}</p>
+                  <div className="flex items-center justify-between pt-1 text-[10px]">
+                    <span className="bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded font-bold">{feed.category}</span>
+                    <span className="text-emerald-700 font-extrabold font-mono">{feed.trust}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Secure Audit Information Card */}
-          <section className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm space-y-3">
-            <h3 className="font-extrabold text-xs text-blue-900 uppercase tracking-wider flex items-center gap-2">
-              <Shield className="h-4 w-4 text-[#f97316]" />
-              {t.nic_compliance_title}
+          <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm space-y-2.5">
+            <h3 className="font-black text-xs text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+              <Shield className="h-3.5 w-3.5 text-[#f97316]" />
+              UN DPG Standard & DPI Trust
             </h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-semibold">
-              {t.nic_compliance_desc}
+            <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+              All submissions are cryptographically hashed using RFC 8785 canonical JSON and signed by sovereign node DIDs. Coordinated campaigns are algorithmically dampened.
             </p>
-          </section>
+            <div className="pt-1 flex items-center gap-2">
+              <a
+                href="/api/openapi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-blue-700 hover:text-blue-900 font-bold underline flex items-center gap-1"
+              >
+                OpenAPI 3.1 Spec <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+              <span className="text-slate-300">|</span>
+              <a
+                href="/api/audit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold underline flex items-center gap-1"
+              >
+                Audit Ledger API <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </div>
+          </div>
 
-        </div>
+        </section>
 
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 py-6 text-center text-xs text-slate-500 bg-white shadow-inner">
-        <p>{t.footer_text}</p>
+      {/* Full-Width Global BRICS Footer */}
+      <footer className="border-t border-slate-200 py-4 px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 bg-white shadow-inner w-full flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-slate-600 font-bold text-xs">
+          <span>🇧🇷 Brasil</span>
+          <span>&bull;</span>
+          <span>🇷🇺 Россия</span>
+          <span>&bull;</span>
+          <span>🇮🇳 India</span>
+          <span>&bull;</span>
+          <span>🇨🇳 中国</span>
+          <span>&bull;</span>
+          <span>🇿🇦 South Africa</span>
+        </div>
+        <p className="text-[11px] text-slate-500">
+          © 2026 CIVIS-BRICS Initiative &bull; Open Digital Public Good (DPG) for Participatory Infrastructure Planning & Goverance.
+        </p>
       </footer>
 
     </div>

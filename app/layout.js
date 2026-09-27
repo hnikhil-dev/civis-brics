@@ -12,8 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "People's Priorities - Constituency Development Intelligence Platform",
-  description: "Evidence-based multi-criteria project ranking and budget optimization dashboard for Members of Parliament.",
+  title: "CIVIS-BRICS | Citizen Voice & Infrastructure Synthesis - Sovereign DPI Platform",
+  description: "AI-driven Digital Public Good (DPG) for participatory infrastructure planning, cross-lingual intake, and budget optimization across BRICS nations.",
 };
 
 export default function RootLayout({ children }) {
@@ -31,8 +31,8 @@ export default function RootLayout({ children }) {
           crossOrigin=""
         />
       </head>
-      <body className="min-h-full flex flex-col">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
+      <body className="min-h-full flex flex-col bg-slate-50 w-full overflow-x-hidden">
+        <div className="w-full min-h-screen flex flex-col">{children}</div>
       </body>
     </html>
   );
