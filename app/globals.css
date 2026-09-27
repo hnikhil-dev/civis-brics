@@ -13,10 +13,16 @@
 }
 
 html {
-  /* Fluid responsive typography: smoothly scales between 15px on mobile to 19px on wide desktop displays */
-  font-size: clamp(15px, 0.88rem + 0.35vw, 19px);
+  /* Clean, balanced base typography: 15px on standard screens, 15.5px on large desktop */
+  font-size: 15px;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 15.5px;
+  }
 }
 
 body {

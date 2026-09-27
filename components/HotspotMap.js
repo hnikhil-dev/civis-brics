@@ -65,7 +65,7 @@ export default function HotspotMap({
   const mapKey = `leaflet-canvas-${center?.[0]?.toFixed(2) || '0'}-${center?.[1]?.toFixed(2) || '0'}-${zoom || 12}`;
 
   return (
-    <div className="h-64 sm:h-80 md:h-[420px] lg:h-[480px] xl:h-[540px] w-full rounded-2xl overflow-hidden border border-slate-300 shadow-md relative z-10">
+    <div className="h-64 sm:h-72 md:h-80 lg:h-[400px] w-full rounded-2xl overflow-hidden border border-slate-300 shadow-sm relative z-10">
       <MapContainer 
         key={mapKey}
         center={center} 
@@ -102,9 +102,9 @@ export default function HotspotMap({
               radius={radius}
             >
               <Popup>
-                <div className="text-slate-900 p-1.5 min-w-[220px]">
-                  <h4 className="font-black text-sm sm:text-base border-b pb-1.5 mb-2 text-blue-900">{ward.ward_name || ward.name || `Sector ${ward.ward_id}`}</h4>
-                  <div className="text-xs sm:text-sm space-y-1.5 font-semibold text-slate-700">
+                <div className="text-slate-900 p-1 min-w-[200px]">
+                  <h4 className="font-black text-xs sm:text-sm border-b pb-1 mb-1.5 text-blue-900">{ward.ward_name || ward.name || `Sector ${ward.ward_id}`}</h4>
+                  <div className="text-xs space-y-1 font-semibold text-slate-700">
                     <p>Population: <strong className="text-slate-950">{ward.population != null ? Number(ward.population).toLocaleString() : '68,500'}</strong></p>
                     <p>Infrastructure Deficit: <strong className="text-slate-950">{ward.equity_score != null ? ward.equity_score : '5.0'}/10</strong></p>
                     <p>Citizen Suggestions: <strong className="text-slate-950">{ward.citizen_count ?? ward.issue_count ?? 14}</strong></p>
@@ -112,7 +112,7 @@ export default function HotspotMap({
                   </div>
                   <button 
                     onClick={() => onSelectWard(ward.ward_id)}
-                    className="mt-3 w-full text-center bg-blue-900 hover:bg-blue-800 text-white rounded-lg text-xs sm:text-sm py-2 font-black transition"
+                    className="mt-2.5 w-full text-center bg-blue-900 hover:bg-blue-800 text-white rounded-lg text-xs py-1.5 font-bold transition"
                   >
                     {isSelected ? "Clear Selection" : "Select this Area"}
                   </button>
