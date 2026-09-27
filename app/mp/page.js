@@ -611,68 +611,68 @@ export default function MPDashboard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex flex-col min-h-screen bg-slate-105 font-sans">
+      <div className="flex flex-col min-h-screen bg-slate-100 font-sans">
         {/* Top BRICS Multi-Nation Gradient Stripe */}
-        <div className="h-2 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
+        <div className="h-2.5 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
         
-        <header className="border-b border-slate-200 bg-white px-6 py-4 flex items-center gap-4 shadow-sm">
-          <div className="h-12 w-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
-            <Landmark className="h-6 w-6" />
+        <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4 shadow-sm">
+          <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
+            <Landmark className="h-6 w-6 sm:h-8 sm:w-8" />
           </div>
           <div>
-            <h1 className="text-lg font-black text-blue-900">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-black text-blue-900">
               CIVIS-BRICS — Planning Authority Workspace
             </h1>
-            <p className="text-xs text-slate-500 font-bold">Participatory Infrastructure Planning & Decision Portal</p>
+            <p className="text-xs sm:text-sm text-slate-600 font-bold">Participatory Infrastructure Planning & Decision Portal</p>
           </div>
         </header>
 
-        <main className="flex-1 flex items-center justify-center p-6">
-          <div className="bg-white border border-slate-250 p-8 rounded-2xl max-w-md w-full shadow-lg space-y-6">
-            <div className="text-center space-y-2">
-              <Lock className="h-10 w-10 text-[#f97316] mx-auto animate-bounce" />
-              <h2 className="text-lg font-black text-blue-900">Administrative Sign-In Required</h2>
-              <p className="text-xs text-slate-500 font-semibold leading-relaxed">
+        <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+          <div className="bg-white border border-slate-200 p-6 sm:p-8 md:p-10 rounded-2xl max-w-lg w-full shadow-lg space-y-6">
+            <div className="text-center space-y-2.5">
+              <Lock className="h-10 w-10 sm:h-12 sm:w-12 text-[#f97316] mx-auto animate-bounce" />
+              <h2 className="text-xl sm:text-2xl font-black text-blue-900">Administrative Sign-In Required</h2>
+              <p className="text-xs sm:text-sm md:text-base text-slate-600 font-semibold leading-relaxed">
                 Please enter the administrative passcode to access the municipal planning and budget allocation workspace.
               </p>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">Administrative Passcode (default: brics2026)</label>
+            <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5">
+              <div className="space-y-2">
+                <label className="text-xs sm:text-sm md:text-base font-bold text-slate-700">Administrative Passcode (default: brics2026)</label>
                 <input 
                   type="password" 
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
                   placeholder="Enter passcode (default: brics2026)"
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 sm:py-3.5 text-sm sm:text-base text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition"
                   required
                 />
               </div>
 
               {authError && (
-                <p className="text-xs text-rose-600 font-bold bg-rose-50 p-2.5 rounded-lg border border-rose-250 text-center">
+                <p className="text-xs sm:text-sm text-rose-600 font-bold bg-rose-50 p-3 rounded-lg border border-rose-200 text-center">
                   {authError}
                 </p>
               )}
 
               <button
                 type="submit"
-                className="w-full bg-blue-900 hover:bg-blue-800 text-white font-black text-sm py-3.5 rounded-xl shadow-md transition"
+                className="w-full bg-blue-900 hover:bg-blue-800 text-white font-black text-sm sm:text-base md:text-lg py-3.5 sm:py-4 rounded-xl shadow-md transition"
               >
                 Sign In to Workspace
               </button>
             </form>
 
             <div className="text-center border-t pt-4">
-              <Link href="/" className="text-xs text-blue-900 hover:text-blue-700 hover:underline font-extrabold">
+              <Link href="/" className="text-xs sm:text-sm md:text-base text-blue-900 hover:text-blue-700 hover:underline font-extrabold">
                 &larr; Return to Citizen Intake Form
               </Link>
             </div>
           </div>
         </main>
         
-        <footer className="border-t py-4 text-center text-xs text-slate-500 bg-white">
+        <footer className="border-t py-4 text-center text-xs sm:text-sm text-slate-500 bg-white">
           <p>© 2026 CIVIS-BRICS Initiative. Digital Public Good for Infrastructure & Governance.</p>
         </footer>
       </div>
@@ -683,39 +683,39 @@ export default function MPDashboard() {
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans">
       
       {/* BRICS Digital Public Infrastructure Multi-Nation Gradient Stripe */}
-      <div className="h-2 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
+      <div className="h-2.5 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
 
       {/* Official Government & International DPG Header */}
-      <header className="border-b border-slate-200 bg-white px-6 py-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
-            <Landmark className="h-8 w-8" />
+      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-sm">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
+            <Landmark className="h-7 w-7 sm:h-8 sm:w-8" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="bg-amber-100 text-amber-900 text-xs font-black uppercase px-2.5 py-0.5 rounded border border-amber-300">
                 BRICS DPG Standard
               </span>
-              <span className="text-xs text-slate-500 font-bold">Code for Communities 2 — Track 1</span>
+              <span className="text-xs sm:text-sm text-slate-500 font-bold">Code for Communities 2 — Track 1</span>
             </div>
-            <h1 className="text-xl font-extrabold text-blue-900 tracking-tight mt-0.5">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-blue-900 tracking-tight mt-0.5">
               CIVIS-BRICS: Infrastructure & Governance Platform
             </h1>
-            <p className="text-xs text-slate-600 font-semibold">
+            <p className="text-xs sm:text-sm md:text-base text-slate-600 font-semibold mt-0.5">
               {currentJurisdiction.flag} {currentJurisdiction.name} &bull; {currentJurisdiction.description}
             </p>
           </div>
         </div>
 
         {/* Global Controls: Country Selector + Currency Switcher */}
-        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full lg:w-auto justify-between lg:justify-end">
           {/* BRICS Pilot Territory Selector */}
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1.5 rounded-xl shadow-xs">
-            <MapPin className="h-4 w-4 text-blue-900 shrink-0" />
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-3 py-2 rounded-xl shadow-xs">
+            <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-blue-900 shrink-0" />
             <select
               value={selectedCountry}
               onChange={(e) => handleCountryChange(e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs sm:text-sm md:text-base font-bold text-slate-800 focus:outline-none cursor-pointer"
             >
               {BRICS_JURISDICTIONS.map(j => (
                 <option key={j.countryCode} value={j.countryCode}>
@@ -726,12 +726,12 @@ export default function MPDashboard() {
           </div>
 
           {/* Dynamic Currency Switcher */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-300">
+          <div className="flex items-center gap-1 bg-slate-100 p-1 sm:p-1.5 rounded-xl border border-slate-300">
             {Object.keys(BRICS_CURRENCIES).map(currCode => (
               <button
                 key={currCode}
                 onClick={() => handleCurrencyChange(currCode)}
-                className={`px-2 py-1 rounded-lg text-xs font-bold transition ${
+                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition ${
                   selectedCurrency === currCode
                     ? 'bg-blue-900 text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
@@ -748,28 +748,28 @@ export default function MPDashboard() {
             <button
               onClick={handleSeedBRICSData}
               disabled={isSeeding}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-xs transition active:scale-95 disabled:opacity-50"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-extrabold text-xs sm:text-sm px-3.5 sm:px-4 py-2 rounded-xl shadow-xs transition active:scale-95 disabled:opacity-50"
               title="Prime database with real-world benchmark datasets for Brazil, Russia, India, China, and South Africa"
             >
-              <Activity className={`h-3.5 w-3.5 ${isSeeding ? 'animate-spin' : ''}`} />
+              <Activity className={`h-4 w-4 ${isSeeding ? 'animate-spin' : ''}`} />
               <span>{isSeeding ? 'Priming...' : '⚡ Prime BRICS Data'}</span>
             </button>
             {seedSuccessMsg && (
-              <span className="hidden md:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-lg shadow-xs">
+              <span className="hidden md:inline-block text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-lg shadow-xs">
                 {seedSuccessMsg}
               </span>
             )}
           </div>
 
           {/* Portal Switcher */}
-          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-350">
+          <div className="flex bg-slate-100 p-1 sm:p-1.5 rounded-xl border border-slate-300">
             <Link 
               href="/"
-              className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-800 transition"
+              className="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-800 transition"
             >
               Citizen Ingest
             </Link>
-            <span className="bg-blue-900 text-white px-3 py-1.5 rounded-lg text-xs font-black shadow-sm">
+            <span className="bg-blue-900 text-white px-3.5 py-2 rounded-lg text-xs sm:text-sm font-black shadow-sm">
               Policy Workspace
             </span>
           </div>
@@ -777,18 +777,18 @@ export default function MPDashboard() {
       </header>
 
       {/* Official Civic Administration Status Bar */}
-      <div className="bg-slate-900 text-slate-200 px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs font-medium shadow-inner">
+      <div className="bg-slate-900 text-slate-200 px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm shadow-inner">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-white font-bold">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm md:text-base">
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span>Civic Planning Authority Workspace</span>
           </div>
           <span className="hidden sm:inline text-slate-600">|</span>
-          <span className="text-slate-300 text-xs">
+          <span className="text-slate-300 text-xs sm:text-sm">
             Participatory budgeting & capital project prioritization based on verified community feedback
           </span>
         </div>
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2 text-xs sm:text-sm md:text-base">
           <span className="text-slate-400">Territory:</span>
           <span className="font-extrabold text-white">{currentJurisdiction.flag} {currentJurisdiction.name}</span>
         </div>
@@ -799,123 +799,123 @@ export default function MPDashboard() {
         <div className="w-full flex overflow-x-auto gap-2 py-1">
           <button
             onClick={() => setActiveTab('map')}
-            className={`px-5 py-3 text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`px-4 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm md:text-base font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
               activeTab === 'map' 
                 ? 'border-blue-900 text-blue-900' 
                 : 'border-transparent text-slate-500 hover:text-slate-700'
             }`}
           >
-            <Map className="h-4 w-4" />
+            <Map className="h-4 w-4 sm:h-5 sm:w-5" />
             1. City Map & Community Priorities
           </button>
           
           <button
             onClick={() => setActiveTab('registry')}
-            className={`px-5 py-3 text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`px-4 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm md:text-base font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
               activeTab === 'registry' 
                 ? 'border-blue-900 text-blue-900' 
                 : 'border-transparent text-slate-500 hover:text-slate-700'
             }`}
           >
-            <ClipboardList className="h-4 w-4" />
+            <ClipboardList className="h-4 w-4 sm:h-5 sm:w-5" />
             2. Capital Projects & Priorities
           </button>
 
           <button
             onClick={() => setActiveTab('budget')}
-            className={`px-5 py-3 text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`px-4 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm md:text-base font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
               activeTab === 'budget' 
                 ? 'border-blue-900 text-blue-900' 
                 : 'border-transparent text-slate-500 hover:text-slate-700'
             }`}
           >
-            <DollarSign className="h-4 w-4" />
+            <DollarSign className="h-4 w-4 sm:h-5 sm:w-5" />
             3. Budget Allocation & Planning
           </button>
 
           <button
             onClick={() => setActiveTab('audit')}
-            className={`px-5 py-3 text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`px-4 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm md:text-base font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
               activeTab === 'audit' 
                 ? 'border-blue-900 text-blue-900' 
                 : 'border-transparent text-slate-500 hover:text-slate-700 font-semibold'
             }`}
           >
-            <ShieldAlert className="h-4 w-4" />
+            <ShieldAlert className="h-4 w-4 sm:h-5 sm:w-5" />
             4. Citizen Submissions & Verification ({verificationQueue.length})
           </button>
         </div>
       </div>
 
       {/* Main Body */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 w-full">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 w-full">
         
         {/* KPI Summary Row (Common) */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div className="bg-white border border-slate-200 p-5 rounded-xl flex items-center justify-between shadow-sm">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl flex items-center justify-between shadow-sm">
             <div>
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Suggestions Ingested</span>
-              <p className="text-2xl font-black text-slate-900 mt-1">
+              <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Total Suggestions Ingested</span>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 mt-1">
                 {stats?.kpis?.totalSubmissions || 0}
               </p>
             </div>
-            <div className="h-11 w-11 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600">
-              <Users className="h-5 w-5" />
+            <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 shrink-0">
+              <Users className="h-6 w-6 sm:h-7 sm:w-7" />
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 p-5 rounded-xl flex items-center justify-between shadow-sm">
+          <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl flex items-center justify-between shadow-sm">
             <div>
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Allocated Portfolio Budget</span>
-              <p className="text-2xl font-black text-blue-900 mt-1">
+              <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Allocated Portfolio Budget</span>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-black text-blue-900 mt-1">
                 {renderCost(stats?.kpis?.totalAllocatedBudget || 0)}
               </p>
             </div>
-            <div className="h-11 w-11 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900">
-              <DollarSign className="h-5 w-5" />
+            <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0">
+              <DollarSign className="h-6 w-6 sm:h-7 sm:w-7" />
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 p-5 rounded-xl flex items-center justify-between shadow-sm">
+          <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl flex items-center justify-between shadow-sm">
             <div>
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Verification Queue Status</span>
-              <p className="text-2xl font-black text-amber-600 mt-1">
+              <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Verification Queue Status</span>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-black text-amber-600 mt-1">
                 {verificationQueue.length} pending
               </p>
             </div>
-            <div className="h-11 w-11 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
-              <ShieldAlert className="h-5 w-5" />
+            <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shrink-0">
+              <ShieldAlert className="h-6 w-6 sm:h-7 sm:w-7" />
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 p-5 rounded-xl flex items-center justify-between shadow-sm">
+          <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl flex items-center justify-between shadow-sm">
             <div>
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sanctioned Projects Ratio</span>
-              <p className="text-2xl font-black text-emerald-700 mt-1">
+              <span className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">Sanctioned Projects Ratio</span>
+              <p className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-700 mt-1">
                 {stats?.kpis?.totalProjects ? Math.round(((stats?.kpis?.approvedCount || 0) / stats.kpis.totalProjects) * 100) : 0}%
               </p>
             </div>
-            <div className="h-11 w-11 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
-              <CheckCircle className="h-5 w-5" />
+            <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
+              <CheckCircle className="h-6 w-6 sm:h-7 sm:w-7" />
             </div>
           </div>
         </section>
 
         {/* Dynamic Workspace Container */}
-        <section className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm min-h-[500px]">
+        <section className="bg-white border border-slate-200 p-5 sm:p-7 lg:p-8 rounded-2xl shadow-sm min-h-[500px]">
           
           {/* TAB 1: MAP AND DEMOGRAPHICS */}
           {activeTab === 'map' && (
-            <div className="space-y-6">
-              <div className="border-b pb-3 flex items-center justify-between">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="border-b pb-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h3 className="text-base font-black text-blue-900">City Infrastructure Map & Priority Areas</h3>
-                  <p className="text-xs text-slate-500">Geographical distribution of community needs, citizen suggestions, and infrastructure priorities.</p>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-blue-900">City Infrastructure Map & Priority Areas</h3>
+                  <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium mt-0.5">Geographical distribution of community needs, citizen suggestions, and infrastructure priorities.</p>
                 </div>
                 {selectedWard && (
                   <button 
                     onClick={() => setSelectedWard(null)}
-                    className="text-xs text-blue-900 hover:text-blue-700 font-extrabold underline"
+                    className="text-xs sm:text-sm md:text-base text-blue-900 hover:text-blue-700 font-extrabold underline self-start sm:self-center"
                   >
                     Reset Map Filter
                   </button>
@@ -937,16 +937,16 @@ export default function MPDashboard() {
                 </div>
 
                 {/* Regional Stats */}
-                <div className="lg:col-span-1 space-y-4">
-                  <div className="border rounded-xl p-4 bg-slate-50">
-                    <h4 className="font-extrabold text-xs text-slate-700 uppercase tracking-wider border-b pb-2 mb-3">
+                <div className="lg:col-span-1 space-y-5">
+                  <div className="border border-slate-200 rounded-2xl p-4 sm:p-5 bg-slate-50">
+                    <h4 className="font-extrabold text-xs sm:text-sm md:text-base text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-2 mb-3">
                       Selected Sector Indicators
                     </h4>
                     {selectedWard ? (
                       (() => {
                         const ward = stats?.wardStats?.find(w => w.ward_id === selectedWard);
                         return (
-                          <div className="space-y-2.5 text-xs text-slate-700 font-semibold">
+                          <div className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm md:text-base text-slate-700 font-semibold">
                             <p><strong>Name:</strong> {ward?.ward_name}</p>
                             <p><strong>Total Population:</strong> {ward?.population?.toLocaleString()}</p>
                             <p><strong>Infrastructure Deficit:</strong> {ward?.equity_score}/10</p>
@@ -956,16 +956,16 @@ export default function MPDashboard() {
                         );
                       })()
                     ) : (
-                      <p className="text-xs text-slate-500 italic py-4 text-center">Click a sector circle on the map to inspect local statistics.</p>
+                      <p className="text-xs sm:text-sm text-slate-500 italic py-6 text-center">Click a sector circle on the map to inspect local statistics.</p>
                     )}
                   </div>
 
                   {/* Chart representation */}
-                  <div className="border rounded-xl p-4 bg-slate-50">
-                    <h4 className="font-extrabold text-xs text-slate-700 uppercase tracking-wider border-b pb-2 mb-3">
+                  <div className="border border-slate-200 rounded-2xl p-4 sm:p-5 bg-slate-50">
+                    <h4 className="font-extrabold text-xs sm:text-sm md:text-base text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-2 mb-3">
                       Community Needs by Sector
                     </h4>
-                    <div className="h-[180px] w-full flex items-center justify-center">
+                    <div className="h-[210px] w-full flex items-center justify-center">
                       {stats?.categoryStats?.length ? (
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
@@ -974,7 +974,7 @@ export default function MPDashboard() {
                               cx="50%"
                               cy="50%"
                               innerRadius={45}
-                              outerRadius={65}
+                              outerRadius={70}
                               paddingAngle={5}
                               dataKey="value"
                             >
@@ -983,13 +983,13 @@ export default function MPDashboard() {
                               ))}
                             </Pie>
                             <Tooltip 
-                              contentStyle={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px' }}
-                              itemStyle={{ color: '#0f172a', fontSize: '11px' }}
+                              contentStyle={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px' }}
+                              itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
                             />
                           </PieChart>
                         </ResponsiveContainer>
                       ) : (
-                        <span className="text-slate-500 text-xs">No chart data</span>
+                        <span className="text-slate-500 text-xs sm:text-sm">No chart data</span>
                       )}
                     </div>
                   </div>
@@ -1000,19 +1000,19 @@ export default function MPDashboard() {
 
           {/* TAB 2: PROJECT REGISTRY & WEIGHTS */}
           {activeTab === 'registry' && (
-            <div className="space-y-6">
-              <div className="border-b pb-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="border-b pb-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
-                  <h3 className="text-base font-black text-blue-900">Capital Projects & Community Priority Scoring</h3>
-                  <p className="text-xs text-slate-500">Adjust civic priority weights according to community development goals. Projects are ranked by transparent impact scores.</p>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-blue-900">Capital Projects & Community Priority Scoring</h3>
+                  <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium mt-0.5">Adjust civic priority weights according to community development goals. Projects are ranked by transparent impact scores.</p>
                 </div>
                 {/* Preset Selector */}
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
-                  <span>Strategic Priority Preset:</span>
+                <div className="flex items-center gap-2 text-xs sm:text-sm md:text-base font-bold text-slate-700">
+                  <span className="shrink-0">Strategic Preset:</span>
                   <select 
                     value={selectedPreset}
                     onChange={(e) => handlePresetChange(e.target.value)}
-                    className="bg-white border border-slate-300 rounded-lg text-slate-800 px-2.5 py-1.5 focus:outline-none focus:border-blue-900 font-bold"
+                    className="bg-white border border-slate-300 rounded-xl text-slate-800 px-3 py-2 focus:outline-none focus:border-blue-900 font-bold text-xs sm:text-sm md:text-base"
                   >
                     <option value="standard">Standard Balanced Priorities</option>
                     <option value="urgency">Urgent Safety & Disaster Mitigation</option>
@@ -1024,23 +1024,23 @@ export default function MPDashboard() {
               </div>
 
               {/* Prioritization Criteria Sliders Grid */}
-              <div className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-3.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div className="grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
                 {Object.entries(weights).map(([dim, val]) => {
                   const info = WEIGHT_CRITERIA_INFO[dim] || { label: dim, desc: 'Priority criterion' };
                   return (
-                    <div key={dim} className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs space-y-1.5 hover:border-slate-300 transition">
+                    <div key={dim} className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-2 hover:border-slate-300 transition">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900">{info.label}</span>
-                        <span className="text-xs font-black text-blue-900 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">{val}%</span>
+                        <span className="text-xs sm:text-sm md:text-base font-bold text-slate-900">{info.label}</span>
+                        <span className="text-xs sm:text-sm md:text-base font-black text-blue-900 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">{val}%</span>
                       </div>
-                      <p className="text-[10px] text-slate-500 leading-tight line-clamp-1">{info.desc}</p>
+                      <p className="text-xs sm:text-sm text-slate-500 leading-tight line-clamp-1">{info.desc}</p>
                       <input 
                         type="range"
                         min="0"
                         max="100"
                         value={val}
                         onChange={(e) => handleWeightSlider(dim, e.target.value)}
-                        className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-900"
+                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-900"
                       />
                     </div>
                   );
@@ -1048,26 +1048,26 @@ export default function MPDashboard() {
               </div>
 
               {/* Registry Filters */}
-              <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
-                  <Filter className="h-4 w-4" />
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <div className="flex items-center gap-2 text-xs sm:text-sm md:text-base font-bold text-slate-700">
+                  <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
                   <span>Filter Projects:</span>
                 </div>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2.5 flex-wrap">
                   {/* CSV Export Button */}
                   <button
                     onClick={exportToCSV}
-                    className="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition"
+                    className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-bold flex items-center gap-2 shadow-sm transition"
                     title="Export Registry to Excel CSV"
                   >
-                    <FileText className="h-3.5 w-3.5" />
+                    <FileText className="h-4 w-4" />
                     Export CSV
                   </button>
 
                   <select
                     value={categoryFilter}
                     onChange={(e) => setCategoryFilter(e.target.value)}
-                    className="bg-white border border-slate-300 rounded-lg text-xs text-slate-700 px-3 py-2 font-bold focus:outline-none"
+                    className="bg-white border border-slate-300 rounded-xl text-xs sm:text-sm md:text-base text-slate-700 px-3.5 py-2.5 font-bold focus:outline-none"
                   >
                     <option value="all">All Sectors</option>
                     <option value="education">Education</option>
@@ -1081,7 +1081,7 @@ export default function MPDashboard() {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="bg-white border border-slate-300 rounded-lg text-xs text-slate-700 px-3 py-2 font-bold focus:outline-none"
+                    className="bg-white border border-slate-300 rounded-xl text-xs sm:text-sm md:text-base text-slate-700 px-3.5 py-2.5 font-bold focus:outline-none"
                   >
                     <option value="all">All Implementation Stages</option>
                     <option value="Proposed">Proposed Stage</option>
@@ -1094,29 +1094,29 @@ export default function MPDashboard() {
               </div>
 
               {/* Data Table */}
-              <div className="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
-                <table className="w-full text-left text-xs border-collapse">
+              <div className="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
+                <table className="w-full text-left text-xs sm:text-sm border-collapse">
                   <thead>
                     <tr className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider">
-                      <th className="p-3 text-[10px] text-center w-12">Rank</th>
-                      <th className="p-3 text-[10px]">Project Details</th>
-                      <th className="p-3 text-[10px]">Location</th>
-                      <th className="p-3 text-[10px]">Estimated Budget</th>
-                      <th className="p-3 text-[10px] text-center">Priority Score</th>
-                      <th className="p-3 text-[10px] text-center">Budget Allocation Status</th>
-                      <th className="p-3 text-[10px] text-center">Actions</th>
+                      <th className="p-3.5 sm:p-4 text-xs sm:text-sm text-center w-14">Rank</th>
+                      <th className="p-3.5 sm:p-4 text-xs sm:text-sm">Project Details</th>
+                      <th className="p-3.5 sm:p-4 text-xs sm:text-sm">Location</th>
+                      <th className="p-3.5 sm:p-4 text-xs sm:text-sm">Estimated Budget</th>
+                      <th className="p-3.5 sm:p-4 text-xs sm:text-sm text-center">Priority Score</th>
+                      <th className="p-3.5 sm:p-4 text-xs sm:text-sm text-center">Budget Allocation Status</th>
+                      <th className="p-3.5 sm:p-4 text-xs sm:text-sm text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 font-medium text-slate-800">
                     {loading ? (
                       <tr>
-                        <td colSpan="7" className="p-6 text-center text-slate-500 animate-pulse">
+                        <td colSpan="7" className="p-8 text-center text-slate-500 animate-pulse text-sm sm:text-base">
                           Recalculating scored project parameters...
                         </td>
                       </tr>
                     ) : filteredProjectsList.length === 0 ? (
                       <tr>
-                        <td colSpan="7" className="p-6 text-center text-slate-500">
+                        <td colSpan="7" className="p-8 text-center text-slate-500 text-sm sm:text-base">
                           No projects match selected filter criteria.
                         </td>
                       </tr>
@@ -1132,49 +1132,49 @@ export default function MPDashboard() {
                               isSelectedInPortfolio ? 'bg-emerald-50/20' : 'bg-white'
                             }`}
                           >
-                            <td className="p-3 text-center font-bold text-slate-900 border-r border-slate-100">
+                            <td className="p-3.5 sm:p-4 text-center font-bold text-slate-900 border-r border-slate-100 text-xs sm:text-sm md:text-base">
                               #{rankIdx + 1}
                             </td>
-                            <td className="p-3 space-y-1.5 max-w-[220px]">
-                              <p className="font-extrabold text-slate-950 text-xs">{project.title}</p>
-                              <span className={`${design.bg} ${design.text} ${design.border} border px-2 py-0.5 rounded text-[9px] font-bold uppercase`}>
+                            <td className="p-3.5 sm:p-4 space-y-1.5 max-w-[260px]">
+                              <p className="font-extrabold text-slate-950 text-xs sm:text-sm md:text-base">{project.title}</p>
+                              <span className={`${design.bg} ${design.text} ${design.border} border px-2 py-0.5 rounded text-[10px] sm:text-xs font-bold uppercase`}>
                                 {project.category}
                               </span>
                             </td>
-                            <td className="p-3 text-slate-700 font-semibold">
+                            <td className="p-3.5 sm:p-4 text-slate-700 font-semibold text-xs sm:text-sm md:text-base">
                               {project.ward_name}
                             </td>
-                            <td className="p-3 text-slate-950 font-bold">
+                            <td className="p-3.5 sm:p-4 text-slate-950 font-bold text-xs sm:text-sm md:text-base">
                               {renderCost(project.estimated_cost)}
                             </td>
-                            <td className="p-3 text-center text-blue-950 font-black text-sm">
+                            <td className="p-3.5 sm:p-4 text-center text-blue-950 font-black text-sm sm:text-base md:text-lg">
                               {project.total_score}
                             </td>
-                            <td className="p-3 text-center">
+                            <td className="p-3.5 sm:p-4 text-center">
                               {isSelectedInPortfolio ? (
-                                <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap">
-                                  <CheckCircle className="h-3 w-3" /> Allocated in Budget
+                                <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-full text-xs sm:text-sm font-black whitespace-nowrap">
+                                  <CheckCircle className="h-3.5 w-3.5" /> Allocated in Budget
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-600 border border-slate-300 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap">
+                                <span className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-600 border border-slate-300 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap">
                                   Pending Next Cycle
                                 </span>
                               )}
                             </td>
-                            <td className="p-3">
-                              <div className="flex items-center justify-center gap-1.5">
+                            <td className="p-3.5 sm:p-4">
+                              <div className="flex items-center justify-center gap-2">
                                 <button
                                   onClick={() => setActiveExplainProject(project)}
-                                  className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-2.5 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-xs transition"
+                                  className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-xs transition"
                                 >
-                                  <Award className="h-3 w-3 text-blue-900" />
+                                  <Award className="h-3.5 w-3.5 text-blue-900" />
                                   View Details
                                 </button>
 
                                 {project.status === 'Proposed' && (
                                   <button
                                     onClick={() => handleApproveProject(project.id, project.status)}
-                                    className="bg-[#f97316] hover:bg-[#e06317] text-white px-2.5 py-1.5 rounded-lg text-[10px] font-extrabold shadow-xs transition"
+                                    className="bg-[#f97316] hover:bg-[#e06317] text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-black shadow-xs transition"
                                   >
                                     Sanction
                                   </button>
@@ -1193,24 +1193,24 @@ export default function MPDashboard() {
 
           {/* TAB 3: BUDGET SCENARIOS OPTIMIZER */}
           {activeTab === 'budget' && (
-            <div className="space-y-6">
-              <div className="border-b pb-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="border-b pb-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-black text-blue-900">Municipal Budget Allocation & Planning Models</h3>
-                  <p className="text-xs text-slate-500">Compare capital expenditure plans under different public policy priorities and budget caps.</p>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-blue-900">Municipal Budget Allocation & Planning Models</h3>
+                  <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium mt-0.5">Compare capital expenditure plans under different public policy priorities and budget caps.</p>
                 </div>
                 
                 {/* Budget Limit Config */}
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-slate-700 font-bold">Total Capital Budget Cap ({selectedCurrency}):</span>
-                  <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 px-3 py-1.5 rounded-lg">
-                    <span className="text-slate-500 font-bold">{currentCurrencyConfig.symbol}</span>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-xs sm:text-sm md:text-base text-slate-700 font-bold">Total Capital Budget Cap ({selectedCurrency}):</span>
+                  <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 px-3.5 py-2 rounded-xl">
+                    <span className="text-slate-500 font-bold text-sm sm:text-base">{currentCurrencyConfig.symbol}</span>
                     <input 
                       type="number" 
                       value={budgetLimit}
                       onChange={(e) => setBudgetLimit(parseInt(e.target.value) || 0)}
                       step={currentCurrencyConfig.budgetSlider.step}
-                      className="bg-transparent text-sm text-slate-950 font-black w-24 focus:outline-none"
+                      className="bg-transparent text-sm sm:text-base md:text-lg text-slate-950 font-black w-28 focus:outline-none"
                     />
                   </div>
                   <input 
@@ -1220,52 +1220,52 @@ export default function MPDashboard() {
                     step={currentCurrencyConfig.budgetSlider.step}
                     value={budgetLimit}
                     onChange={(e) => setBudgetLimit(parseInt(e.target.value, 10))}
-                    className="h-1.5 w-28 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-900"
+                    className="h-2 w-32 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-900"
                   />
                 </div>
               </div>
 
               {/* Scenarios Selection Tabs */}
-              <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 gap-1 overflow-x-auto">
+              <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1.5 overflow-x-auto">
                 <button
                   onClick={() => setScenario('max_benefit')}
-                  className={`px-5 py-2.5 rounded-lg text-xs font-black whitespace-nowrap transition ${scenario === 'max_benefit' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-800'}`}
+                  className={`px-4 sm:px-6 py-3 rounded-xl text-xs sm:text-sm md:text-base font-black whitespace-nowrap transition ${scenario === 'max_benefit' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-800'}`}
                 >
                   Balanced Community Impact Plan
                 </button>
                 <button
                   onClick={() => setScenario('max_citizens')}
-                  className={`px-5 py-2.5 rounded-lg text-xs font-black whitespace-nowrap transition ${scenario === 'max_citizens' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-800'}`}
+                  className={`px-4 sm:px-6 py-3 rounded-xl text-xs sm:text-sm md:text-base font-black whitespace-nowrap transition ${scenario === 'max_citizens' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-800'}`}
                 >
                   Maximum Community Reach Plan
                 </button>
                 <button
                   onClick={() => setScenario('max_equity')}
-                  className={`px-5 py-2.5 rounded-lg text-xs font-black whitespace-nowrap transition ${scenario === 'max_equity' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-800'}`}
+                  className={`px-4 sm:px-6 py-3 rounded-xl text-xs sm:text-sm md:text-base font-black whitespace-nowrap transition ${scenario === 'max_equity' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-800'}`}
                 >
                   Underserved Areas First Plan
                 </button>
                 <button
                   onClick={() => setScenario('max_urgency')}
-                  className={`px-5 py-2.5 rounded-lg text-xs font-black whitespace-nowrap transition ${scenario === 'max_urgency' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-800'}`}
+                  className={`px-4 sm:px-6 py-3 rounded-xl text-xs sm:text-sm md:text-base font-black whitespace-nowrap transition ${scenario === 'max_urgency' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-800'}`}
                 >
                   Urgent Needs & Safety First Plan
                 </button>
               </div>
 
               {/* Scenario Allocation Overview */}
-              <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 text-center text-xs font-bold">
+              <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-4 bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200 text-center text-xs font-bold">
                 <div>
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Total Allocated Expenditure</span>
-                  <span className="text-base font-black text-slate-900">{renderCost(portfolio.totalSpent)}</span>
+                  <span className="text-xs sm:text-sm text-slate-500 uppercase tracking-wider block font-bold">Total Allocated Expenditure</span>
+                  <span className="text-base sm:text-xl md:text-2xl font-black text-slate-900 mt-1 block">{renderCost(portfolio.totalSpent)}</span>
                 </div>
-                <div className="border-y py-2 min-[480px]:border-y-0 min-[480px]:border-x min-[480px]:py-0 border-slate-200">
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Unallocated Contingency Reserve</span>
-                  <span className="text-base font-black text-blue-900">{renderCost(portfolio.remainingBudget)}</span>
+                <div className="border-y py-3 min-[480px]:border-y-0 min-[480px]:border-x min-[480px]:py-0 border-slate-200">
+                  <span className="text-xs sm:text-sm text-slate-500 uppercase tracking-wider block font-bold">Unallocated Contingency Reserve</span>
+                  <span className="text-base sm:text-xl md:text-2xl font-black text-blue-900 mt-1 block">{renderCost(portfolio.remainingBudget)}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Project Allocation Outcome</span>
-                  <span className="text-base font-black text-emerald-800 font-extrabold">
+                  <span className="text-xs sm:text-sm text-slate-500 uppercase tracking-wider block font-bold">Project Allocation Outcome</span>
+                  <span className="text-base sm:text-xl md:text-2xl font-black text-emerald-800 font-extrabold mt-1 block">
                     {portfolio.selected?.length || 0} Allocated &bull; {portfolio.deferred?.length || 0} In Queue
                   </span>
                 </div>
@@ -1275,40 +1275,40 @@ export default function MPDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 {/* Funded Column */}
-                <div className="border border-emerald-300 rounded-xl p-4 bg-emerald-50/10 space-y-3">
-                  <div className="border-b border-emerald-200 pb-2 flex items-center justify-between">
-                    <h4 className="font-extrabold text-emerald-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                      <CheckCircle className="h-4 w-4" />
+                <div className="border border-emerald-300 rounded-2xl p-4 sm:p-5 bg-emerald-50/15 space-y-4">
+                  <div className="border-b border-emerald-200 pb-3 flex flex-wrap items-center justify-between gap-2">
+                    <h4 className="font-extrabold text-emerald-800 text-xs sm:text-sm md:text-base uppercase tracking-wider flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                       Allocated Projects ({portfolio.selected?.length || 0})
                     </h4>
                     <div className="flex items-center gap-3">
                       {portfolio.selected?.length > 0 && (
                         <button
                           onClick={handlePrintSanctionOrder}
-                          className="bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-black uppercase px-2.5 py-1.5 rounded shadow-sm transition flex items-center gap-1.5"
+                          className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs sm:text-sm font-black uppercase px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5"
                         >
-                          <Printer className="h-3.5 w-3.5" /> Print Sanction Order
+                          <Printer className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Print Sanction Order
                         </button>
                       )}
-                      <span className="text-xs font-bold text-emerald-800">
+                      <span className="text-xs sm:text-sm md:text-base font-bold text-emerald-800">
                         Total: {renderCost(portfolio.totalSpent)}
                       </span>
                     </div>
                   </div>
 
-                  <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                  <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                     {portfolio.selected?.length === 0 ? (
-                      <p className="text-slate-500 text-xs italic py-8 text-center">No projects allocated within this budget cap.</p>
+                      <p className="text-slate-500 text-xs sm:text-sm italic py-8 text-center">No projects allocated within this budget cap.</p>
                     ) : (
                       portfolio.selected.map(proj => (
-                        <div key={proj.id} className="bg-white p-3 rounded-lg border border-emerald-200 flex justify-between items-center text-xs">
+                        <div key={proj.id} className="bg-white p-3.5 sm:p-4 rounded-xl border border-emerald-200 flex justify-between items-center text-xs sm:text-sm gap-3">
                           <div>
-                            <p className="font-extrabold text-slate-900">{proj.title}</p>
-                            <p className="text-[10px] text-slate-500 mt-0.5">{proj.ward_name} &bull; {proj.category.toUpperCase()}</p>
+                            <p className="font-extrabold text-slate-900 text-xs sm:text-sm md:text-base">{proj.title}</p>
+                            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{proj.ward_name} &bull; {proj.category.toUpperCase()}</p>
                           </div>
-                          <div className="text-right shrink-0 ml-4">
-                            <p className="font-extrabold text-slate-900">{renderCost(proj.estimated_cost)}</p>
-                            <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">Score: {proj.total_score}</span>
+                          <div className="text-right shrink-0">
+                            <p className="font-extrabold text-slate-900 text-xs sm:text-sm md:text-base">{renderCost(proj.estimated_cost)}</p>
+                            <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold">Score: {proj.total_score}</span>
                           </div>
                         </div>
                       ))
@@ -1317,30 +1317,30 @@ export default function MPDashboard() {
                 </div>
 
                 {/* Deferred Column */}
-                <div className="border border-slate-300 rounded-xl p-4 bg-slate-50/20 space-y-3">
-                  <div className="border-b border-slate-200 pb-2 flex items-center justify-between">
-                    <h4 className="font-extrabold text-slate-600 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                      <Clock className="h-4 w-4" />
+                <div className="border border-slate-300 rounded-2xl p-4 sm:p-5 bg-slate-50/30 space-y-4">
+                  <div className="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
+                    <h4 className="font-extrabold text-slate-700 text-xs sm:text-sm md:text-base uppercase tracking-wider flex items-center gap-2">
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5" />
                       Pending Subsequent Cycles ({portfolio.deferred?.length || 0})
                     </h4>
-                    <span className="text-xs font-bold text-slate-600">
+                    <span className="text-xs sm:text-sm md:text-base font-bold text-slate-600">
                       Total: {renderCost(portfolio.deferred?.reduce((sum, p) => sum + (p.estimated_cost || 0), 0) || 0)}
                     </span>
                   </div>
 
-                  <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                  <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                     {portfolio.deferred?.length === 0 ? (
-                      <p className="text-slate-500 text-xs italic py-8 text-center">All projects funded in this scenario!</p>
+                      <p className="text-slate-500 text-xs sm:text-sm italic py-8 text-center">All projects funded in this scenario!</p>
                     ) : (
                       portfolio.deferred.map(proj => (
-                        <div key={proj.id} className="bg-white p-3 rounded-lg border border-slate-200 flex justify-between items-center text-xs">
+                        <div key={proj.id} className="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 flex justify-between items-center text-xs sm:text-sm gap-3">
                           <div>
-                            <p className="font-extrabold text-slate-900">{proj.title}</p>
-                            <p className="text-[10px] text-slate-500 mt-0.5">{proj.ward_name} &bull; {proj.category.toUpperCase()}</p>
+                            <p className="font-extrabold text-slate-900 text-xs sm:text-sm md:text-base">{proj.title}</p>
+                            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{proj.ward_name} &bull; {proj.category.toUpperCase()}</p>
                           </div>
-                          <div className="text-right shrink-0 ml-4">
-                            <p className="font-extrabold text-slate-900">{renderCost(proj.estimated_cost)}</p>
-                            <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">Score: {proj.total_score}</span>
+                          <div className="text-right shrink-0">
+                            <p className="font-extrabold text-slate-900 text-xs sm:text-sm md:text-base">{renderCost(proj.estimated_cost)}</p>
+                            <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold">Score: {proj.total_score}</span>
                           </div>
                         </div>
                       ))
@@ -1355,50 +1355,50 @@ export default function MPDashboard() {
 
           {/* TAB 4: AUDIT QUEUE AND LOGS */}
           {activeTab === 'audit' && (
-            <div className="space-y-6">
-              <div className="border-b pb-3">
-                <h3 className="text-base font-black text-blue-900">Citizen Submissions & Audit Transparency</h3>
-                <p className="text-xs text-slate-500">Review community submissions requiring manual clarification and inspect the immutable public decision ledger.</p>
+            <div className="space-y-6 sm:space-y-8">
+              <div className="border-b pb-3.5">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-black text-blue-900">Citizen Submissions & Audit Transparency</h3>
+                <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium mt-0.5">Review community submissions requiring manual clarification and inspect the immutable public decision ledger.</p>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 {/* Verification Queue List */}
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2">
-                    <h4 className="font-extrabold text-blue-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                      <ShieldAlert className="h-4 w-4 text-amber-600" />
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <h4 className="font-extrabold text-blue-900 text-xs sm:text-sm md:text-base uppercase tracking-wider flex items-center gap-2">
+                      <ShieldAlert className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                       Submissions Requiring Clarification
                     </h4>
-                    <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">
+                    <span className="text-xs sm:text-sm bg-slate-100 text-slate-700 px-3 py-1 rounded-full font-bold">
                       {verificationQueue.length} pending
                     </span>
                   </div>
 
-                  <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                  <div className="space-y-3.5 max-h-[420px] overflow-y-auto pr-1">
                     {verificationQueue.length === 0 ? (
-                      <div className="text-center py-12 text-slate-500 text-xs">
-                        <CheckCircle className="h-8 w-8 text-emerald-500/20 mx-auto mb-2" />
+                      <div className="text-center py-12 text-slate-500 text-xs sm:text-sm">
+                        <CheckCircle className="h-8 w-8 sm:h-10 sm:w-10 text-emerald-500/30 mx-auto mb-2" />
                         All incoming citizen suggestions have been classified and verified.
                       </div>
                     ) : (
                       verificationQueue.map(item => (
                         <div 
                           key={item.id}
-                          className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5 text-xs shadow-xs"
+                          className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3 text-xs sm:text-sm shadow-xs"
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <span className="bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded text-xs font-bold">
                               Confidence: {Math.round(item.confidence_score * 100)}%
                             </span>
-                            <span className="text-slate-600 font-bold">Sector {item.ward_id || 'General'}</span>
+                            <span className="text-slate-700 font-bold text-xs sm:text-sm">Sector {item.ward_id || 'General'}</span>
                           </div>
-                          <p className="text-slate-800 italic font-medium">"{item.issue_details}"</p>
-                          <div className="flex items-center gap-2 pt-2 border-t border-slate-200">
-                            <span className="text-slate-600 font-bold">Classified Sector: <strong className="text-slate-900 uppercase font-black">{item.category}</strong></span>
+                          <p className="text-slate-800 italic font-medium text-xs sm:text-sm md:text-base">"{item.issue_details}"</p>
+                          <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-200 flex-wrap">
+                            <span className="text-slate-700 font-bold text-xs sm:text-sm">Classified Sector: <strong className="text-slate-950 uppercase font-black">{item.category}</strong></span>
                             <button
                               onClick={() => handleVerifyQueueItem(item.id, item.category, item.ward_id, item.issue_details, item.trust_score)}
-                              className="ml-auto bg-blue-900 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg font-bold transition shadow-xs"
+                              className="ml-auto bg-blue-900 hover:bg-blue-800 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition shadow-xs"
                             >
                               Confirm & Save
                             </button>
@@ -1411,41 +1411,41 @@ export default function MPDashboard() {
 
                 {/* Audit trail decision logs */}
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2">
-                    <h4 className="font-extrabold text-blue-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                      <Clock className="h-4 w-4 text-blue-700" />
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <h4 className="font-extrabold text-blue-900 text-xs sm:text-sm md:text-base uppercase tracking-wider flex items-center gap-2">
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-700" />
                       Public Decision Audit Trail
                     </h4>
                   </div>
 
-                  <div className="space-y-3.5 max-h-[380px] overflow-y-auto pr-1">
+                  <div className="space-y-3.5 max-h-[420px] overflow-y-auto pr-1">
                     {stats?.recentDecisions?.length === 0 ? (
-                      <div className="text-center py-12 text-slate-500 text-xs">
+                      <div className="text-center py-12 text-slate-500 text-xs sm:text-sm">
                         No planning decisions logged in this cycle yet.
                       </div>
                     ) : (
                       stats?.recentDecisions?.map(log => {
                         const isVerified = typeof log.reason === 'string' && (log.reason.includes('[SIG:') || log.reason.includes('[SHA-256:'));
                         return (
-                          <div key={log.id} className="text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex justify-between gap-4 items-start shadow-xs">
-                            <div className="space-y-1">
+                          <div key={log.id} className="text-xs sm:text-sm bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between gap-4 items-start shadow-xs">
+                            <div className="space-y-1.5">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <p className="text-slate-900 font-bold">
+                                <p className="text-slate-900 font-bold text-xs sm:text-sm md:text-base">
                                   <strong>{log.actor}</strong> moved Project #{log.project_id} to <span className="text-blue-900 font-black">{log.new_state}</span>
                                 </p>
                                 {isVerified ? (
-                                  <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-black px-1.5 py-0.5 rounded flex items-center gap-1">
-                                    <CheckCircle className="h-3 w-3" /> VERIFIED
+                                  <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-black px-2 py-0.5 rounded flex items-center gap-1">
+                                    <CheckCircle className="h-3.5 w-3.5" /> VERIFIED
                                   </span>
                                 ) : (
-                                  <span className="bg-slate-200 text-slate-600 text-[10px] font-semibold px-1.5 py-0.5 rounded">
+                                  <span className="bg-slate-200 text-slate-600 text-xs font-semibold px-2 py-0.5 rounded">
                                     RECORDED
                                   </span>
                                 )}
                               </div>
-                              <p className="text-slate-600 text-[11px] font-mono break-all font-semibold">"{log.reason}"</p>
+                              <p className="text-slate-600 text-xs sm:text-sm font-mono break-all font-semibold">"{log.reason}"</p>
                             </div>
-                            <span className="text-slate-500 text-[10px] font-bold whitespace-nowrap">
+                            <span className="text-slate-500 text-xs sm:text-sm font-bold whitespace-nowrap shrink-0">
                               {new Date(log.timestamp).toLocaleTimeString()}
                             </span>
                           </div>
@@ -1459,22 +1459,22 @@ export default function MPDashboard() {
 
               {/* Digital Public Good Interoperability Card */}
               <div className="mt-8 pt-6 border-t border-slate-200">
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                   <div>
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                      <Database className="h-4 w-4 text-blue-700" />
+                    <h4 className="text-xs sm:text-sm md:text-base font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                      <Database className="h-4 w-4 sm:h-5 sm:w-5 text-blue-700" />
                       Digital Public Good Interoperability & Integration
                     </h4>
-                    <p className="text-[11px] text-slate-500 mt-0.5">
+                    <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium mt-1">
                       Open standards for ministerial planning boards, national DPI integrators, and civil society audits.
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5 flex-wrap">
                     <a
                       href="/api/openapi"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white hover:bg-slate-100 text-blue-900 border border-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs"
+                      className="bg-white hover:bg-slate-100 text-blue-900 border border-slate-300 px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-bold transition flex items-center gap-1.5 shadow-xs"
                     >
                       OpenAPI 3.1 Spec &rarr;
                     </a>
@@ -1482,7 +1482,7 @@ export default function MPDashboard() {
                       href="/api/audit"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white hover:bg-slate-100 text-emerald-800 border border-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs"
+                      className="bg-white hover:bg-slate-100 text-emerald-800 border border-slate-300 px-4 py-2.5 rounded-xl text-xs sm:text-sm md:text-base font-bold transition flex items-center gap-1.5 shadow-xs"
                     >
                       Audit Ledger API &rarr;
                     </a>
@@ -1498,39 +1498,39 @@ export default function MPDashboard() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200 py-6 text-center text-xs text-slate-500 bg-white">
+      <footer className="mt-auto border-t border-slate-200 py-6 sm:py-8 text-center text-xs sm:text-sm md:text-base text-slate-500 bg-white">
         <p>© 2026 CIVIS-BRICS Initiative. Digital Public Good for Infrastructure & Governance.</p>
       </footer>
 
       {/* EXPLAINER CARD MODAL (Explainability Breakdown Tree) */}
       {activeExplainProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
-          <div className="bg-white border border-slate-350 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-150">
+          <div className="bg-white border border-slate-300 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-150">
             
             {/* Modal Header */}
-            <div className="p-5 border-b bg-slate-50 flex items-center justify-between">
+            <div className="p-5 sm:p-6 border-b bg-slate-50 flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-blue-900 uppercase tracking-widest block">Project Impact & Priority Evaluation</span>
-                <h3 className="text-base font-extrabold text-slate-900 mt-0.5">{activeExplainProject.title}</h3>
+                <span className="text-xs sm:text-sm font-bold text-blue-900 uppercase tracking-widest block">Project Impact & Priority Evaluation</span>
+                <h3 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 mt-1">{activeExplainProject.title}</h3>
               </div>
               <button
                 onClick={() => setActiveExplainProject(null)}
-                className="bg-slate-200 hover:bg-slate-300 text-slate-700 h-8 w-8 rounded-full flex items-center justify-center font-bold text-lg transition"
+                className="bg-slate-200 hover:bg-slate-300 text-slate-700 h-9 w-9 rounded-full flex items-center justify-center font-bold text-xl transition"
               >
                 &times;
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-5 max-h-[450px] overflow-y-auto">
+            <div className="p-5 sm:p-6 space-y-6 max-h-[500px] overflow-y-auto">
               
               {/* Evidence attributions */}
-              <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <h4 className="text-xs font-extrabold text-blue-900 uppercase tracking-wider">Community Need & Justification Factors</h4>
-                <ul className="space-y-2 text-xs text-slate-700 font-semibold">
+              <div className="space-y-2.5 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
+                <h4 className="text-xs sm:text-sm md:text-base font-extrabold text-blue-900 uppercase tracking-wider">Community Need & Justification Factors</h4>
+                <ul className="space-y-2 text-xs sm:text-sm md:text-base text-slate-700 font-semibold">
                   {activeExplainProject.evidence_reasons?.map((reason, idx) => (
                     <li key={idx} className="flex gap-2 items-start">
-                      <ChevronRight className="h-4 w-4 text-[#f97316] shrink-0 mt-0.5" />
+                      <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#f97316] shrink-0 mt-0.5" />
                       <span>{reason}</span>
                     </li>
                   ))}
@@ -1539,24 +1539,24 @@ export default function MPDashboard() {
 
               {/* Sub-Score Breakdown visualizer */}
               <div className="space-y-4">
-                <h4 className="text-xs font-extrabold text-blue-900 uppercase tracking-wider">Multi-Criteria Evaluation Scores</h4>
+                <h4 className="text-xs sm:text-sm md:text-base font-extrabold text-blue-900 uppercase tracking-wider">Multi-Criteria Evaluation Scores</h4>
                 
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   {Object.entries(activeExplainProject.sub_scores).map(([dim, score]) => {
                     const weightVal = weights[dim] || 0;
                     const contribution = ((score * weightVal) / 10).toFixed(1);
                     const info = WEIGHT_CRITERIA_INFO[dim] || { label: dim };
 
                     return (
-                      <div key={dim} className="space-y-1">
-                        <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                      <div key={dim} className="space-y-1.5">
+                        <div className="flex items-center justify-between text-xs sm:text-sm md:text-base font-bold text-slate-700">
                           <span className="text-slate-800">{info.label}</span>
                           <span>
                             {score.toFixed(1)}/10 &times; {weightVal}% = <strong className="text-blue-950">+{contribution}</strong>
                           </span>
                         </div>
                         {/* Progress Bar */}
-                        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
+                        <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
                           <div 
                             className="bg-blue-900 h-full rounded-full"
                             style={{ width: `${score * 10}%` }}
@@ -1568,9 +1568,9 @@ export default function MPDashboard() {
                 </div>
 
                 {/* Score summing calculation note */}
-                <div className="bg-blue-50 border border-blue-200 p-3.5 rounded-xl text-center">
-                  <span className="text-[10px] font-bold text-slate-500 block uppercase">Overall Priority Score</span>
-                  <span className="text-base font-black text-slate-900">
+                <div className="bg-blue-50 border border-blue-200 p-4 sm:p-5 rounded-2xl text-center">
+                  <span className="text-xs sm:text-sm font-bold text-slate-600 block uppercase">Overall Priority Score</span>
+                  <span className="text-base sm:text-xl md:text-2xl font-black text-slate-900 mt-1 block">
                     Total Weighted Score: <span className="text-blue-900">{activeExplainProject.total_score}/100</span>
                   </span>
                 </div>
@@ -1579,10 +1579,10 @@ export default function MPDashboard() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t bg-slate-50 flex justify-end">
+            <div className="p-4 sm:p-5 border-t bg-slate-50 flex justify-end">
               <button
                 onClick={() => setActiveExplainProject(null)}
-                className="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold px-4 py-2 rounded-lg transition"
+                className="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs sm:text-sm md:text-base font-bold px-5 py-2.5 rounded-xl transition"
               >
                 Close Details
               </button>

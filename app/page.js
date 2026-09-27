@@ -1030,28 +1030,28 @@ export default function CitizenPortal() {
       <div className="h-2 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
 
       {/* Official BRICS DPG Header across 100% width */}
-      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 shadow-sm w-full">
+      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-4 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 shadow-sm w-full">
         {/* Left: Branding & Initiative */}
         <div className="flex items-center gap-3.5">
-          <div className="h-12 w-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
-            <Landmark className="h-7 w-7" />
+          <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
+            <Landmark className="h-7 w-7 sm:h-8 sm:w-8" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="bg-amber-100 text-amber-950 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="bg-amber-100 text-amber-950 text-xs sm:text-sm font-black uppercase px-2.5 py-0.5 rounded border border-amber-300">
                 BRICS Innovation Challenge 2026
               </span>
-              <span className="text-[11px] text-slate-500 font-bold hidden sm:inline">Track 1: AI for Digital Public Infrastructure</span>
+              <span className="text-xs sm:text-sm text-slate-500 font-bold hidden sm:inline">Track 1: AI for Digital Public Infrastructure</span>
             </div>
-            <h1 className="text-lg sm:text-xl font-black text-blue-900 tracking-tight flex items-center gap-2 mt-0.5">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-blue-900 tracking-tight flex items-center gap-2 mt-1">
               CIVIS-BRICS
-              <span className="text-xs font-bold text-slate-500 hidden md:inline">| Citizens’ Voice & Infrastructure Synthesis</span>
+              <span className="text-xs sm:text-sm md:text-base font-bold text-slate-500 hidden md:inline">| Citizens’ Voice & Infrastructure Synthesis</span>
             </h1>
           </div>
         </div>
 
         {/* Center: BRICS Sovereign Nation Switcher */}
-        <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-300 overflow-x-auto max-w-full">
+        <div className="flex items-center gap-2 bg-slate-100 p-1.5 sm:p-2 rounded-2xl border border-slate-300 overflow-x-auto max-w-full">
           {BRICS_JURISDICTIONS.map((j) => {
             const countryNames = {
               IND: 'India',
@@ -1065,13 +1065,13 @@ export default function CitizenPortal() {
               <button
                 key={j.countryCode}
                 onClick={() => handleCountryChange(j.countryCode, true)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition whitespace-nowrap ${
+                className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm md:text-base font-black flex items-center gap-2 transition whitespace-nowrap ${
                   selectedCountry === j.countryCode
                     ? 'bg-blue-900 text-white shadow-sm ring-2 ring-blue-500/20'
                     : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'
                 }`}
               >
-                <span className="text-sm">{j.flag}</span>
+                <span className="text-base sm:text-lg">{j.flag}</span>
                 <span>{countryLabel}</span>
               </button>
             );
@@ -1081,7 +1081,7 @@ export default function CitizenPortal() {
         {/* Right: Language Switcher & Policymaker Link */}
         <div className="flex items-center gap-3 flex-wrap">
           {/* 6 Languages */}
-          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-300 gap-1">
+          <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-300 gap-1">
             {[
               { code: 'en', label: 'EN' },
               { code: 'hi', label: 'हिन्दी' },
@@ -1093,7 +1093,7 @@ export default function CitizenPortal() {
               <button
                 key={l.code}
                 onClick={() => setCurrentLang(l.code)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition ${
                   currentLang === l.code ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-650 hover:text-slate-900'
                 }`}
               >
@@ -1104,36 +1104,36 @@ export default function CitizenPortal() {
 
           <Link
             href="/mp"
-            className="text-xs bg-blue-900 hover:bg-blue-800 text-white font-extrabold px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5 whitespace-nowrap"
+            className="text-xs sm:text-sm md:text-base bg-blue-900 hover:bg-blue-800 text-white font-extrabold px-4 sm:px-5 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2 whitespace-nowrap"
           >
-            <Lock className="h-3.5 w-3.5 text-amber-400" />
+            <Lock className="h-4 w-4 text-amber-400" />
             <span>{t.btn_mp_workspace}</span>
           </Link>
         </div>
       </header>
 
       {/* City & Region Notice Bar */}
-      <div className="bg-blue-950 text-white px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-inner w-full">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <span className="flex items-center gap-1.5 font-extrabold text-amber-300">
-            <span className="text-base">{currentJurisdiction.flag}</span>
+      <div className="bg-blue-950 text-white px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm md:text-base shadow-inner w-full">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="flex items-center gap-2 font-extrabold text-amber-300 text-sm sm:text-base md:text-lg">
+            <span>{currentJurisdiction.flag}</span>
             <span>{currentJurisdiction.name}</span>
           </span>
           <span className="text-blue-400 hidden sm:inline">&bull;</span>
-          <span className="text-slate-200 font-medium text-xs">
+          <span className="text-slate-200 font-medium">
             {currentJurisdiction.description}
           </span>
           {detectionNotice && (
-            <span className="bg-emerald-900/80 text-emerald-200 border border-emerald-600/60 px-2.5 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1">
-              <MapPin className="h-3 w-3 text-emerald-300" />
+            <span className="bg-emerald-900/80 text-emerald-200 border border-emerald-600/60 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 text-emerald-300" />
               {detectionNotice}
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-3 text-xs text-slate-300">
-          <span className="text-emerald-300 font-medium flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+        <div className="flex items-center gap-3 text-slate-300">
+          <span className="text-emerald-300 font-semibold flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
             Official Public Planning Portal
           </span>
           <span className="text-blue-800 hidden sm:inline">|</span>
@@ -1144,29 +1144,29 @@ export default function CitizenPortal() {
       </div>
 
       {/* Main 100% Fluid 3-Column Grid */}
-      <main className="flex-1 w-full px-3 sm:px-6 lg:px-8 py-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <main className="flex-1 w-full px-3 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* COLUMN 1: Citizen Multimodal Input Form (col-span-12 lg:col-span-4) */}
-        <section className="col-span-12 lg:col-span-4 bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-md space-y-5">
-          <div className="border-b border-slate-100 pb-3 flex items-start justify-between gap-2">
+        <section className="col-span-12 lg:col-span-4 bg-white border border-slate-200 p-5 sm:p-6 lg:p-7 rounded-2xl shadow-md space-y-5">
+          <div className="border-b border-slate-100 pb-3.5 flex items-start justify-between gap-2">
             <div>
-              <h2 className="text-base font-black text-blue-900 flex items-center gap-2">
-                <FileText className="h-5 w-5 text-[#f97316]" />
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-blue-900 flex items-center gap-2.5">
+                <FileText className="h-6 w-6 text-[#f97316]" />
                 {t.form_title}
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">{t.form_desc}</p>
+              <p className="text-xs sm:text-sm md:text-base text-slate-600 mt-1 leading-relaxed">{t.form_desc}</p>
             </div>
-            <span className="bg-blue-50 text-blue-900 border border-blue-200 text-xs font-bold px-2.5 py-0.5 rounded-full shrink-0">
+            <span className="bg-blue-50 text-blue-900 border border-blue-200 text-xs sm:text-sm font-bold px-3 py-1 rounded-full shrink-0">
               {currentJurisdiction.flag} {currentJurisdiction.countryCode}
             </span>
           </div>
 
-          <form onSubmit={handleSubmitSuggestion} className="space-y-4">
+          <form onSubmit={handleSubmitSuggestion} className="space-y-4 sm:space-y-5">
             
             {/* Citizen Full Name */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5 text-slate-500" />
+            <div className="space-y-1.5">
+              <label className="text-xs sm:text-sm md:text-base font-bold text-slate-800 flex items-center gap-2">
+                <User className="h-4 w-4 text-slate-500" />
                 {t.label_name} <span className="text-red-500">*</span>
               </label>
               <input 
@@ -1174,15 +1174,15 @@ export default function CitizenPortal() {
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 placeholder={t.placeholder_name}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm sm:text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
                 required
               />
             </div>
 
             {/* Administrative Jurisdiction / Sector Dropdown */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 text-blue-700" />
+            <div className="space-y-1.5">
+              <label className="text-xs sm:text-sm md:text-base font-bold text-slate-800 flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-blue-700" />
                 Administrative District / Neighborhood <span className="text-red-500">*</span>
               </label>
               <select
@@ -1196,7 +1196,7 @@ export default function CitizenPortal() {
                     setGpsStatus('active');
                   }
                 }}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition cursor-pointer"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm sm:text-base font-bold text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition cursor-pointer"
               >
                 {sectors.map(s => (
                   <option key={s.id} value={s.id}>
@@ -1207,8 +1207,8 @@ export default function CitizenPortal() {
             </div>
 
             {/* Suggestion Text */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 block">
+            <div className="space-y-1.5">
+              <label className="text-xs sm:text-sm md:text-base font-bold text-slate-800 block">
                 {t.label_suggestion} <span className="text-red-500">*</span>
               </label>
               <textarea 
@@ -1216,18 +1216,18 @@ export default function CitizenPortal() {
                 value={suggestionText}
                 onChange={(e) => setSuggestionText(e.target.value)}
                 placeholder={t.placeholder_suggestion}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm sm:text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition leading-relaxed"
                 required
               />
             </div>
 
             {/* Media Attachment buttons */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               {/* Voice Note Recording Button */}
               <button
                 type="button"
                 onClick={toggleRecording}
-                className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition ${
+                className={`flex-1 py-2.5 sm:py-3 rounded-xl border text-xs sm:text-sm md:text-base font-bold flex items-center justify-center gap-2 transition ${
                   isRecording 
                     ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' 
                     : voiceUrl 
@@ -1235,21 +1235,21 @@ export default function CitizenPortal() {
                       : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                {isRecording ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
+                {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 <span>
                   {isRecording ? (recordingMode === 'speech' ? t.btn_voice_active : t.btn_audio_active) : voiceUrl ? t.btn_voice_attached : t.btn_voice_start}
                 </span>
               </button>
 
               {/* Photo Upload Trigger */}
-              <label className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition ${
+              <label className={`flex-1 py-2.5 sm:py-3 rounded-xl border text-xs sm:text-sm md:text-base font-bold flex items-center justify-center gap-2 cursor-pointer transition ${
                 imageScanning 
                   ? 'bg-amber-50 border-amber-300 text-amber-600' 
                   : imageUrl 
                     ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
                     : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
               }`}>
-                <Image className="h-3.5 w-3.5" />
+                <Image className="h-4 w-4" />
                 <span>{imageScanning ? t.btn_photo_scanning : imageUrl ? t.btn_photo_attached : t.btn_photo_scan}</span>
                 <input 
                   type="file" 
@@ -1262,12 +1262,12 @@ export default function CitizenPortal() {
             </div>
 
             {/* Neighborhood Location Tagging */}
-            <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
-              <div className="flex items-center gap-2">
-                <MapPin className={`h-4 w-4 ${gpsStatus === 'active' ? 'text-emerald-600' : 'text-slate-400'}`} />
+            <div className="flex items-center justify-between bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <div className="flex items-center gap-2.5">
+                <MapPin className={`h-5 w-5 ${gpsStatus === 'active' ? 'text-emerald-600' : 'text-slate-400'}`} />
                 <div>
-                  <span className="text-xs font-bold text-slate-800 block">{t.label_gps}</span>
-                  <span className="text-[10px] text-slate-500 block">
+                  <span className="text-xs sm:text-sm md:text-base font-bold text-slate-800 block">{t.label_gps}</span>
+                  <span className="text-xs sm:text-sm text-slate-500 block">
                     {gpsCoords ? '✓ Location confirmed for planning' : t.label_gps_desc}
                   </span>
                 </div>
@@ -1276,7 +1276,7 @@ export default function CitizenPortal() {
                 type="button"
                 onClick={handleGPSAcquisition}
                 disabled={gpsStatus === 'acquiring'}
-                className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition ${
+                className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition ${
                   gpsStatus === 'active' 
                     ? 'bg-emerald-100 border border-emerald-300 text-emerald-700' 
                     : gpsStatus === 'acquiring'
@@ -1289,16 +1289,16 @@ export default function CitizenPortal() {
             </div>
 
             {/* Citizen Confirmation Checklist */}
-            <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1.5">
-              <div className="flex items-start gap-2">
+            <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1.5">
+              <div className="flex items-start gap-2.5">
                 <input 
                   type="checkbox" 
                   id="consentCheckbox"
                   checked={dataConsent}
                   onChange={(e) => setDataConsent(e.target.checked)}
-                  className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-blue-900 focus:ring-blue-900 cursor-pointer"
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-900 focus:ring-blue-900 cursor-pointer"
                 />
-                <label htmlFor="consentCheckbox" className="text-[11px] text-slate-700 leading-snug font-semibold cursor-pointer">
+                <label htmlFor="consentCheckbox" className="text-xs sm:text-sm md:text-base text-slate-700 leading-relaxed font-semibold cursor-pointer">
                   {t.security_declaration}
                 </label>
               </div>
@@ -1308,16 +1308,16 @@ export default function CitizenPortal() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-black text-sm py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition cursor-pointer"
+              className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-black text-sm sm:text-base md:text-lg py-3.5 sm:py-4 rounded-xl flex items-center justify-center gap-2.5 shadow-md transition cursor-pointer"
             >
               {submitting ? (
                 <>
-                  <Activity className="h-4 w-4 animate-spin" />
+                  <Activity className="h-5 w-5 animate-spin" />
                   {t.btn_submitting}
                 </>
               ) : (
                 <>
-                  <Send className="h-4 w-4" />
+                  <Send className="h-5 w-5" />
                   {t.btn_submit}
                 </>
               )}
@@ -1326,24 +1326,24 @@ export default function CitizenPortal() {
 
           {/* Submission Success Alert */}
           {submitResult && (
-            <div className="bg-emerald-50 border border-emerald-300 p-3.5 rounded-xl space-y-2.5 animate-in fade-in duration-300">
-              <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-xs">
-                <CheckCircle className="h-4 w-4 shrink-0" />
+            <div className="bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-3 animate-in fade-in duration-300">
+              <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm sm:text-base">
+                <CheckCircle className="h-5 w-5 shrink-0" />
                 <span>{t.success_title}</span>
               </div>
-              <div className="text-xs space-y-1.5 bg-white p-3 rounded-lg border border-slate-200">
+              <div className="text-xs sm:text-sm md:text-base space-y-2 bg-white p-3.5 rounded-xl border border-slate-200">
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold block">{t.success_receipt}</span>
-                  <code className="text-slate-900 font-mono font-bold select-all block py-1 text-xs border-b border-slate-100">{submitResult.submission_id}</code>
+                  <span className="text-xs sm:text-sm text-slate-500 font-bold block">{t.success_receipt}</span>
+                  <code className="text-slate-900 font-mono font-bold select-all block py-1.5 text-sm sm:text-base border-b border-slate-100">{submitResult.submission_id}</code>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-700 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-slate-700 pt-1">
                   <p>{t.success_category}: <strong className="text-slate-950 uppercase">{submitResult.parsed.category}</strong></p>
                   <p>{t.success_location}: <strong className="text-slate-950">{submitResult.parsed.ward_id ? `District/Sector ${submitResult.parsed.ward_id}` : 'General Sector'}</strong></p>
                   <p>{t.success_trust}: <strong className="text-emerald-700 font-bold">Received & Verified</strong></p>
                   <p>{t.success_coordination}: <strong className="text-blue-900 font-bold">Forwarded to Planning</strong></p>
                 </div>
               </div>
-              <p className="text-[10px] text-slate-500 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
                 {t.success_footer}
               </p>
             </div>
@@ -1351,20 +1351,20 @@ export default function CitizenPortal() {
         </section>
 
         {/* COLUMN 2: Live Community Needs Map (col-span-12 lg:col-span-5) */}
-        <section className="col-span-12 lg:col-span-5 space-y-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-md p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <section className="col-span-12 lg:col-span-5 space-y-5">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-md p-5 sm:p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3.5 flex-wrap gap-2">
               <div>
-                <h2 className="text-base font-black text-blue-900 flex items-center gap-2">
-                  <Globe className="h-5 w-5 text-blue-700" />
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-blue-900 flex items-center gap-2.5">
+                  <Globe className="h-6 w-6 text-blue-700" />
                   Live Community Needs Map
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs sm:text-sm md:text-base text-slate-600 mt-1">
                   Explore active infrastructure suggestions and priority areas in {currentJurisdiction.flag} {currentJurisdiction.name}
                 </p>
               </div>
-              <span className="bg-emerald-50 text-emerald-700 border border-emerald-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs sm:text-sm font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shrink-0">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 Live Overview
               </span>
             </div>
@@ -1398,17 +1398,17 @@ export default function CitizenPortal() {
             </div>
 
             {/* Map Legend & Active Sector Details */}
-            <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm bg-slate-50 p-4 rounded-xl border border-slate-200">
               <div>
-                <span className="text-[10px] text-slate-500 font-bold uppercase block">Selected Area</span>
-                <span className="font-extrabold text-blue-950 text-xs truncate block">
+                <span className="text-xs sm:text-sm text-slate-500 font-bold uppercase block">Selected Area</span>
+                <span className="font-black text-blue-950 text-sm sm:text-base md:text-lg truncate block mt-0.5">
                   {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-500 font-bold uppercase block">Planning Status</span>
-                <span className="font-extrabold text-emerald-700 text-xs flex items-center gap-1">
-                  <CheckCircle className="h-3 w-3 text-emerald-600 inline" />
+                <span className="text-xs sm:text-sm text-slate-500 font-bold uppercase block">Planning Status</span>
+                <span className="font-extrabold text-emerald-700 text-xs sm:text-sm md:text-base flex items-center gap-1.5 mt-0.5">
+                  <CheckCircle className="h-4 w-4 text-emerald-600 inline" />
                   Active Capital Planning Zone
                 </span>
               </div>
@@ -1417,104 +1417,104 @@ export default function CitizenPortal() {
         </section>
 
         {/* COLUMN 3: Proposal Tracker, Live Feed & DPI Trust (col-span-12 lg:col-span-3) */}
-        <section className="col-span-12 lg:col-span-3 space-y-4">
+        <section className="col-span-12 lg:col-span-3 space-y-5">
           
           {/* Proposal Status Tracker */}
-          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-md space-y-4">
-            <div className="border-b border-slate-100 pb-2.5">
-              <h2 className="text-sm font-black text-blue-900 flex items-center gap-2">
-                <Search className="h-4 w-4 text-[#f97316]" />
+          <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-md space-y-4">
+            <div className="border-b border-slate-100 pb-3">
+              <h2 className="text-base sm:text-lg lg:text-xl font-black text-blue-900 flex items-center gap-2">
+                <Search className="h-5 w-5 text-[#f97316]" />
                 {t.tracker_title}
               </h2>
-              <p className="text-[11px] text-slate-500 mt-0.5">{t.tracker_desc}</p>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">{t.tracker_desc}</p>
             </div>
 
-            <form onSubmit={handleTrackSubmission} className="flex gap-1.5 items-center">
+            <form onSubmit={handleTrackSubmission} className="flex gap-2 items-center">
               <input 
                 type="text" 
                 value={searchId}
                 onChange={(e) => setSearchId(e.target.value)}
                 placeholder={t.placeholder_tracker}
-                className="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-950 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                className="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm sm:text-base text-slate-950 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
               />
               <button
                 type="submit"
-                className="bg-blue-900 hover:bg-blue-800 text-white px-3.5 py-2 rounded-xl font-bold text-xs shadow-xs transition"
+                className="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2.5 rounded-xl font-black text-xs sm:text-sm shadow-xs transition shrink-0"
               >
                 {t.btn_track}
               </button>
             </form>
 
             {trackError && (
-              <p className="text-xs text-rose-600 text-center font-bold bg-rose-50 py-1.5 rounded-lg border border-rose-200">
+              <p className="text-xs sm:text-sm text-rose-600 text-center font-bold bg-rose-50 py-2 rounded-lg border border-rose-200">
                 {trackError}
               </p>
             )}
 
             {/* Tracker Status Output Timeline */}
             {trackedStatus && (
-              <div className="space-y-3 animate-in fade-in duration-300">
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5 text-xs">
-                  <p className="text-slate-650 font-bold">Proposal: <strong className="text-slate-900">{trackedStatus.submission.user_name}</strong></p>
-                  <p className="text-slate-650 italic text-[11px]">"{trackedStatus.submission.raw_text}"</p>
+              <div className="space-y-3.5 animate-in fade-in duration-300">
+                <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1.5 text-xs sm:text-sm">
+                  <p className="text-slate-700 font-bold">Proposal: <strong className="text-slate-900">{trackedStatus.submission.user_name}</strong></p>
+                  <p className="text-slate-600 italic leading-relaxed">"{trackedStatus.submission.raw_text}"</p>
                   {trackedStatus.projectTitle && (
-                    <p className="text-[11px] text-blue-900 pt-1.5 border-t border-slate-200 font-bold">
-                      Cluster Node: {trackedStatus.projectTitle}
+                    <p className="text-xs sm:text-sm text-blue-900 pt-2 border-t border-slate-200 font-bold">
+                      Identified Project: {trackedStatus.projectTitle}
                     </p>
                   )}
                 </div>
 
                 {/* Timeline display */}
-                <div className="space-y-3 pl-3.5 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
+                <div className="space-y-3.5 pl-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
                   {/* Status 1: Ingested */}
-                  <div className="flex gap-2.5 relative">
-                    <div className="h-3 w-3 rounded-full bg-emerald-600 border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs"></div>
-                    <div className="text-xs">
-                      <h4 className="font-extrabold text-slate-900 text-[11px]">{t.timeline_step1}</h4>
-                      <p className="text-[10px] text-slate-500">{t.timeline_step1_sub}</p>
+                  <div className="flex gap-3 relative">
+                    <div className="h-3.5 w-3.5 rounded-full bg-emerald-600 border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs"></div>
+                    <div>
+                      <h4 className="font-black text-slate-900 text-xs sm:text-sm md:text-base">{t.timeline_step1}</h4>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{t.timeline_step1_sub}</p>
                     </div>
                   </div>
 
                   {/* Status 2: Grouped */}
-                  <div className="flex gap-2.5 relative">
-                    <div className={`h-3 w-3 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
+                  <div className="flex gap-3 relative">
+                    <div className={`h-3.5 w-3.5 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
                       trackedStatus.issue?.status === 'verified' ? 'bg-emerald-600' : 'bg-slate-350'
                     }`}></div>
-                    <div className="text-xs">
-                      <h4 className={`font-extrabold text-[11px] ${trackedStatus.issue?.status === 'verified' ? 'text-slate-900' : 'text-slate-400'}`}>
+                    <div>
+                      <h4 className={`font-black text-xs sm:text-sm md:text-base ${trackedStatus.issue?.status === 'verified' ? 'text-slate-900' : 'text-slate-400'}`}>
                         {t.timeline_step2}
                       </h4>
-                      <p className="text-[10px] text-slate-500">{t.timeline_step2_sub}</p>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{t.timeline_step2_sub}</p>
                     </div>
                   </div>
 
                   {/* Status 3: Review */}
-                  <div className="flex gap-2.5 relative">
-                    <div className={`h-3 w-3 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
+                  <div className="flex gap-3 relative">
+                    <div className={`h-3.5 w-3.5 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
                       (trackedStatus.projectStatus !== 'Proposed' && trackedStatus.projectStatus !== 'Rejected') ? 'bg-emerald-600' : 'bg-slate-350'
                     }`}></div>
-                    <div className="text-xs">
-                      <h4 className={`font-extrabold text-[11px] ${
+                    <div>
+                      <h4 className={`font-black text-xs sm:text-sm md:text-base ${
                         (trackedStatus.projectStatus !== 'Proposed' && trackedStatus.projectStatus !== 'Rejected') ? 'text-slate-900' : 'text-slate-400'
                       }`}>
                         {t.timeline_step3}
                       </h4>
-                      <p className="text-[10px] text-slate-500">{t.timeline_step3_sub}</p>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{t.timeline_step3_sub}</p>
                     </div>
                   </div>
 
                   {/* Status 4: Tendering & Construction */}
-                  <div className="flex gap-2.5 relative">
-                    <div className={`h-3 w-3 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
+                  <div className="flex gap-3 relative">
+                    <div className={`h-3.5 w-3.5 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
                       ['Tendering', 'Construction', 'Completed'].includes(trackedStatus.projectStatus) ? 'bg-emerald-600' : 'bg-slate-350'
                     }`}></div>
-                    <div className="text-xs">
-                      <h4 className={`font-extrabold text-[11px] ${
+                    <div>
+                      <h4 className={`font-black text-xs sm:text-sm md:text-base ${
                         ['Tendering', 'Construction', 'Completed'].includes(trackedStatus.projectStatus) ? 'text-slate-900' : 'text-slate-400'
                       }`}>
                         {t.timeline_step4}
                       </h4>
-                      <p className="text-[10px] text-slate-500">{t.timeline_step4_sub} <strong>{trackedStatus.projectStatus}</strong></p>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{t.timeline_step4_sub} <strong className="text-blue-900">{trackedStatus.projectStatus}</strong></p>
                     </div>
                   </div>
                 </div>
@@ -1523,28 +1523,28 @@ export default function CitizenPortal() {
           </div>
 
           {/* Live BRICS Demand Feed */}
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 space-y-3">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-              <h3 className="text-xs font-black text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Activity className="h-3.5 w-3.5 text-emerald-600" />
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 sm:p-5 space-y-3.5">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <h3 className="text-xs sm:text-sm md:text-base font-black text-blue-900 uppercase tracking-wider flex items-center gap-2">
+                <Activity className="h-4 w-4 text-emerald-600" />
                 Live Feed across BRICS
               </h3>
-              <span className="text-[9px] text-slate-500 font-bold">Real-time Stream</span>
+              <span className="text-xs sm:text-sm text-slate-500 font-bold">Real-time Stream</span>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {RECENT_BRICS_FEED.map((feed) => (
-                <div key={feed.id} className="p-2.5 rounded-xl bg-slate-50 border border-slate-150 text-xs space-y-1">
+                <div key={feed.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="font-extrabold text-slate-900 flex items-center gap-1 text-[11px]">
-                      <span>{feed.flag}</span>
+                    <span className="font-extrabold text-slate-900 flex items-center gap-1.5 text-xs sm:text-sm">
+                      <span className="text-base">{feed.flag}</span>
                       <span>{feed.location}</span>
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-slate-500">{feed.time}</span>
+                    <span className="text-xs font-mono font-bold text-slate-500">{feed.time}</span>
                   </div>
-                  <p className="text-[11px] text-slate-700 font-medium line-clamp-1">{feed.text}</p>
-                  <div className="flex items-center justify-between pt-1 text-[10px]">
-                    <span className="bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded font-bold">{feed.category}</span>
-                    <span className="text-emerald-700 font-extrabold font-mono">{feed.trust}</span>
+                  <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">{feed.text}</p>
+                  <div className="flex items-center justify-between pt-1 text-xs">
+                    <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">{feed.category}</span>
+                    <span className="text-emerald-700 font-black font-mono">{feed.trust}</span>
                   </div>
                 </div>
               ))}
@@ -1552,16 +1552,16 @@ export default function CitizenPortal() {
           </div>
 
           {/* Citizen Privacy & Civic Trust */}
-          <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm space-y-2">
-            <h3 className="font-bold text-xs text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+          <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-sm space-y-2.5">
+            <h3 className="font-black text-xs sm:text-sm md:text-base text-blue-900 uppercase tracking-wider flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-emerald-600" />
               Civic Trust & Privacy Guarantee
             </h3>
-            <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
               Your feedback is verified, protected, and directly delivered to municipal planning engineers. Personal identities remain private while ensuring every community member gets an equal voice.
             </p>
-            <div className="pt-1 flex flex-wrap items-center gap-2 text-[10px] text-slate-500 font-medium">
-              <span className="inline-flex items-center gap-1 text-emerald-700 font-bold">
+            <div className="pt-1.5 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
+              <span className="inline-flex items-center gap-1 text-emerald-700 font-black">
                 ✓ Public Record Protected
               </span>
               <span>&bull;</span>
@@ -1576,8 +1576,8 @@ export default function CitizenPortal() {
       </main>
 
       {/* Full-Width Global BRICS Footer */}
-      <footer className="border-t border-slate-200 py-4 px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 bg-white shadow-inner w-full flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-slate-600 font-bold text-xs">
+      <footer className="border-t border-slate-200 py-5 px-4 sm:px-6 lg:px-8 text-center text-xs sm:text-sm text-slate-500 bg-white shadow-inner w-full flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3 text-slate-700 font-bold text-xs sm:text-sm flex-wrap justify-center">
           <span>🇧🇷 Brasil</span>
           <span>&bull;</span>
           <span>🇷🇺 Россия</span>
@@ -1588,7 +1588,7 @@ export default function CitizenPortal() {
           <span>&bull;</span>
           <span>🇿🇦 South Africa</span>
         </div>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-xs sm:text-sm text-slate-500">
           © 2026 CIVIS-BRICS Initiative &bull; Open Digital Public Good (DPG) for Participatory Infrastructure Planning & Goverance.
         </p>
       </footer>
