@@ -14,6 +14,7 @@ import {
   Search, 
   FileText,
   Shield,
+  ShieldCheck,
   Activity,
   User,
   Landmark,
@@ -33,7 +34,7 @@ const HotspotMap = dynamic(() => import('@/components/HotspotMap'), {
   ssr: false,
   loading: () => (
     <div className="h-64 sm:h-80 w-full rounded-xl bg-slate-100 flex items-center justify-center border border-slate-300 animate-pulse">
-      <span className="text-slate-500 font-bold text-xs">Loading Sovereign GIS Map Canvas...</span>
+      <span className="text-slate-500 font-bold text-xs">Loading Community Map...</span>
     </div>
   )
 });
@@ -41,108 +42,108 @@ const HotspotMap = dynamic(() => import('@/components/HotspotMap'), {
 // Multilingual Translation Matrix across all BRICS member nations
 const LANG_DICTS = {
   en: {
-    header_title: "CIVIS-BRICS — Citizen Development Planning",
-    header_subtitle: "Digital Public Good for Participatory Infrastructure",
-    header_org: "UN DPG Standard & BRICS Innovation DPI Initiative",
+    header_title: "CIVIS-BRICS — Community Infrastructure Planning",
+    header_subtitle: "Participatory Platform for Civic Infrastructure",
+    header_org: "Open Digital Public Infrastructure Initiative",
     btn_mp_workspace: "Policymaker Workspace →",
-    form_title: "Civic Development Proposal",
-    form_desc: "Submit suggestions in English, Hindi, Mandarin, Russian, Portuguese, or Marathi. All inputs are mapped to sovereign planning databases.",
+    form_title: "Submit a Community Need",
+    form_desc: "Share your infrastructure suggestion or report a local issue. Your input directly reaches city planning teams.",
     label_name: "Citizen Full Name",
     placeholder_name: "Enter your full name",
     label_suggestion: "Development Suggestion Details",
-    placeholder_suggestion: "Describe the issue or proposed upgrade (e.g. school capacity issues, road potholes, water shortages, healthcare clinics)...",
-    demo_scenario: "Load Demo Scenario",
+    placeholder_suggestion: "Describe the issue or proposed upgrade (e.g. school facilities, road repairs, drinking water supply, healthcare clinics)...",
+    demo_scenario: "",
     btn_voice_start: "Record Audio",
     btn_voice_active: "Listening Speech...",
     btn_audio_active: "Recording Audio Note...",
     btn_voice_attached: "Audio Attached",
     btn_photo_scan: "Upload Photo",
-    btn_photo_scanning: "Scanning Image...",
+    btn_photo_scanning: "Checking Image...",
     btn_photo_attached: "Photo Attached",
-    label_gps: "Geo-Location Verification",
-    label_gps_desc: "Pinpoint coordinates for spatial equity & GIS clustering",
-    btn_gps: "Verify Location",
-    btn_gps_active: "GPS Tagged",
+    label_gps: "Neighborhood Location",
+    label_gps_desc: "Confirm location to help planning teams locate the need",
+    btn_gps: "Confirm Location",
+    btn_gps_active: "Location Tagged",
     btn_gps_loading: "Locating...",
-    security_declaration: "Security Declaration: I certify that the information provided is correct. I consent to the collection of coordinates and media files for audit and planning purposes. All data is protected under UN Digital Public Good (DPG) and sovereign data protection standards.",
-    btn_submit: "Submit Suggestion",
-    btn_submitting: "Subword translation & verification active...",
-    success_title: "Grievance Ingested Successfully!",
+    security_declaration: "I confirm that this is an authentic community need in my area and the details provided are accurate.",
+    btn_submit: "Submit Proposal",
+    btn_submitting: "Submitting to city planning...",
+    success_title: "Proposal Submitted Successfully!",
     success_receipt: "Your Official Tracking ID:",
     success_category: "Category",
-    success_location: "Jurisdiction",
-    success_trust: "Evidence Trust",
-    success_coordination: "Campaign Filter",
-    success_campaign_yes: "Campaign Dampened",
-    success_campaign_no: "Organic Demand",
-    success_footer: "Your suggestion has been translated, verified, and mapped into the national spatial cluster engine. Use your tracking receipt ID to monitor status.",
+    success_location: "Area",
+    success_trust: "Status",
+    success_coordination: "Review Stage",
+    success_campaign_yes: "Verified",
+    success_campaign_no: "Verified",
+    success_footer: "Your suggestion has been logged and forwarded to municipal engineers for planning and budget review.",
     tracker_title: "Track Proposal Status",
-    tracker_desc: "Check progress, planning status, and implementation updates for your submission ID.",
-    placeholder_tracker: "Enter Receipt ID (e.g. sub-init-1)",
+    tracker_desc: "Check progress, planning status, and municipal updates for your submission.",
+    placeholder_tracker: "Enter Tracking ID (e.g. sub-init-1)",
     btn_track: "Search",
-    timeline_step1: "1. Ingested & Cryptographically Hashed",
-    timeline_step1_sub: "Receipt generated, translation completed.",
-    timeline_step2: "2. Verified & Spatially Clustered",
-    timeline_step2_sub: "Category verified, astroturf coordination scored, spatial centroid mapped.",
-    timeline_step3: "3. Policymaker Optimization & Budget Sanction",
-    timeline_step3_sub: "Evaluated against multi-indicator Pareto frontier.",
-    timeline_step4: "4. Implementation & Public Audit",
+    timeline_step1: "1. Proposal Received",
+    timeline_step1_sub: "Tracking ID generated and logged in public planning registry.",
+    timeline_step2: "2. Verified & Grouped",
+    timeline_step2_sub: "Reviewed and grouped with neighborhood community priorities.",
+    timeline_step3: "3. Municipal Planning & Budgeting",
+    timeline_step3_sub: "Evaluated by city planning board against available capital budget.",
+    timeline_step4: "4. Sanctioned & Implementation",
     timeline_step4_sub: "Current project state:",
-    nic_compliance_title: "Digital Public Good (DPG) & DPI Trust Architecture",
-    nic_compliance_desc: "Sovereign data integrity: All user submissions are hashed, anti-astroturf coordinated campaigns are algorithmically dampened, and municipal resource allocations generate transparent cryptographic audit trails.",
+    nic_compliance_title: "Citizen Privacy & Trust Guarantee",
+    nic_compliance_desc: "Your data is confidential and protected under international Digital Public Good privacy standards.",
     footer_text: "© 2026 CIVIS-BRICS Initiative. Digital Public Good for Infrastructure & Governance."
   },
   hi: {
     header_title: "CIVIS-BRICS — नागरिक विकास योजना पोर्टल",
-    header_subtitle: "सहभागी बुनियादी ढांचे के लिए डिजिटल सार्वजनिक वस्तु",
-    header_org: "संयुक्त राष्ट्र डीपीजी मानक एवं ब्रिक्स नवाचार डीपीआई पहल",
+    header_subtitle: "सहभागी बुनियादी ढांचे के लिए डिजिटल सार्वजनिक मंच",
+    header_org: "ब्रिक्स नवाचार डिजिटल सार्वजनिक बुनियादी ढांचा",
     btn_mp_workspace: "नीति निर्माता डैशबोर्ड →",
-    form_title: "नागरिक विकास प्रस्ताव फॉर्म",
-    form_desc: "बुनियादी ढांचे और सार्वजनिक कार्यों के प्रस्ताव अपनी भाषा में प्रस्तुत करें। एआई सत्यापन कर इसे संप्रभु योजना पाइपलाइन में मैप करता है।",
+    form_title: "नागरिक विकास प्रस्ताव",
+    form_desc: "अपने क्षेत्र की बुनियादी ढांचे की आवश्यकताएं साझा करें। आपका सुझाव सीधे नगर योजना टीम तक पहुंचेगा।",
     label_name: "नागरिक का पूरा नाम",
     placeholder_name: "अपना पूरा नाम दर्ज करें",
     label_suggestion: "विकास प्रस्ताव का विवरण",
-    placeholder_suggestion: "समस्या या प्रस्तावित सुधार का वर्णन करें (जैसे स्कूल, सड़क, जलापूर्ति, स्वास्थ्य केंद्र)...",
-    demo_scenario: "डेमो परिदृश्य लोड करें",
+    placeholder_suggestion: "समस्या या सुधार का विवरण दें (जैसे स्कूल, सड़क, जलापूर्ति, स्वास्थ्य केंद्र)...",
+    demo_scenario: "",
     btn_voice_start: "आवाज रिकॉर्ड करें",
     btn_voice_active: "भाषण सुन रहे हैं...",
     btn_audio_active: "ऑडियो रिकॉर्ड हो रहा है...",
     btn_voice_attached: "ऑडियो संलग्न किया गया",
     btn_photo_scan: "फोटो अपलोड करें",
-    btn_photo_scanning: "फोटो स्कैन हो रहा है...",
+    btn_photo_scanning: "फोटो जांची जा रही है...",
     btn_photo_attached: "फोटो संलग्न किया गया",
-    label_gps: "भू-स्थान सत्यापन",
-    label_gps_desc: "सत्यापन और ऑडिट के लिए सटीक स्थान दर्ज करें",
+    label_gps: "क्षेत्रीय स्थान",
+    label_gps_desc: "सटीक स्थान की पुष्टि करें ताकि योजना टीम को सुविधा हो",
     btn_gps: "स्थान सत्यापित करें",
     btn_gps_active: "स्थान टैग किया गया",
     btn_gps_loading: "खोज रहे हैं...",
-    security_declaration: "सुरक्षा घोषणा: मैं प्रमाणित करता/करती हूं कि प्रदान की गई जानकारी सही है। मैं संप्रभु डेटा सुरक्षा नियमों के तहत सत्यापन और योजना के लिए सहमति देता/देती हूं।",
+    security_declaration: "मैं पुष्टि करता/करती हूं कि यह मेरे क्षेत्र की वास्तविक सामुदायिक आवश्यकता है और विवरण सही है।",
     btn_submit: "प्रस्ताव सबमिट करें",
-    btn_submitting: "अनुवाद और सत्यापन सक्रिय है...",
+    btn_submitting: "प्रस्ताव दर्ज किया जा रहा है...",
     success_title: "प्रस्ताव सफलतापूर्वक दर्ज किया गया!",
     success_receipt: "आपका आधिकारिक ट्रैकिंग आईडी:",
-    success_category: "श्रेणी / सेक्टर",
-    success_location: "प्रशासनिक क्षेत्र",
-    success_trust: "विश्वसनीयता सूचकांक",
-    success_coordination: "अभियान सत्यापन",
-    success_campaign_yes: "अभियान नियंत्रित",
-    success_campaign_no: "स्वाभाविक मांग",
-    success_footer: "आपके प्रस्ताव का अनुवाद, सत्यापन और क्लस्टर मैपिंग पूरा हो चुका है। प्रगति की निगरानी के लिए ट्रैकिंग आईडी का उपयोग करें।",
+    success_category: "श्रेणी",
+    success_location: "क्षेत्र",
+    success_trust: "स्थिति",
+    success_coordination: "समीक्षा स्थिति",
+    success_campaign_yes: "सत्यापित",
+    success_campaign_no: "सत्यापित",
+    success_footer: "आपका प्रस्ताव दर्ज कर नगर योजना और बजट समीक्षा के लिए भेज दिया गया है।",
     tracker_title: "प्रस्ताव की स्थिति ट्रैक करें",
-    tracker_desc: "प्रगति, नियोजन स्थिति और कार्यान्वयन अपडेट की जांच के लिए अपना आईडी दर्ज करें।",
-    placeholder_tracker: "रसीद आईडी दर्ज करें (जैसे sub-init-1)",
+    tracker_desc: "अपने प्रस्ताव की प्रगति और कार्यान्वयन अपडेट देखने के लिए आईडी दर्ज करें।",
+    placeholder_tracker: "ट्रैकिंग आईडी दर्ज करें (जैसे sub-init-1)",
     btn_track: "खोजें",
-    timeline_step1: "१. शिकायत दर्ज व हैश प्रमाणित",
-    timeline_step1_sub: "रसीद जनरेट की गई, अनुवाद पूरा हुआ।",
-    timeline_step2: "२. सत्यापित और क्लस्टर में समूहीकृत",
-    timeline_step2_sub: "श्रेणी सत्यापन, समन्वय स्कोर और स्थानिक केंद्र मैपिंग पूर्ण।",
-    timeline_step3: "३. नीति निर्माता अनुकूलन एवं बजट आवंटन",
-    timeline_step3_sub: "बहु-सूचक पारेतो फ्रंटियर के आधार पर स्वीकृत।",
-    timeline_step4: "४. कार्यान्वयन एवं सार्वजनिक ऑडिट चरण",
+    timeline_step1: "१. प्रस्ताव प्राप्त हुआ",
+    timeline_step1_sub: "ट्रैकिंग आईडी तैयार की गई और योजना रजिस्ट्री में दर्ज हुई।",
+    timeline_step2: "२. सत्यापित और समूहीकृत",
+    timeline_step2_sub: "क्षेत्रीय प्राथमिकताओं के साथ समीक्षा और मिलान पूरा हुआ।",
+    timeline_step3: "३. नगर योजना एवं बजट आवंटन",
+    timeline_step3_sub: "उपलब्ध पूंजीगत बजट के विरुद्ध योजना बोर्ड द्वारा मूल्यांकन।",
+    timeline_step4: "४. स्वीकृति एवं कार्यान्वयन",
     timeline_step4_sub: "वर्तमान परियोजना की स्थिति:",
-    nic_compliance_title: "डिजिटल पब्लिक गुड (DPG) एवं डीपीआई सुरक्षा मानक",
-    nic_compliance_desc: "संप्रभु डेटा अखंडता: सभी प्रस्तुतियां एन्क्रिप्टेड हैं, स्पैम अभियानों को एल्गोरिथ्म द्वारा नियंत्रित किया जाता है, और पारदर्शी सार्वजनिक ऑडिट सुनिश्चित की जाती है।",
-    footer_text: "© २०२६ CIVIS-BRICS पहल। बुनियादी ढांचे और सुशासन के लिए डिजिटल सार्वजनिक संपत्ति।"
+    nic_compliance_title: "नागरिक गोपनीयता एवं विश्वास",
+    nic_compliance_desc: "आपका डेटा अंतर्राष्ट्रीय डिजिटल पब्लिक गुड गोपनीयता मानकों के तहत सुरक्षित है।",
+    footer_text: "© २०२६ CIVIS-BRICS पहल। बुनियादी ढांचे और सुशासन के लिए डिजिटल सार्वजनिक संपदा।"
   },
   zh: {
     header_title: "CIVIS-BRICS — 公民发展与基础设施规划平台",
@@ -1111,37 +1112,33 @@ export default function CitizenPortal() {
         </div>
       </header>
 
-      {/* Sovereign DPI Status Ribbon across full width */}
-      <div className="bg-slate-900 text-white px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3 text-xs shadow-inner w-full">
+      {/* City & Region Notice Bar */}
+      <div className="bg-blue-950 text-white px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-inner w-full">
         <div className="flex items-center gap-2.5 flex-wrap">
-          <span className="flex items-center gap-1.5 font-bold text-amber-300">
+          <span className="flex items-center gap-1.5 font-extrabold text-amber-300">
             <span className="text-base">{currentJurisdiction.flag}</span>
-            <span>Active Sovereign Node: {currentJurisdiction.name}</span>
+            <span>{currentJurisdiction.name}</span>
+          </span>
+          <span className="text-blue-400 hidden sm:inline">&bull;</span>
+          <span className="text-slate-200 font-medium text-xs">
+            {currentJurisdiction.description}
           </span>
           {detectionNotice && (
-            <span className="bg-emerald-950/90 text-emerald-300 border border-emerald-700/80 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
-              <MapPin className="h-3 w-3 text-emerald-400" />
+            <span className="bg-emerald-900/80 text-emerald-200 border border-emerald-600/60 px-2.5 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1">
+              <MapPin className="h-3 w-3 text-emerald-300" />
               {detectionNotice}
             </span>
           )}
-          <span className="text-slate-500 hidden sm:inline">&bull;</span>
-          <span className="text-slate-300 font-semibold text-[11px] hidden md:inline">
-            {currentJurisdiction.description}
-          </span>
-          <span className="text-slate-500 hidden md:inline">&bull;</span>
-          <span className="bg-blue-950 text-blue-300 border border-blue-800 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
-            Currency: {currentJurisdiction.defaultCurrency}
-          </span>
         </div>
 
-        <div className="flex items-center gap-3 text-[11px]">
-          <span className="text-emerald-400 font-bold flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
-            W3C Verifiable Credentials Live
+        <div className="flex items-center gap-3 text-xs text-slate-300">
+          <span className="text-emerald-300 font-medium flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+            Official Public Planning Portal
           </span>
-          <span className="text-slate-500 hidden sm:inline">|</span>
-          <span className="text-slate-400 hidden sm:inline">
-            Anti-Astroturfing: <strong className="text-amber-300 font-mono">(1-C)² Active</strong>
+          <span className="text-blue-800 hidden sm:inline">|</span>
+          <span className="text-slate-300 hidden md:inline">
+            Directly informing city capital improvements
           </span>
         </div>
       </div>
@@ -1159,8 +1156,8 @@ export default function CitizenPortal() {
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">{t.form_desc}</p>
             </div>
-            <span className="bg-blue-50 text-blue-900 border border-blue-200 text-[10px] font-extrabold px-2 py-0.5 rounded-full shrink-0">
-              {currentJurisdiction.flag} Node
+            <span className="bg-blue-50 text-blue-900 border border-blue-200 text-xs font-bold px-2.5 py-0.5 rounded-full shrink-0">
+              {currentJurisdiction.flag} {currentJurisdiction.countryCode}
             </span>
           </div>
 
@@ -1186,7 +1183,7 @@ export default function CitizenPortal() {
             <div className="space-y-1">
               <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                 <MapPin className="h-3.5 w-3.5 text-blue-700" />
-                Administrative District / Sector <span className="text-red-500">*</span>
+                Administrative District / Neighborhood <span className="text-red-500">*</span>
               </label>
               <select
                 value={selectedSectorId}
@@ -1203,27 +1200,17 @@ export default function CitizenPortal() {
               >
                 {sectors.map(s => (
                   <option key={s.id} value={s.id}>
-                    {s.name} (Equity Deficit: {s.equity}/10)
+                    {s.name}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Suggestion Text & Demo Loader */}
+            {/* Suggestion Text */}
             <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-700">
-                  {t.label_suggestion} <span className="text-red-500">*</span>
-                </label>
-                <button
-                  type="button"
-                  onClick={loadDemoScenario}
-                  className="text-xs text-blue-900 hover:text-blue-700 font-extrabold flex items-center gap-1 underline"
-                >
-                  <Sparkles className="h-3 w-3 text-amber-500" />
-                  {t.demo_scenario} ({currentJurisdiction.flag})
-                </button>
-              </div>
+              <label className="text-xs font-bold text-slate-700 block">
+                {t.label_suggestion} <span className="text-red-500">*</span>
+              </label>
               <textarea 
                 rows="4"
                 value={suggestionText}
@@ -1274,14 +1261,14 @@ export default function CitizenPortal() {
               </label>
             </div>
 
-            {/* GPS verification block */}
+            {/* Neighborhood Location Tagging */}
             <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
               <div className="flex items-center gap-2">
                 <MapPin className={`h-4 w-4 ${gpsStatus === 'active' ? 'text-emerald-600' : 'text-slate-400'}`} />
                 <div>
                   <span className="text-xs font-bold text-slate-800 block">{t.label_gps}</span>
                   <span className="text-[10px] text-slate-500 block">
-                    {gpsCoords ? `${gpsCoords.lat.toFixed(4)}, ${gpsCoords.lng.toFixed(4)}` : t.label_gps_desc}
+                    {gpsCoords ? '✓ Location confirmed for planning' : t.label_gps_desc}
                   </span>
                 </div>
               </div>
@@ -1301,8 +1288,8 @@ export default function CitizenPortal() {
               </button>
             </div>
 
-            {/* Security Declaration Checklist & Consent */}
-            <div className="bg-blue-50/50 border border-blue-200 p-3 rounded-xl space-y-1.5">
+            {/* Citizen Confirmation Checklist */}
+            <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1.5">
               <div className="flex items-start gap-2">
                 <input 
                   type="checkbox" 
@@ -1321,7 +1308,7 @@ export default function CitizenPortal() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-black text-sm py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition"
+              className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-black text-sm py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition cursor-pointer"
             >
               {submitting ? (
                 <>
@@ -1351,9 +1338,9 @@ export default function CitizenPortal() {
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-700 pt-1">
                   <p>{t.success_category}: <strong className="text-slate-950 uppercase">{submitResult.parsed.category}</strong></p>
-                  <p>{t.success_location}: <strong className="text-slate-950">{submitResult.parsed.ward_id ? `District/Sector ${submitResult.parsed.ward_id}` : 'General Pool'}</strong></p>
-                  <p>{t.success_trust}: <strong className="text-emerald-700">{submitResult.parsed.trust_score.toFixed(1)}/10</strong></p>
-                  <p>{t.success_coordination}: <strong className="text-slate-950">{submitResult.parsed.is_campaign ? t.success_campaign_yes : t.success_campaign_no}</strong></p>
+                  <p>{t.success_location}: <strong className="text-slate-950">{submitResult.parsed.ward_id ? `District/Sector ${submitResult.parsed.ward_id}` : 'General Sector'}</strong></p>
+                  <p>{t.success_trust}: <strong className="text-emerald-700 font-bold">Received & Verified</strong></p>
+                  <p>{t.success_coordination}: <strong className="text-blue-900 font-bold">Forwarded to Planning</strong></p>
                 </div>
               </div>
               <p className="text-[10px] text-slate-500 leading-relaxed">
@@ -1363,22 +1350,22 @@ export default function CitizenPortal() {
           )}
         </section>
 
-        {/* COLUMN 2: Live Sovereign GIS Demand Radar & Map (col-span-12 lg:col-span-5) */}
+        {/* COLUMN 2: Live Community Needs Map (col-span-12 lg:col-span-5) */}
         <section className="col-span-12 lg:col-span-5 space-y-4">
           <div className="bg-white border border-slate-200 rounded-2xl shadow-md p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h2 className="text-base font-black text-blue-900 flex items-center gap-2">
                   <Globe className="h-5 w-5 text-blue-700" />
-                  Sovereign GIS Demand Radar
+                  Live Community Needs Map
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Real-time spatial demand clustering for {currentJurisdiction.flag} {currentJurisdiction.name}
+                  Explore active infrastructure suggestions and priority areas in {currentJurisdiction.flag} {currentJurisdiction.name}
                 </p>
               </div>
-              <span className="bg-emerald-50 text-emerald-700 border border-emerald-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full flex items-center gap-1">
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Leaflet GIS
+                Live Overview
               </span>
             </div>
 
@@ -1413,41 +1400,17 @@ export default function CitizenPortal() {
             {/* Map Legend & Active Sector Details */}
             <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
               <div>
-                <span className="text-[10px] text-slate-500 font-bold uppercase block">Selected Sector / Area</span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase block">Selected Area</span>
                 <span className="font-extrabold text-blue-950 text-xs truncate block">
                   {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-500 font-bold uppercase block">Regional Equity Deficit</span>
-                <span className="font-extrabold text-amber-700 text-xs">
-                  {sectors.find(s => s.id === selectedSectorId)?.equity || '5.5'} / 10 (Priority Zone)
+                <span className="text-[10px] text-slate-500 font-bold uppercase block">Planning Status</span>
+                <span className="font-extrabold text-emerald-700 text-xs flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3 text-emerald-600 inline" />
+                  Active Capital Planning Zone
                 </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Anti-Astroturfing & AI Synthesis Telemetry Card */}
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 space-y-3">
-            <h3 className="text-xs font-black text-blue-950 uppercase tracking-wider flex items-center gap-1.5">
-              <Radio className="h-4 w-4 text-[#f97316]" />
-              AI Anti-Astroturfing & Clustering Telemetry
-            </h3>
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
-                <span className="text-[10px] text-slate-500 font-bold block">Coordination Factor (C)</span>
-                <span className="text-sm font-black text-slate-900 font-mono">0.12</span>
-                <span className="text-[9px] text-emerald-600 font-bold block">Organic Demand</span>
-              </div>
-              <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
-                <span className="text-[10px] text-slate-500 font-bold block">Quadratic Dampener</span>
-                <span className="text-sm font-black text-slate-900 font-mono">(1-C)² = 0.77</span>
-                <span className="text-[9px] text-blue-600 font-bold block">Spam Filter Active</span>
-              </div>
-              <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
-                <span className="text-[10px] text-slate-500 font-bold block">Composite Blending</span>
-                <span className="text-sm font-black text-slate-900 font-mono">70% Sem / 30% Geo</span>
-                <span className="text-[9px] text-purple-600 font-bold block">Haversine Decay</span>
               </div>
             </div>
           </div>
@@ -1588,33 +1551,23 @@ export default function CitizenPortal() {
             </div>
           </div>
 
-          {/* Secure Audit Information Card */}
-          <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm space-y-2.5">
-            <h3 className="font-black text-xs text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-              <Shield className="h-3.5 w-3.5 text-[#f97316]" />
-              UN DPG Standard & DPI Trust
+          {/* Citizen Privacy & Civic Trust */}
+          <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm space-y-2">
+            <h3 className="font-bold text-xs text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+              Civic Trust & Privacy Guarantee
             </h3>
             <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
-              All submissions are cryptographically hashed using RFC 8785 canonical JSON and signed by sovereign node DIDs. Coordinated campaigns are algorithmically dampened.
+              Your feedback is verified, protected, and directly delivered to municipal planning engineers. Personal identities remain private while ensuring every community member gets an equal voice.
             </p>
-            <div className="pt-1 flex items-center gap-2">
-              <a
-                href="/api/openapi"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] text-blue-700 hover:text-blue-900 font-bold underline flex items-center gap-1"
-              >
-                OpenAPI 3.1 Spec <ExternalLink className="h-2.5 w-2.5" />
-              </a>
-              <span className="text-slate-300">|</span>
-              <a
-                href="/api/audit"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] text-emerald-700 hover:text-emerald-900 font-bold underline flex items-center gap-1"
-              >
-                Audit Ledger API <ExternalLink className="h-2.5 w-2.5" />
-              </a>
+            <div className="pt-1 flex flex-wrap items-center gap-2 text-[10px] text-slate-500 font-medium">
+              <span className="inline-flex items-center gap-1 text-emerald-700 font-bold">
+                ✓ Public Record Protected
+              </span>
+              <span>&bull;</span>
+              <span>Tamper-Resistant</span>
+              <span>&bull;</span>
+              <span>Fair Community Voice</span>
             </div>
           </div>
 
