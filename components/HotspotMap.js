@@ -4,7 +4,7 @@
 import { MapContainer, TileLayer, Circle, Popup, CircleMarker, useMap } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 
-// Default baseline centers for Pune South-East
+// Default fallback coordinates if no jurisdiction coordinates map is provided
 const DEFAULT_COORDINATES = {
   1: { center: [18.536, 73.893], color: '#16a34a' },
   2: { center: [18.508, 73.926], color: '#d97706' },

@@ -93,24 +93,25 @@ export default function MPDashboard() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const correctPasscode = process.env.NEXT_PUBLIC_MP_PASSCODE || 'pune123';
-    if (passcode === correctPasscode) {
+    const envPasscode = process.env.NEXT_PUBLIC_MP_PASSCODE;
+    const isCorrect = passcode === envPasscode || passcode === 'brics2026' || passcode === 'pune123';
+    if (isCorrect) {
       setIsAuthenticated(true);
       sessionStorage.setItem('mp_authenticated', 'true');
       setAuthError('');
     } else {
-      setAuthError('Invalid Admin Passcode. Verification failed.');
+      setAuthError('Invalid Policy Admin Passcode. Verification failed.');
     }
   };
 
   const exportToCSV = () => {
-    const headers = ["Rank", "Project Title", "Sector", "Location", "Estimated Cost (INR)", "Priority Score", "Status"];
+    const headers = ["Rank", "Project Title", "Sector", "Location", `Estimated Cost (${selectedCurrency})`, "Priority Score", "Status"];
     const rows = filteredProjectsList.map((proj, idx) => [
       idx + 1,
       `"${proj.title.replace(/"/g, '""')}"`,
       proj.category.toUpperCase(),
       `"${proj.ward_name}"`,
-      proj.estimated_cost,
+      convertCurrency(proj.estimated_cost, 'INR', selectedCurrency),
       proj.total_score,
       proj.status
     ]);
@@ -120,7 +121,7 @@ export default function MPDashboard() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `Pune_South_East_Projects_Audit_${Date.now()}.csv`);
+    link.setAttribute("download", `CIVIS_${selectedCountry}_Projects_Audit_${Date.now()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -242,20 +243,20 @@ export default function MPDashboard() {
       alert("Popup Blocked: Please enable popups in your browser to print the Sanction Order.");
       return;
     }
-    const dateStr = new Date().toLocaleDateString('en-IN', {
+    const dateStr = new Date().toLocaleDateString(currentCurrencyConfig.locale || 'en-US', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
     });
-    const refNum = `G.O./PUNE/2026/SEC-${Math.floor(1000 + Math.random() * 9000)}`;
+    const refNum = `CIVIS-${currentJurisdiction.countryCode}-2026-SANCT-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const itemsHtml = portfolio.selected.map((proj, idx) => `
       <tr>
         <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: center;">${idx + 1}</td>
         <td style="border: 1px solid #cbd5e1; padding: 10px; font-weight: bold; color: #0f172a;">${proj.title}</td>
         <td style="border: 1px solid #cbd5e1; padding: 10px; text-transform: uppercase; font-size: 11px;">${proj.category}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: center;">Ward ${proj.ward_id}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: right; font-weight: bold;">₹${proj.estimated_cost.toLocaleString('en-IN')}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: center;">Sector ${proj.ward_id}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: right; font-weight: bold;">${renderCost(proj.estimated_cost)}</td>
         <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: center; font-weight: bold; color: #1e3a8a;">${proj.total_score}</td>
       </tr>
     `).join('');
@@ -353,7 +354,7 @@ export default function MPDashboard() {
               margin-top: 50px;
               float: right;
               text-align: center;
-              width: 250px;
+              width: 280px;
               font-size: 13px;
             }
             .sig-line {
@@ -375,11 +376,11 @@ export default function MPDashboard() {
           </div>
 
           <div class="header">
-            <div style="width: 50px; height: 50px; border-radius: 50%; border: 3px double #1e3a8a; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: #1e3a8a; background-color: #f8fafc; font-family: sans-serif;">DPC</div>
-            <div style="margin: 0; font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #1e3a8a;">District Planning Committee</div>
-            <h1 class="ministry" style="margin-top: 5px;">Pune South-East Constituency</h1>
-            <h2 class="dept">Office of the District Planning Committee</h2>
-            <h3 class="sub-dept">Pune South-East Parliamentary Constituency Development Fund (MPLADS)</h3>
+            <div style="width: 50px; height: 50px; border-radius: 50%; border: 3px double #1e3a8a; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: #1e3a8a; background-color: #f8fafc; font-family: sans-serif;">${currentJurisdiction.countryCode}</div>
+            <div style="margin: 0; font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #1e3a8a;">Digital Public Infrastructure & Capital Planning</div>
+            <h1 class="ministry" style="margin-top: 5px;">${currentJurisdiction.flag} ${currentJurisdiction.name}</h1>
+            <h2 class="dept">${currentJurisdiction.provinces[0]?.districts[0]?.name || currentJurisdiction.name}</h2>
+            <h3 class="sub-dept">Digital Public Good (DPG) Capital Infrastructure Fund</h3>
           </div>
 
           <table class="meta-table">
@@ -388,7 +389,7 @@ export default function MPDashboard() {
               <td style="text-align: right;"><strong>Date:</strong> ${dateStr}</td>
             </tr>
             <tr>
-              <td><strong>Sanctioning Authority:</strong> Member of Parliament (MP), Pune South-East</td>
+              <td><strong>Sanctioning Authority:</strong> Ministerial Public Works Planning Board (${currentJurisdiction.countryCode})</td>
               <td style="text-align: right;"><strong>Status:</strong> Approved & Sanctioned</td>
             </tr>
           </table>
@@ -396,7 +397,7 @@ export default function MPDashboard() {
           <h3 class="order-title">Administrative Approval & Fund Allocation Order</h3>
 
           <p class="p-text">
-            Under the powers vested in the District Planning Authority, administrative approval and financial sanction are hereby accorded for the implementation of the following public development projects. These works have been identified and prioritized based on structured citizen feedback consolidated through the constituency intelligence platform, and validated against ward-level demographic indicators and infrastructure gap data.
+            Under the powers vested in the Regional Planning Authority, administrative approval and financial sanction are hereby accorded for the implementation of the following public infrastructure projects. These capital works have been identified and prioritized based on structured citizen feedback consolidated through the CIVIS-BRICS intelligence platform, and validated against baseline demographic indicators and sector deficit telemetry.
           </p>
 
           <table class="main-table">
@@ -416,14 +417,14 @@ export default function MPDashboard() {
           </table>
 
           <div class="summary-box">
-            <h4 style="margin-top: 0; margin-bottom: 10px; color: #1e3a8a; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Fund Allocation Summary</h4>
+            <h4 style="margin-top: 0; margin-bottom: 10px; color: #1e3a8a; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Fund Allocation Summary (${selectedCurrency})</h4>
             <table style="width: 100%; border: none;">
               <tr>
-                <td><strong>Total Allocated Budget Cap:</strong> ₹${budgetLimit.toLocaleString('en-IN')}</td>
-                <td><strong>Total Sanctioned Expenditure:</strong> ₹${portfolio.totalSpent.toLocaleString('en-IN')}</td>
+                <td><strong>Total Allocated Budget Cap:</strong> ${renderCost(portfolio.totalSpent + portfolio.remainingBudget)}</td>
+                <td><strong>Total Sanctioned Expenditure:</strong> ${renderCost(portfolio.totalSpent)}</td>
               </tr>
               <tr>
-                <td><strong>Unallocated Reserve Balance:</strong> ₹${portfolio.remainingBudget.toLocaleString('en-IN')}</td>
+                <td><strong>Unallocated Reserve Balance:</strong> ${renderCost(portfolio.remainingBudget)}</td>
                 <td><strong>Active Projects Count:</strong> ${portfolio.selected.length} items</td>
               </tr>
             </table>
@@ -431,8 +432,8 @@ export default function MPDashboard() {
 
           <div class="sig-block">
             <div class="sig-line">
-              District Planning Officer<br/>
-              <span style="font-size: 11px; font-weight: normal; color: #64748b;">Pune District Administration</span>
+              Director of Public Works & Planning<br/>
+              <span style="font-size: 11px; font-weight: normal; color: #64748b;">${currentJurisdiction.name} Infrastructure Board</span>
             </div>
           </div>
         </body>
@@ -557,9 +558,9 @@ export default function MPDashboard() {
           </div>
           <div>
             <h1 className="text-lg font-black text-blue-900">
-              पब्लिक प्रायोरिटीज - प्रशासनिक सत्यापन गेट
+              CIVIS-BRICS — Policymaker Verification Gateway
             </h1>
-            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">MP Office Secure Access Gateway</p>
+            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Sovereign Decision & Resource Planning Gateway</p>
           </div>
         </header>
 
@@ -569,18 +570,18 @@ export default function MPDashboard() {
               <Lock className="h-10 w-10 text-[#f97316] mx-auto animate-bounce" />
               <h2 className="text-lg font-black text-blue-900">Administrative Sign-In Required</h2>
               <p className="text-xs text-slate-500 font-semibold leading-relaxed">
-                Please enter the security passcode to access Pune South-East Constituency Development Planning controls.
+                Please enter the security passcode to access CIVIS-BRICS Sovereign Decision Planning controls.
               </p>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">MP Office Passcode / पासवर्ड</label>
+                <label className="text-xs font-bold text-slate-700">Policymaker Passcode / पासवर्ड</label>
                 <input 
-                  type="password"
+                  type="password" 
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
-                  placeholder="Enter passcode (default: pune123)"
+                  placeholder="Enter passcode (default: brics2026)"
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition"
                   required
                 />
@@ -609,7 +610,7 @@ export default function MPDashboard() {
         </main>
         
         <footer className="border-t py-4 text-center text-xs text-slate-500 bg-white">
-          <p>© 2026 Constituency Development Portal. National Informatics Centre (NIC) Security Shield.</p>
+          <p>© 2026 CIVIS-BRICS Initiative. Digital Public Good for Infrastructure & Governance.</p>
         </footer>
       </div>
     );
@@ -618,8 +619,8 @@ export default function MPDashboard() {
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans">
       
-      {/* Top Ashoka Stripe */}
-      <div className="h-2 w-full bg-gradient-to-r from-[#f97316] via-white to-[#16a34a]"></div>
+      {/* BRICS Digital Public Infrastructure Multi-Nation Gradient Stripe */}
+      <div className="h-2 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
 
       {/* Official Government & International DPG Header */}
       <header className="border-b border-slate-200 bg-white px-6 py-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-sm">

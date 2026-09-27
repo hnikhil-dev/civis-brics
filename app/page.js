@@ -19,20 +19,20 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
-// Multilingual Translation Matrix
+// Multilingual Translation Matrix across all BRICS member nations
 const LANG_DICTS = {
   en: {
-    header_title: "पब्लिक प्रायोरिटीज - निर्वाचन क्षेत्र विकास योजना",
-    header_subtitle: "Pune South-East Constituency Planning Portal",
-    header_org: "Government of Maharashtra Initiative",
-    btn_mp_workspace: "MP Workspace Dashboard →",
-    form_title: "Submission Form",
-    form_desc: "Submit suggestions in Marathi, Hindi, or English. All inputs are mapped to constituency planning databases.",
+    header_title: "CIVIS-BRICS — Citizen Development Planning",
+    header_subtitle: "Digital Public Good for Participatory Infrastructure",
+    header_org: "UN DPG Standard & BRICS Innovation DPI Initiative",
+    btn_mp_workspace: "Policymaker Workspace →",
+    form_title: "Civic Development Proposal",
+    form_desc: "Submit suggestions in English, Hindi, Mandarin, Russian, Portuguese, or Marathi. All inputs are mapped to sovereign planning databases.",
     label_name: "Citizen Full Name",
     placeholder_name: "Enter your full name",
     label_suggestion: "Development Suggestion Details",
-    placeholder_suggestion: "Describe the issue or proposed upgrade (e.g. school capacity issues, road potholes, water shortages)...",
-    demo_scenario: "Load Demo Scenario (Marathi)",
+    placeholder_suggestion: "Describe the issue or proposed upgrade (e.g. school capacity issues, road potholes, water shortages, healthcare clinics)...",
+    demo_scenario: "Load Demo Scenario",
     btn_voice_start: "Record Audio",
     btn_voice_active: "Listening Speech...",
     btn_audio_active: "Recording Audio Note...",
@@ -40,51 +40,259 @@ const LANG_DICTS = {
     btn_photo_scan: "Upload Photo",
     btn_photo_scanning: "Scanning Image...",
     btn_photo_attached: "Photo Attached",
-    label_gps: "GPS Verification Tagging",
-    label_gps_desc: "Pinpoint location for strategic data audit",
+    label_gps: "Geo-Location Verification",
+    label_gps_desc: "Pinpoint coordinates for spatial equity & GIS clustering",
     btn_gps: "Verify Location",
     btn_gps_active: "GPS Tagged",
     btn_gps_loading: "Locating...",
-    security_declaration: "Security Declaration: I certify that the information provided is correct. I consent to the collection of coordinates and media files for audit and planning purposes. All data is protected under NIC security guidelines.",
+    security_declaration: "Security Declaration: I certify that the information provided is correct. I consent to the collection of coordinates and media files for audit and planning purposes. All data is protected under UN Digital Public Good (DPG) and sovereign data protection standards.",
     btn_submit: "Submit Suggestion",
-    btn_submitting: "NLP translation & verification active...",
+    btn_submitting: "Subword translation & verification active...",
     success_title: "Grievance Ingested Successfully!",
-    success_receipt: "Your Official Receipt Tracking ID:",
+    success_receipt: "Your Official Tracking ID:",
     success_category: "Category",
-    success_location: "Location",
+    success_location: "Jurisdiction",
     success_trust: "Evidence Trust",
-    success_coordination: "Coordination",
+    success_coordination: "Campaign Filter",
     success_campaign_yes: "Campaign Dampened",
-    success_campaign_no: "Unique",
-    success_footer: "Your suggestion has been translated, verified, and mapped to the active ward cluster. You can copy the tracking ID to monitor implementation.",
+    success_campaign_no: "Organic Demand",
+    success_footer: "Your suggestion has been translated, verified, and mapped into the national spatial cluster engine. Use your tracking receipt ID to monitor status.",
     tracker_title: "Track Proposal Status",
     tracker_desc: "Check progress, planning status, and implementation updates for your submission ID.",
     placeholder_tracker: "Enter Receipt ID (e.g. sub-init-1)",
     btn_track: "Search",
-    timeline_step1: "1. Grievance Ingested",
+    timeline_step1: "1. Ingested & Cryptographically Hashed",
     timeline_step1_sub: "Receipt generated, translation completed.",
-    timeline_step2: "2. Verified & Consolidated",
-    timeline_step2_sub: "Parsed category validation and semantic demand clustering.",
-    timeline_step3: "3. MP Approval & Budget Allocated",
-    timeline_step3_sub: "Evaluated against infrastructure indicators and approved.",
-    timeline_step4: "4. Implementation Stage",
+    timeline_step2: "2. Verified & Spatially Clustered",
+    timeline_step2_sub: "Category verified, astroturf coordination scored, spatial centroid mapped.",
+    timeline_step3: "3. Policymaker Optimization & Budget Sanction",
+    timeline_step3_sub: "Evaluated against multi-indicator Pareto frontier.",
+    timeline_step4: "4. Implementation & Public Audit",
     timeline_step4_sub: "Current project state:",
-    nic_compliance_title: "NIC Security Standards Compliance",
-    nic_compliance_desc: "All user data is encrypted in transit and hashed inside our Supabase database cluster. Anti-spam campaign detection limits political group-coordination inflation. Decisions are logged for public accountability.",
-    footer_text: "© 2026 Constituency Development Portal. National Informatics Centre (NIC) Mock Standard."
+    nic_compliance_title: "Digital Public Good (DPG) & DPI Trust Architecture",
+    nic_compliance_desc: "Sovereign data integrity: All user submissions are hashed, anti-astroturf coordinated campaigns are algorithmically dampened, and municipal resource allocations generate transparent cryptographic audit trails.",
+    footer_text: "© 2026 CIVIS-BRICS Initiative. Digital Public Good for Infrastructure & Governance."
+  },
+  hi: {
+    header_title: "CIVIS-BRICS — नागरिक विकास योजना पोर्टल",
+    header_subtitle: "सहभागी बुनियादी ढांचे के लिए डिजिटल सार्वजनिक वस्तु",
+    header_org: "संयुक्त राष्ट्र डीपीजी मानक एवं ब्रिक्स नवाचार डीपीआई पहल",
+    btn_mp_workspace: "नीति निर्माता डैशबोर्ड →",
+    form_title: "नागरिक विकास प्रस्ताव फॉर्म",
+    form_desc: "बुनियादी ढांचे और सार्वजनिक कार्यों के प्रस्ताव अपनी भाषा में प्रस्तुत करें। एआई सत्यापन कर इसे संप्रभु योजना पाइपलाइन में मैप करता है।",
+    label_name: "नागरिक का पूरा नाम",
+    placeholder_name: "अपना पूरा नाम दर्ज करें",
+    label_suggestion: "विकास प्रस्ताव का विवरण",
+    placeholder_suggestion: "समस्या या प्रस्तावित सुधार का वर्णन करें (जैसे स्कूल, सड़क, जलापूर्ति, स्वास्थ्य केंद्र)...",
+    demo_scenario: "डेमो परिदृश्य लोड करें",
+    btn_voice_start: "आवाज रिकॉर्ड करें",
+    btn_voice_active: "भाषण सुन रहे हैं...",
+    btn_audio_active: "ऑडियो रिकॉर्ड हो रहा है...",
+    btn_voice_attached: "ऑडियो संलग्न किया गया",
+    btn_photo_scan: "फोटो अपलोड करें",
+    btn_photo_scanning: "फोटो स्कैन हो रहा है...",
+    btn_photo_attached: "फोटो संलग्न किया गया",
+    label_gps: "भू-स्थान सत्यापन",
+    label_gps_desc: "सत्यापन और ऑडिट के लिए सटीक स्थान दर्ज करें",
+    btn_gps: "स्थान सत्यापित करें",
+    btn_gps_active: "स्थान टैग किया गया",
+    btn_gps_loading: "खोज रहे हैं...",
+    security_declaration: "सुरक्षा घोषणा: मैं प्रमाणित करता/करती हूं कि प्रदान की गई जानकारी सही है। मैं संप्रभु डेटा सुरक्षा नियमों के तहत सत्यापन और योजना के लिए सहमति देता/देती हूं।",
+    btn_submit: "प्रस्ताव सबमिट करें",
+    btn_submitting: "अनुवाद और सत्यापन सक्रिय है...",
+    success_title: "प्रस्ताव सफलतापूर्वक दर्ज किया गया!",
+    success_receipt: "आपका आधिकारिक ट्रैकिंग आईडी:",
+    success_category: "श्रेणी / सेक्टर",
+    success_location: "प्रशासनिक क्षेत्र",
+    success_trust: "विश्वसनीयता सूचकांक",
+    success_coordination: "अभियान सत्यापन",
+    success_campaign_yes: "अभियान नियंत्रित",
+    success_campaign_no: "स्वाभाविक मांग",
+    success_footer: "आपके प्रस्ताव का अनुवाद, सत्यापन और क्लस्टर मैपिंग पूरा हो चुका है। प्रगति की निगरानी के लिए ट्रैकिंग आईडी का उपयोग करें।",
+    tracker_title: "प्रस्ताव की स्थिति ट्रैक करें",
+    tracker_desc: "प्रगति, नियोजन स्थिति और कार्यान्वयन अपडेट की जांच के लिए अपना आईडी दर्ज करें।",
+    placeholder_tracker: "रसीद आईडी दर्ज करें (जैसे sub-init-1)",
+    btn_track: "खोजें",
+    timeline_step1: "१. शिकायत दर्ज व हैश प्रमाणित",
+    timeline_step1_sub: "रसीद जनरेट की गई, अनुवाद पूरा हुआ।",
+    timeline_step2: "२. सत्यापित और क्लस्टर में समूहीकृत",
+    timeline_step2_sub: "श्रेणी सत्यापन, समन्वय स्कोर और स्थानिक केंद्र मैपिंग पूर्ण।",
+    timeline_step3: "३. नीति निर्माता अनुकूलन एवं बजट आवंटन",
+    timeline_step3_sub: "बहु-सूचक पारेतो फ्रंटियर के आधार पर स्वीकृत।",
+    timeline_step4: "४. कार्यान्वयन एवं सार्वजनिक ऑडिट चरण",
+    timeline_step4_sub: "वर्तमान परियोजना की स्थिति:",
+    nic_compliance_title: "डिजिटल पब्लिक गुड (DPG) एवं डीपीआई सुरक्षा मानक",
+    nic_compliance_desc: "संप्रभु डेटा अखंडता: सभी प्रस्तुतियां एन्क्रिप्टेड हैं, स्पैम अभियानों को एल्गोरिथ्म द्वारा नियंत्रित किया जाता है, और पारदर्शी सार्वजनिक ऑडिट सुनिश्चित की जाती है।",
+    footer_text: "© २०२६ CIVIS-BRICS पहल। बुनियादी ढांचे और सुशासन के लिए डिजिटल सार्वजनिक संपत्ति।"
+  },
+  zh: {
+    header_title: "CIVIS-BRICS — 公民发展与基础设施规划平台",
+    header_subtitle: "参与式公共基础设施的数字公共品 (DPG)",
+    header_org: "联合国数字公共品标准与金砖国家创新DPI倡议",
+    btn_mp_workspace: "决策者工作台 →",
+    form_title: "公民发展建议表",
+    form_desc: "使用任何金砖国家官方语言提交基础设施与公共工程建议。AI自动翻译验证并汇总至规划管线。",
+    label_name: "公民全名",
+    placeholder_name: "请输入您的姓名",
+    label_suggestion: "建议详细说明",
+    placeholder_suggestion: "描述问题或建议的升级项目（例如学校学位、道路维修、供水短缺、社区医疗站）...",
+    demo_scenario: "加载演示案例",
+    btn_voice_start: "录制语音",
+    btn_voice_active: "正在语音识别...",
+    btn_audio_active: "正在录音...",
+    btn_voice_attached: "已附带音频",
+    btn_photo_scan: "上传现场照片",
+    btn_photo_scanning: "正在扫描识别...",
+    btn_photo_attached: "照片已附带",
+    label_gps: "地理坐标验证",
+    label_gps_desc: "定位精确坐标以进行空间聚类分析",
+    btn_gps: "获取当前定位",
+    btn_gps_active: "已获取定位",
+    btn_gps_loading: "正在定位...",
+    security_declaration: "安全声明：本人证明所提供信息真实有效。同意为审计和规划目的收集坐标与多媒体附件。所有数据均受数字公共品标准保护。",
+    btn_submit: "提交发展建议",
+    btn_submitting: "正在进行跨语言验证与多模态处理...",
+    success_title: "诉求建议已成功录入！",
+    success_receipt: "官方追踪凭证编号：",
+    success_category: "部门领域",
+    success_location: "所属辖区",
+    success_trust: "可信度评分",
+    success_coordination: "协同灌水过滤",
+    success_campaign_yes: "已抑制协同灌水",
+    success_campaign_no: "真实有机需求",
+    success_footer: "您的建议已被自动翻译、可信度评分并归入空间规划集群。您可凭借追踪凭据跟踪执行进展。",
+    tracker_title: "查询建议状态",
+    tracker_desc: "查询您提交建议的生命周期、可行性评分及预算批准进度。",
+    placeholder_tracker: "输入凭证编号 (例如 sub-init-1)",
+    btn_track: "查询",
+    timeline_step1: "1. 接收录入并哈希存证",
+    timeline_step1_sub: "凭据生成，跨语言翻译已完成。",
+    timeline_step2: "2. 可信度核验与空间聚类",
+    timeline_step2_sub: "领域验证、灌水协同检测及空间质心映射完毕。",
+    timeline_step3: "3. 政策优化排期与预算核准",
+    timeline_step3_sub: "基于多目标帕累托前沿综合评分核准。",
+    timeline_step4: "4. 项目落地实施与公共审计",
+    timeline_step4_sub: "当前项目阶段：",
+    nic_compliance_title: "联合国数字公共品 (DPG) 与 DPI 信任架构",
+    nic_compliance_desc: "主权数据完整性：所有提交均受加密哈希保护，协同灌水活动被算法抑制，所有公共预算分配生成不可篡改的可验证审计证据。",
+    footer_text: "© 2026 CIVIS-BRICS 倡议。面向基础设施与治理的数字公共品 (DPG)。"
+  },
+  ru: {
+    header_title: "CIVIS-BRICS — Портал гражданского планирования развития",
+    header_subtitle: "Цифровое общественное благо для совместного развития инфраструктуры",
+    header_org: "Стандарт ООН DPG и инициатива DPI БРИКС",
+    btn_mp_workspace: "Панель лиц, принимающих решения →",
+    form_title: "Форма предложения по развитию",
+    form_desc: "Подавайте предложения по инфраструктуре на официальных языках БРИКС. ИИ проверяет и группирует запросы в реестр развития.",
+    label_name: "ФИО гражданина",
+    placeholder_name: "Введите ваше имя",
+    label_suggestion: "Описание проблемы или предложения",
+    placeholder_suggestion: "Опишите проблему или модернизацию (например, ремонт дорог, дефицит школ, водоснабжение, поликлиники)...",
+    demo_scenario: "Загрузить демо-пример",
+    btn_voice_start: "Запись голоса",
+    btn_voice_active: "Распознавание речи...",
+    btn_audio_active: "Идет запись аудио...",
+    btn_voice_attached: "Аудио прикреплено",
+    btn_photo_scan: "Загрузить фото",
+    btn_photo_scanning: "Сканирование...",
+    btn_photo_attached: "Фото прикреплено",
+    label_gps: "Геолокационная верификация",
+    label_gps_desc: "Фиксация координат для пространственной кластеризации",
+    btn_gps: "Определить локацию",
+    btn_gps_active: "Координаты зафиксированы",
+    btn_gps_loading: "Определение...",
+    security_declaration: "Декларация безопасности: Я подтверждаю достоверность информации и даю согласие на сбор координат и материалов для градостроительного аудита в соответствии со стандартами DPG.",
+    btn_submit: "Отправить предложение",
+    btn_submitting: "Обработка и верификация...",
+    success_title: "Предложение успешно принято!",
+    success_receipt: "Ваш номер отслеживания:",
+    success_category: "Сектор",
+    success_location: "Юрисдикция",
+    success_trust: "Индекс доверия",
+    success_coordination: "Фильтр кампаний",
+    success_campaign_yes: "Скорректировано",
+    success_campaign_no: "Органический запрос",
+    success_footer: "Ваше предложение верифицировано и включено в пространственный кластер. Сохраните номер для проверки статуса.",
+    tracker_title: "Отслеживание статуса",
+    tracker_desc: "Проверьте статус реализации и распределение бюджета по номеру обращения.",
+    placeholder_tracker: "Введите номер (например sub-init-1)",
+    btn_track: "Найти",
+    timeline_step1: "1. Зарегистрировано и захешировано",
+    timeline_step1_sub: "Квитанция создана, перевод завершен.",
+    timeline_step2: "2. Проверено и сгруппировано",
+    timeline_step2_sub: "Категория подтверждена, проверка на спам завершена.",
+    timeline_step3: "3. Оптимизация и санкционирование бюджета",
+    timeline_step3_sub: "Одобрено на основе Парето-оптимизации.",
+    timeline_step4: "4. Реализация и публичный аудит",
+    timeline_step4_sub: "Текущий статус:",
+    nic_compliance_title: "Архитектура доверия DPG и DPI",
+    nic_compliance_desc: "Суверенная защита данных: обращения хешируются, спам-кампании алгоритмически подавляются, а распределение бюджета фиксируется в криптографическом реестре.",
+    footer_text: "© 2026 Инициатива CIVIS-BRICS. Цифровое общественное благо для инфраструктуры и управления."
+  },
+  pt: {
+    header_title: "CIVIS-BRICS — Portal de Planejamento de Desenvolvimento Cívico",
+    header_subtitle: "Bem Público Digital para Infraestrutura Participativa",
+    header_org: "Padrão ONU DPG e Iniciativa DPI de Inovação BRICS",
+    btn_mp_workspace: "Painel do Gestor Público →",
+    form_title: "Formulário de Proposta de Desenvolvimento",
+    form_desc: "Envie propostas de infraestrutura em qualquer idioma dos BRICS. A IA traduz, verifica e agrupa as demandas no planejamento soberano.",
+    label_name: "Nome Completo do Cidadão",
+    placeholder_name: "Insira seu nome completo",
+    label_suggestion: "Detalhes da Sugestão",
+    placeholder_suggestion: "Descreva o problema ou melhoria proposta (ex.: ampliação de escola, recapeamento de rua, saneamento, posto de saúde)...",
+    demo_scenario: "Carregar Cenário Demo",
+    btn_voice_start: "Gravar Áudio",
+    btn_voice_active: "Ouvindo áudio...",
+    btn_audio_active: "Gravando áudio...",
+    btn_voice_attached: "Áudio Anexado",
+    btn_photo_scan: "Enviar Foto",
+    btn_photo_scanning: "Analisando imagem...",
+    btn_photo_attached: "Foto Anexada",
+    label_gps: "Verificação de Geolocalização",
+    label_gps_desc: "Coordenadas precisas para análise espacial GIS",
+    btn_gps: "Capturar Local",
+    btn_gps_active: "Local Marcado",
+    btn_gps_loading: "Localizando...",
+    security_declaration: "Declaração de Segurança: Certifico a veracidade das informações e consinto com a coleta de dados e coordenadas para planejamento cívico sob as normas de Bens Públicos Digitais.",
+    btn_submit: "Enviar Proposta",
+    btn_submitting: "Processando verificação e tradução...",
+    success_title: "Proposta Registrada com Sucesso!",
+    success_receipt: "Protocolo Oficial de Rastreamento:",
+    success_category: "Setor",
+    success_location: "Jurisdição",
+    success_trust: "Índice de Confiança",
+    success_coordination: "Filtro de Campanhas",
+    success_campaign_yes: "Campanha Atenuada",
+    success_campaign_no: "Demanda Orgânica",
+    success_footer: "Sua proposta foi traduzida, verificada e mapeada no motor de agrupamento espacial. Guarde o protocolo para acompanhar a execução.",
+    tracker_title: "Rastrear Status da Proposta",
+    tracker_desc: "Verifique o andamento, pontuação e alocação orçamentária para o seu protocolo.",
+    placeholder_tracker: "Insira o Protocolo (ex: sub-init-1)",
+    btn_track: "Buscar",
+    timeline_step1: "1. Registrado e Autenticado",
+    timeline_step1_sub: "Protocolo gerado, tradução concluída.",
+    timeline_step2: "2. Verificado e Agrupado",
+    timeline_step2_sub: "Categoria verificada e mapeamento espacial realizado.",
+    timeline_step3: "3. Otimização de Políticas e Alocação de Verba",
+    timeline_step3_sub: "Avaliado e aprovado pela fronteira de Pareto.",
+    timeline_step4: "4. Fase de Execução e Auditoria Pública",
+    timeline_step4_sub: "Status atual do projeto:",
+    nic_compliance_title: "Arquitetura de Confiança DPG e DPI",
+    nic_compliance_desc: "Integridade soberana de dados: todas as propostas são protegidas, campanhas coordenadas são atenuadas e as decisões orçamentárias possuem trilha auditável.",
+    footer_text: "© 2026 Iniciativa CIVIS-BRICS. Bem Público Digital para Infraestrutura e Governança."
   },
   mr: {
-    header_title: "पब्लिक प्रायोरिटीज - मतदारसंघ विकास नियोजन",
-    header_subtitle: "पुणे दक्षिण-पूर्व मतदारसंघ विकास नियोजन पोर्टल",
-    header_org: "महाराष्ट्र शासन उपक्रम",
+    header_title: "CIVIS-BRICS — नागरिक विकास नियोजन पोर्टल",
+    header_subtitle: "सहभागी पायाभूत सुविधांसाठी डिजिटल सार्वजनिक संपत्ती",
+    header_org: "यूएन डीपीजी मानक आणि ब्रिक्स नवोपक्रम डीपीआय उपक्रम",
     btn_mp_workspace: "प्रशासकीय डॅशबोर्ड →",
     form_title: "विकास प्रस्ताव फॉर्म",
     form_desc: "मराठी, हिंदी किंवा इंग्रजीमध्ये तुमचे प्रस्ताव सबमिट करा. सर्व माहिती मतदारसंघ नियोजन डेटाबेसमध्ये जोडली जाईल.",
     label_name: "नागरिकाचे पूर्ण नाव",
     placeholder_name: "तुमचे पूर्ण नाव प्रविष्ट करा",
     label_suggestion: "विकास प्रस्तावाचा सविस्तर तपशील",
-    placeholder_suggestion: "समस्या किंवा सुचवलेली सुधारणा वर्णन करा (उदा. शाळेच्या खोल्या, रस्त्यावरील खड्डे, पाण्याची कमतरता)...",
-    demo_scenario: "डेमो सिनेरिओ लोड करा (मराठी)",
+    placeholder_suggestion: "समस्या किंवा सुचवलेली सुधारणा वर्णन करा (उदा. शाळा, रस्त्यावरील खड्डे, पाण्याची कमतरता, आरोग्य केंद्र)...",
+    demo_scenario: "डेमो उदाहरण लोड करा",
     btn_voice_start: "आवाज रेकॉर्ड करा",
     btn_voice_active: "बोलणे ऐकत आहे...",
     btn_audio_active: "ऑडिओ रेकॉर्ड होत आहे...",
@@ -97,7 +305,7 @@ const LANG_DICTS = {
     btn_gps: "स्थान सत्यापित करा",
     btn_gps_active: "स्थान टॅग केले",
     btn_gps_loading: "शोधत आहे...",
-    security_declaration: "सुरक्षा घोषणा: मी प्रमाणित करतो/करते की दिलेली माहिती अचूक आहे. मी ऑडिट आणि नियोजनासाठी स्थान आणि मीडिया संकलनास संमती देतो/देते. सर्व डेटा एनआयसी सुरक्षा नियमांनुसार सुरक्षित आहे.",
+    security_declaration: "सुरक्षा घोषणा: मी प्रमाणित करतो/करते की दिलेली माहिती अचूक आहे. मी ऑडिट आणि नियोजनासाठी स्थान आणि मीडिया संकलनास संमती देतो/देते. सर्व डेटा नियमांनुसार सुरक्षित आहे.",
     btn_submit: "प्रस्ताव सादर करा",
     btn_submitting: "भाषांतर आणि पडताळणी सुरू आहे...",
     success_title: "तक्रार यशस्वीरित्या नोंदवली गेली!",
@@ -121,61 +329,48 @@ const LANG_DICTS = {
     timeline_step3_sub: "पायाभूत सुविधा निर्देशांकांवर आधारित मंजुरी.",
     timeline_step4: "४. अंमलबजावणी टप्पा",
     timeline_step4_sub: "सध्याची प्रकल्पाची स्थिती:",
-    nic_compliance_title: "NIC सुरक्षा मानके अनुपालन",
+    nic_compliance_title: "डिजिटल पब्लिक गुड (DPG) आणि डीपीआय सुरक्षा मानके",
     nic_compliance_desc: "सर्व वापरकर्ता डेटा ट्रान्सिटमध्ये एनक्रिप्टेड आणि डेटाबेसमध्ये सुरक्षित ठेवला जातो. स्पॅम मोहिमेद्वारे चुकीची मागणी वाढवणे रोखण्यासाठी फिल्टर सक्रिय आहेत. सर्व निर्णय सार्वजनिक ऑडिटसाठी रेकॉर्ड केले जातात.",
-    footer_text: "© २०२६ मतदारसंघ विकास पोर्टल. राष्ट्रीय सूचना विज्ञान केंद्र (NIC) मानके."
+    footer_text: "© २०२६ CIVIS-BRICS उपक्रम. पायाभूत सुविधा आणि प्रशासनासाठी डिजिटल सार्वजनिक संपत्ती."
+  }
+};
+
+const DEMO_CASES = {
+  en: {
+    name: "Elena Rostova",
+    text: "District 3 primary school has severe overcrowding, children lack classroom desks. Need urgent school wing expansion.",
+    lat: -23.5505,
+    lng: -46.6333
+  },
+  mr: {
+    name: "प्रिया शिंदे",
+    text: "वॉर्ड ३ मध्ये शाळा खूप लहान आहे, मुलांना बसायला जागा नाही. नवीन वर्गखोल्या बांधा.",
+    lat: 18.488,
+    lng: 73.896
   },
   hi: {
-    header_title: "पब्लिक प्रायोरिटीज - निर्वाचन क्षेत्र विकास योजना",
-    header_subtitle: "पुणे दक्षिण-पूर्व निर्वाचन क्षेत्र नियोजन पोर्टल",
-    header_org: "महाराष्ट्र सरकार की पहल",
-    btn_mp_workspace: "सांसद डैशबोर्ड →",
-    form_title: "विकास प्रस्ताव फॉर्म",
-    form_desc: "मराठी, हिंदी या अंग्रेजी में प्रस्ताव सबमिट करें। सभी प्रविष्टियां निर्वाचन क्षेत्र डेटाबेस में दर्ज की जाएंगी।",
-    label_name: "नागरिक का पूरा नाम",
-    placeholder_name: "अपना पूरा नाम दर्ज करें",
-    label_suggestion: "विकास प्रस्ताव का विवरण",
-    placeholder_suggestion: "समस्या या प्रस्तावित सुधार का वर्णन करें (जैसे स्कूल के कमरे, सड़क के गड्ढे, पानी की कमी)...",
-    demo_scenario: "डेमो परिदृश्य लोड करें (मराठी)",
-    btn_voice_start: "आवाज रिकॉर्ड करें",
-    btn_voice_active: "भाषण सुन रहे हैं...",
-    btn_audio_active: "ऑडियो रिकॉर्ड हो रहा है...",
-    btn_voice_attached: "ऑडियो संलग्न किया गया",
-    btn_photo_scan: "फोटो अपलोड करें",
-    btn_photo_scanning: "फोटो स्कैन हो रहा है...",
-    btn_photo_attached: "फोटो संलग्न किया गया",
-    label_gps: "जीपीएस स्थान टैगिंग",
-    label_gps_desc: "सत्यापन और ऑडिट के लिए सटीक स्थान दर्ज करें",
-    btn_gps: "स्थान सत्यापित करें",
-    btn_gps_active: "स्थान टैग किया गया",
-    btn_gps_loading: "खोज रहे हैं...",
-    security_declaration: "सुरक्षा घोषणा: मैं प्रमाणित करता/करती हूं कि प्रदान की गई जानकारी सही है। मैं ऑडिट और योजना के लिए स्थान और मीडिया संग्रह के लिए सहमति देता/देती हूं। सभी डेटा एनआईसी सुरक्षा दिशानिर्देशों के तहत सुरक्षित हैं।",
-    btn_submit: "प्रस्ताव सबमिट करें",
-    btn_submitting: "अनुवाद और सत्यापन सक्रिय है...",
-    success_title: "प्रस्ताव सफलतापूर्वक दर्ज किया गया!",
-    success_receipt: "आपका आधिकारिक रसीद ट्रैकिंग आईडी:",
-    success_category: "श्रेणी / सेक्टर",
-    success_location: "स्थान",
-    success_trust: "विश्वसनीयता सूचकांक",
-    success_coordination: "अभियान सत्यापन",
-    success_campaign_yes: "अभियान नियंत्रित",
-    success_campaign_no: "यूनीक / अद्वितीय",
-    success_footer: "आपके प्रस्ताव का अनुवाद, सत्यापन और वार्ड क्लस्टर मैपिंग पूरा हो चुका है। प्रगति की निगरानी के लिए ट्रैकिंग आईडी कॉपी करें।",
-    tracker_title: "प्रस्ताव की स्थिति ट्रैक करें",
-    tracker_desc: "प्रगति, नियोजन स्थिति और कार्यान्वयन अपडेट की जांच के लिए अपना आईडी दर्ज करें।",
-    placeholder_tracker: "रसीद आईडी दर्ज करें (जैसे sub-init-1)",
-    btn_track: "खोजें",
-    timeline_step1: "१. शिकायत दर्ज की गई",
-    timeline_step1_sub: "रसीद जनरेट की गई, अनुवाद पूरा हुआ।",
-    timeline_step2: "२. सत्यापित और एकीकृत",
-    timeline_step2_sub: "श्रेणी सत्यापन और क्लस्टर मैपिंग पूरी हुई।",
-    timeline_step3: "३. सांसद मंजूरी और बजट आवंटन",
-    timeline_step3_sub: "बुनियादी ढांचा सूचकांकों के आधार पर स्वीकृत किया गया।",
-    timeline_step4: "४. कार्यान्वयन चरण",
-    timeline_step4_sub: "वर्तमान परियोजना की स्थिति:",
-    nic_compliance_title: "NIC सुरक्षा मानक अनुपालन",
-    nic_compliance_desc: "सभी उपयोगकर्ता डेटा ट्रांजिट में एन्क्रिप्टेड और सुरक्षित डेटाबेस क्लस्टर में रखे जाते हैं। स्पैम अभियान का पता लगाने और उसे रोकने के लिए फिल्टर सक्रिय हैं। पारदर्शिता के लिए सभी निर्णय लॉग किए जाते हैं।",
-    footer_text: "© २०२६ निर्वाचन क्षेत्र विकास पोर्टल। राष्ट्रीय सूचना विज्ञान केंद्र (NIC) मानक।"
+    name: "प्रियंका शर्मा",
+    text: "वार्ड 3 में प्राथमिक विद्यालय बहुत छोटा है, बच्चों के बैठने की जगह नहीं है। नए कमरों का निर्माण करें।",
+    lat: 18.5204,
+    lng: 73.8567
+  },
+  pt: {
+    name: "Lucas Silva",
+    text: "No Distrito 3, a escola primária está superlotada e sem carteiras suficientes. Precisamos da expansão urgente das salas de aula.",
+    lat: -23.5505,
+    lng: -46.6333
+  },
+  ru: {
+    name: "Алексей Иванов",
+    text: "В Районе 3 начальная школа переполнена, детям не хватает парт. Требуется срочное расширение учебных классов.",
+    lat: 55.7558,
+    lng: 37.6173
+  },
+  zh: {
+    name: "张伟",
+    text: "第3区小学教室严重拥挤，学生缺少课桌。急需扩建新教学楼和课室。",
+    lat: 31.2304,
+    lng: 121.4737
   }
 };
 
@@ -224,8 +419,16 @@ export default function CitizenPortal() {
         rec.continuous = true;
         rec.interimResults = true;
         
-        // Dynamically bind recognition language based on active state selection
-        rec.lang = currentLang === 'mr' ? 'mr-IN' : (currentLang === 'hi' ? 'hi-IN' : 'en-IN');
+        // Dynamically bind recognition language based on active state selection across BRICS
+        const LANG_SPEECH_MAP = {
+          en: 'en-US',
+          hi: 'hi-IN',
+          zh: 'zh-CN',
+          ru: 'ru-RU',
+          pt: 'pt-BR',
+          mr: 'mr-IN'
+        };
+        rec.lang = LANG_SPEECH_MAP[currentLang] || 'en-US';
 
         rec.onresult = (event) => {
           let interimTranscript = '';
@@ -550,20 +753,21 @@ export default function CitizenPortal() {
     }
   };
 
-  const loadMarathiDemo = () => {
-    setUserName("Priya Shinde");
-    setSuggestionText("Ward 3 madhe shala khup choti ahe, mulanna basayla jaaga nahi. Navin kholya banva.");
-    setGpsCoords({ lat: 18.488, lng: 73.896 });
+  const loadDemoScenario = () => {
+    const demo = DEMO_CASES[currentLang] || DEMO_CASES.en;
+    setUserName(demo.name);
+    setSuggestionText(demo.text);
+    setGpsCoords({ lat: demo.lat, lng: demo.lng });
     setGpsStatus('active');
   };
 
   return (
     <div className="flex-1 flex flex-col bg-slate-50 text-slate-900 font-sans min-h-screen">
       
-      {/* Top Ashoka Stripe */}
-      <div className="h-2 w-full bg-gradient-to-r from-[#f97316] via-white to-[#16a34a]"></div>
+      {/* BRICS Digital Public Infrastructure Multi-Nation Gradient Stripe */}
+      <div className="h-2 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
 
-      {/* Official Government Header */}
+      {/* Official DPG Header */}
       <header className="border-b border-slate-200 bg-white px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-4">
           <div className="h-14 w-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
@@ -582,31 +786,25 @@ export default function CitizenPortal() {
 
         <div className="flex items-center gap-4 flex-wrap">
           {/* Multilingual Selector Toggles */}
-          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-300">
-            <button
-              onClick={() => setCurrentLang('en')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition ${
-                currentLang === 'en' ? 'bg-blue-900 text-white shadow-sm' : 'text-slate-650 hover:text-slate-900'
-              }`}
-            >
-              English
-            </button>
-            <button
-              onClick={() => setCurrentLang('mr')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition ${
-                currentLang === 'mr' ? 'bg-blue-900 text-white shadow-sm' : 'text-slate-650 hover:text-slate-900'
-              }`}
-            >
-              मराठी
-            </button>
-            <button
-              onClick={() => setCurrentLang('hi')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition ${
-                currentLang === 'hi' ? 'bg-blue-900 text-white shadow-sm' : 'text-slate-650 hover:text-slate-900'
-              }`}
-            >
-              हिन्दी
-            </button>
+          <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-300 flex-wrap gap-1">
+            {[
+              { code: 'en', label: 'English' },
+              { code: 'hi', label: 'हिन्दी' },
+              { code: 'zh', label: '中文' },
+              { code: 'ru', label: 'Русский' },
+              { code: 'pt', label: 'Português' },
+              { code: 'mr', label: 'मराठी' }
+            ].map((l) => (
+              <button
+                key={l.code}
+                onClick={() => setCurrentLang(l.code)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-black transition ${
+                  currentLang === l.code ? 'bg-blue-900 text-white shadow-sm' : 'text-slate-650 hover:text-slate-900'
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
           </div>
 
           <Link
@@ -657,7 +855,7 @@ export default function CitizenPortal() {
                 </label>
                 <button
                   type="button"
-                  onClick={loadMarathiDemo}
+                  onClick={loadDemoScenario}
                   className="text-xs text-blue-900 hover:text-blue-700 font-extrabold underline"
                 >
                   {t.demo_scenario}
@@ -786,7 +984,7 @@ export default function CitizenPortal() {
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs text-slate-700 pt-1.5">
                   <p>{t.success_category}: <strong className="text-slate-950 uppercase">{submitResult.parsed.category}</strong></p>
-                  <p>{t.success_location}: <strong className="text-slate-950">Ward {submitResult.parsed.ward_id || 'Pool'}</strong></p>
+                  <p>{t.success_location}: <strong className="text-slate-950">{submitResult.parsed.ward_id ? `District/Ward ${submitResult.parsed.ward_id}` : 'General Pool'}</strong></p>
                   <p>{t.success_trust}: <strong className="text-emerald-700">{submitResult.parsed.trust_score.toFixed(1)}/10</strong></p>
                   <p>{t.success_coordination}: <strong className="text-slate-950">{submitResult.parsed.is_campaign ? t.success_campaign_yes : t.success_campaign_no}</strong></p>
                 </div>

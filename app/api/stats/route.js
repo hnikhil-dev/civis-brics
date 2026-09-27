@@ -1,9 +1,14 @@
 // app/api/stats/route.js
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { BRICS_CURRENCIES } from '@/lib/currency';
 
 export async function GET(request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const currency = searchParams.get('currency') || 'INR';
+    const customBudgetParam = searchParams.get('budget');
+
     // Fetch all records for aggregation
     const { data: submissions } = await supabase.from('submissions').select('*');
     const { data: issues } = await supabase.from('extracted_issues').select('*');
@@ -21,12 +26,16 @@ export async function GET(request) {
     // Budget utilization stats
     const totalProjects = projects?.length || 0;
     const approvedProjects = projects?.filter(p => p.status !== 'Proposed' && p.status !== 'Rejected') || [];
-    const totalAllocatedBudget = approvedProjects.reduce((sum, p) => sum + p.estimated_cost, 0);
+    const totalAllocatedBudget = approvedProjects.reduce((sum, p) => sum + (p.estimated_cost || 0), 0);
+
+    const defaultCurrencyBudget = BRICS_CURRENCIES[currency]?.budgetSlider?.default || 2000000;
+    const budgetLimit = customBudgetParam ? parseFloat(customBudgetParam) : defaultCurrencyBudget;
 
     // Dynamic Category Distributions
     const categoryCounts = {};
     issues?.forEach(iss => {
-      categoryCounts[iss.category] = (categoryCounts[iss.category] || 0) + 1;
+      const cat = iss.category || 'general';
+      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
     });
 
     const categoryStats = Object.entries(categoryCounts).map(([name, value]) => ({
@@ -49,7 +58,7 @@ export async function GET(request) {
 
     clusters?.forEach(c => {
       if (wardDemands[c.ward_id]) {
-        wardDemands[c.ward_id].citizen_count += c.citizen_count;
+        wardDemands[c.ward_id].citizen_count += (c.citizen_count || 0);
         wardDemands[c.ward_id].cluster_count += 1;
       }
     });
@@ -70,7 +79,7 @@ export async function GET(request) {
         totalProjects,
         approvedCount: approvedProjects.length,
         totalAllocatedBudget,
-        budgetLimit: 2500000 // Mock overall constituency development limit (₹25 Lakhs)
+        budgetLimit
       },
       categoryStats,
       wardStats,

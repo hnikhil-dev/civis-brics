@@ -32,19 +32,19 @@ export async function GET(request) {
     if (allProjectsScored.length > 0 && allProjectsScored.length < 10) {
       try {
         const extraClusters = [
-          { id: 6, category: 'sanitation', ward_id: 1, title: 'Ward 1 Public Sanitation Block', summary: 'Requests to build modern, hygienic public toilets in the commercial extension area.', citizen_count: 19, spam_count: 0, status: 'active' },
-          { id: 7, category: 'water', ward_id: 3, title: 'Ward 3 Drinking Water Pipeline Extension', summary: 'Extension of clean drinking water mains to newly developed sub-localities in Wanowrie.', citizen_count: 11, spam_count: 0, status: 'active' },
-          { id: 8, category: 'roads', ward_id: 2, title: 'Ward 2 Main Bypass Resurfacing', summary: 'Complete re-tarring of the heavy vehicle bypass road in Hadapsar Industrial Zone to prevent accident hazards.', citizen_count: 22, spam_count: 1, status: 'active' },
-          { id: 9, category: 'sanitation', ward_id: 5, title: 'Ward 5 Drainage Network Upgrade', summary: 'Upgrading the storm water drainage channels in Mundhwa to prevent seasonal monsoon flooding.', citizen_count: 17, spam_count: 2, status: 'active' },
-          { id: 10, category: 'skill', ward_id: 1, title: 'Ward 1 ITI Vocational Skill Center', summary: 'Establishment of an Industrial Training Institute extension to offer welder and fitter trade certifications.', citizen_count: 8, spam_count: 0, status: 'active' }
+          { id: 6, category: 'sanitation', ward_id: 1, title: 'Sector 1 Public Sanitation Block', summary: 'Citizen demand to construct modern, hygienic public sanitation facilities in dense commercial corridors.', citizen_count: 19, spam_count: 0, status: 'active' },
+          { id: 7, category: 'water', ward_id: 3, title: 'Sector 3 Drinking Water Pipeline Extension', summary: 'Extension of clean drinking water mains to rapidly developing peripheral residential zones.', citizen_count: 11, spam_count: 0, status: 'active' },
+          { id: 8, category: 'roads', ward_id: 2, title: 'Sector 2 Arterial Bypass Resurfacing', summary: 'Complete asphalt re-tarring of the heavy transit bypass road to eliminate hazard potholes and restore freight mobility.', citizen_count: 22, spam_count: 1, status: 'active' },
+          { id: 9, category: 'sanitation', ward_id: 5, title: 'Sector 5 Storm Drainage Upgrade', summary: 'Upgrading concrete stormwater drainage channels to prevent recurring monsoon urban inundation.', citizen_count: 17, spam_count: 2, status: 'active' },
+          { id: 10, category: 'skill', ward_id: 1, title: 'Sector 1 Technical Innovation Center', summary: 'Establishment of an advanced vocational and digital technical skills center for youth employment certifications.', citizen_count: 8, spam_count: 0, status: 'active' }
         ];
 
         const extraProjects = [
           { id: 6, cluster_id: 6, title: 'Public Sanitation Block Construction', category: 'sanitation', ward_id: 1, estimated_cost: 380000, status: 'Proposed' },
           { id: 7, cluster_id: 7, title: 'Drinking Water Pipeline Extension', category: 'water', ward_id: 3, estimated_cost: 550000, status: 'Proposed' },
-          { id: 8, cluster_id: 8, title: 'Main Bypass Resurfacing Work', category: 'roads', ward_id: 2, estimated_cost: 920000, status: 'Proposed' },
+          { id: 8, cluster_id: 8, title: 'Arterial Bypass Resurfacing Work', category: 'roads', ward_id: 2, estimated_cost: 920000, status: 'Proposed' },
           { id: 9, cluster_id: 9, title: 'Drainage Network Upgrade & Desilting', category: 'sanitation', ward_id: 5, estimated_cost: 480000, status: 'Proposed' },
-          { id: 10, cluster_id: 10, title: 'ITI Vocational Skill Center Setup', category: 'skill', ward_id: 1, estimated_cost: 1200000, status: 'Proposed' }
+          { id: 10, cluster_id: 10, title: 'Technical Innovation Center Setup', category: 'skill', ward_id: 1, estimated_cost: 1200000, status: 'Proposed' }
         ];
 
         for (const clust of extraClusters) {
