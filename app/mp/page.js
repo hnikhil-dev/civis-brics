@@ -45,6 +45,7 @@ import {
   getJurisdiction, 
   getJurisdictionCoordinatesMap 
 } from '@/lib/jurisdictions';
+import BricsSolutionTwinning from '@/components/BricsSolutionTwinning';
 
 // Dynamically load Map to prevent Next.js SSR reference errors
 const HotspotMap = dynamic(() => import('@/components/HotspotMap'), { 
@@ -1574,6 +1575,11 @@ export default function MPDashboard() {
                     Total Weighted Score: <span className="text-blue-900">{activeExplainProject.total_score}/100</span>
                   </span>
                 </div>
+              </div>
+
+              {/* Cross-Border BRICS Solution Twinning Blueprint */}
+              <div className="pt-1">
+                <BricsSolutionTwinning currentCategory={activeExplainProject.category} />
               </div>
 
             </div>

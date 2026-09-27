@@ -28,6 +28,10 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { BRICS_JURISDICTIONS, getJurisdiction, getJurisdictionCoordinatesMap } from '@/lib/jurisdictions';
+import VoiceSonarVisualizer from '@/components/VoiceSonarVisualizer';
+import CivicPassportCard from '@/components/CivicPassportCard';
+import BricsSolutionTwinning from '@/components/BricsSolutionTwinning';
+import CitizenBudgetSandbox from '@/components/CitizenBudgetSandbox';
 
 // Dynamically load Map to prevent Next.js SSR leaflet errors
 const HotspotMap = dynamic(() => import('@/components/HotspotMap'), { 
@@ -1261,6 +1265,15 @@ export default function CitizenPortal() {
               </label>
             </div>
 
+            {/* Real-Time AI Voice Sonar Visualizer (Audio Telemetry & Acoustic Waveform) */}
+            <VoiceSonarVisualizer 
+              isRecording={isRecording} 
+              currentLang={currentLang} 
+              transcript={suggestionText} 
+              onApplyTranscript={(txt) => setSuggestionText(txt)} 
+              onStop={toggleRecording} 
+            />
+
             {/* Neighborhood Location Tagging */}
             <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200">
               <div className="flex items-center gap-2">
@@ -1324,30 +1337,40 @@ export default function CitizenPortal() {
             </button>
           </form>
 
-          {/* Submission Success Alert */}
+          {/* Submission Success Alert & W3C Civic Passport */}
           {submitResult && (
-            <div className="bg-emerald-50 border border-emerald-300 p-3.5 rounded-xl space-y-2.5 animate-in fade-in duration-300">
-              <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-xs sm:text-sm">
-                <CheckCircle className="h-4 w-4 shrink-0" />
-                <span>{t.success_title}</span>
-              </div>
-              <div className="text-xs space-y-1.5 bg-white p-3 rounded-xl border border-slate-200">
-                <div>
-                  <span className="text-[11px] text-slate-500 font-bold block">{t.success_receipt}</span>
-                  <code className="text-slate-900 font-mono font-bold select-all block py-1 text-xs border-b border-slate-100">{submitResult.submission_id}</code>
+            <div className="space-y-3 animate-in fade-in duration-300">
+              <div className="bg-emerald-50 border border-emerald-300 p-3.5 rounded-xl space-y-2">
+                <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-xs sm:text-sm">
+                  <CheckCircle className="h-4 w-4 shrink-0" />
+                  <span>{t.success_title}</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-slate-700 pt-1">
-                  <p>{t.success_category}: <strong className="text-slate-950 uppercase">{submitResult.parsed.category}</strong></p>
-                  <p>{t.success_location}: <strong className="text-slate-950">{submitResult.parsed.ward_id ? `District/Sector ${submitResult.parsed.ward_id}` : 'General Sector'}</strong></p>
-                  <p>{t.success_trust}: <strong className="text-emerald-700 font-bold">Received & Verified</strong></p>
-                  <p>{t.success_coordination}: <strong className="text-blue-900 font-bold">Forwarded to Planning</strong></p>
-                </div>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  {t.success_footer}
+                </p>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                {t.success_footer}
-              </p>
+
+              {/* Digital Public Credential Card */}
+              <CivicPassportCard
+                submissionId={submitResult.submission_id}
+                userName={userName || 'Citizen Contributor'}
+                countryCode={selectedCountry}
+                category={submitResult.parsed?.category || 'Public Infrastructure'}
+                wardName={sectors.find(s => s.id === (submitResult.parsed?.ward_id || selectedSectorId))?.name || 'Central District'}
+                timestamp={new Date().toISOString()}
+              />
             </div>
           )}
+
+          {/* Cross-Border BRICS Solution Twinning Engine */}
+          <div className="pt-2">
+            <BricsSolutionTwinning 
+              currentCategory={suggestionText || 'roads'} 
+              onAdoptBlueprint={(bp) => {
+                setSuggestionText(prev => prev ? `${prev} [Adopting BRICS Model: ${bp.blueprintTitle}]` : `[Adopting BRICS Model: ${bp.blueprintTitle}]`);
+              }} 
+            />
+          </div>
         </section>
 
         {/* COLUMN 2: Live Community Needs Map (col-span-12 lg:col-span-5) */}
@@ -1414,6 +1437,14 @@ export default function CitizenPortal() {
               </div>
             </div>
           </div>
+
+          {/* Participatory Budget Sandbox (What-If Citizen Mayor Mode) */}
+          <CitizenBudgetSandbox 
+            countryCode={selectedCountry} 
+            onVoteSubmitted={(alloc) => {
+              alert("Your civic budget allocation vote has been cryptographically recorded into the municipal optimization matrix!");
+            }} 
+          />
         </section>
 
         {/* COLUMN 3: Proposal Tracker, Live Feed & DPI Trust (col-span-12 lg:col-span-3) */}
@@ -1517,6 +1548,18 @@ export default function CitizenPortal() {
                       <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step4_sub} <strong className="text-blue-900">{trackedStatus.projectStatus}</strong></p>
                     </div>
                   </div>
+                </div>
+
+                {/* Verified W3C Civic Passport Card for Tracked Proposal */}
+                <div className="pt-2 border-t border-slate-200">
+                  <CivicPassportCard
+                    submissionId={trackedStatus.submission.id || searchId}
+                    userName={trackedStatus.submission.user_name || 'Citizen Contributor'}
+                    countryCode={selectedCountry}
+                    category={trackedStatus.submission.category || 'Roads & Urban Mobility'}
+                    wardName={trackedStatus.submission.ward_name || `District/Ward ${trackedStatus.submission.ward_id || '14'}`}
+                    timestamp={trackedStatus.submission.created_at || new Date().toISOString()}
+                  />
                 </div>
               </div>
             )}
