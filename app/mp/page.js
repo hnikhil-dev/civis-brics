@@ -184,11 +184,36 @@ export default function MPDashboard() {
 
   // Modal
   const [activeExplainProject, setActiveExplainProject] = useState(null);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seedSuccessMsg, setSeedSuccessMsg] = useState('');
+
+  // 1-Click Sovereign BRICS Dataset Loader / Reset Engine
+  const handleSeedBRICSData = async () => {
+    setIsSeeding(true);
+    try {
+      const res = await fetch('/api/seed', { method: 'POST' });
+      const data = await res.json();
+      if (data.success && data.data) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('civis_brics_storage_db', JSON.stringify(data.data));
+        }
+        setSeedSuccessMsg('✓ 25 Sovereign Projects & Indicators Primed for All 5 BRICS Nations!');
+        setTimeout(() => setSeedSuccessMsg(''), 4500);
+        await fetchStats();
+        await fetchVerificationQueue();
+        await fetchScoringAndPortfolio();
+      }
+    } catch (err) {
+      console.error("Failed to seed BRICS datasets:", err);
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   // Load KPI data and recent logs
   const fetchStats = async () => {
     try {
-      const res = await fetch('/api/stats');
+      const res = await fetch(`/api/stats?country=${selectedCountry}&currency=${selectedCurrency}`);
       const data = await res.json();
       if (data.success) {
         setStats(data);
@@ -206,7 +231,15 @@ export default function MPDashboard() {
         .from('extracted_issues')
         .select('*')
         .eq('status', 'pending_review');
-      setVerificationQueue(queueItems || []);
+
+      const jur = getJurisdiction(selectedCountry);
+      const allowedWardIds = new Set(
+        jur?.provinces[0]?.districts[0]?.sectors?.map(s => s.id) || []
+      );
+      const filteredQueue = (queueItems || []).filter(item => 
+        !selectedCountry || selectedCountry === 'ALL' || allowedWardIds.has(item.ward_id)
+      );
+      setVerificationQueue(filteredQueue);
     } catch (e) {
       console.error("Error loading verification queue:", e);
     }
@@ -223,7 +256,7 @@ export default function MPDashboard() {
       // Convert active budgetLimit back to base INR for algorithmic parity
       const budgetLimitInBase = convertCurrency(budgetLimit, selectedCurrency, 'INR');
 
-      const url = `/api/projects?weights=${weightString}&budget=${budgetLimitInBase}&scenario=${scenario}`;
+      const url = `/api/projects?country=${selectedCountry}&weights=${weightString}&budget=${budgetLimitInBase}&scenario=${scenario}`;
       const res = await fetch(url);
       const data = await res.json();
       if (data.success) {
@@ -446,11 +479,30 @@ export default function MPDashboard() {
   useEffect(() => {
     fetchStats();
     fetchVerificationQueue();
-  }, []);
+  }, [selectedCountry, selectedCurrency]);
 
   useEffect(() => {
     fetchScoringAndPortfolio();
-  }, [weights, budgetLimit, scenario]);
+  }, [selectedCountry, weights, budgetLimit, scenario, selectedCurrency]);
+
+  // Automatic Sovereign BRICS Seed Verification on Startup
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('civis_brics_storage_db');
+      if (!stored) {
+        handleSeedBRICSData();
+      } else {
+        try {
+          const parsed = JSON.parse(stored);
+          if (!parsed.projects || parsed.projects.length < 25 || !parsed.wards || parsed.wards.length < 25) {
+            handleSeedBRICSData();
+          }
+        } catch (e) {
+          handleSeedBRICSData();
+        }
+      }
+    }
+  }, []);
 
   const handlePresetChange = (presetName) => {
     setSelectedPreset(presetName);
@@ -678,6 +730,24 @@ export default function MPDashboard() {
                 {BRICS_CURRENCIES[currCode].symbol} {currCode}
               </button>
             ))}
+          </div>
+
+          {/* Quick Seed / Reset Sovereign BRICS Datasets */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleSeedBRICSData}
+              disabled={isSeeding}
+              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-xs transition active:scale-95 disabled:opacity-50"
+              title="Prime database with real-world benchmark datasets for Brazil, Russia, India, China, and South Africa"
+            >
+              <Activity className={`h-3.5 w-3.5 ${isSeeding ? 'animate-spin' : ''}`} />
+              <span>{isSeeding ? 'Priming...' : '⚡ Prime BRICS Data'}</span>
+            </button>
+            {seedSuccessMsg && (
+              <span className="hidden md:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-lg shadow-xs">
+                {seedSuccessMsg}
+              </span>
+            )}
           </div>
 
           {/* Portal Switcher */}

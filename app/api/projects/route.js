@@ -3,12 +3,16 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { calculateProjectScores } from '@/lib/scoring';
 import { optimizePortfolio } from '@/lib/optimizer';
+import { getJurisdiction } from '@/lib/jurisdictions';
 
-// GET Handler: Calculates real-time scores and runs portfolio optimizer
+// GET Handler: Calculates real-time scores and runs portfolio optimizer for sovereign BRICS jurisdictions
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     
+    // Parse country filter (IND, BRA, ZAF, CHN, RUS, or ALL)
+    const country = searchParams.get('country');
+
     // Parse custom weights (format: weights=demand:0.2,population:0.15...)
     const customWeights = {};
     const weightsParam = searchParams.get('weights');
@@ -22,72 +26,24 @@ export async function GET(request) {
     }
 
     // Parse budget and scenario optimizer parameters
-    const budgetLimit = parseInt(searchParams.get('budget') || '100000', 10);
+    const budgetLimit = parseInt(searchParams.get('budget') || '2500000', 10);
     const scenario = searchParams.get('scenario') || 'max_benefit';
 
     // 1. Calculate Priority Scores for all active projects
     let allProjectsScored = await calculateProjectScores(customWeights);
 
-    // Auto-seed projects 6-10 dynamically if missing (ensures 10-project portfolio simulation)
-    if (allProjectsScored.length > 0 && allProjectsScored.length < 10) {
-      try {
-        const extraClusters = [
-          { id: 6, category: 'sanitation', ward_id: 1, title: 'Sector 1 Public Sanitation Block', summary: 'Citizen demand to construct modern, hygienic public sanitation facilities in dense commercial corridors.', citizen_count: 19, spam_count: 0, status: 'active' },
-          { id: 7, category: 'water', ward_id: 3, title: 'Sector 3 Drinking Water Pipeline Extension', summary: 'Extension of clean drinking water mains to rapidly developing peripheral residential zones.', citizen_count: 11, spam_count: 0, status: 'active' },
-          { id: 8, category: 'roads', ward_id: 2, title: 'Sector 2 Arterial Bypass Resurfacing', summary: 'Complete asphalt re-tarring of the heavy transit bypass road to eliminate hazard potholes and restore freight mobility.', citizen_count: 22, spam_count: 1, status: 'active' },
-          { id: 9, category: 'sanitation', ward_id: 5, title: 'Sector 5 Storm Drainage Upgrade', summary: 'Upgrading concrete stormwater drainage channels to prevent recurring monsoon urban inundation.', citizen_count: 17, spam_count: 2, status: 'active' },
-          { id: 10, category: 'skill', ward_id: 1, title: 'Sector 1 Technical Innovation Center', summary: 'Establishment of an advanced vocational and digital technical skills center for youth employment certifications.', citizen_count: 8, spam_count: 0, status: 'active' }
-        ];
-
-        const extraProjects = [
-          { id: 6, cluster_id: 6, title: 'Public Sanitation Block Construction', category: 'sanitation', ward_id: 1, estimated_cost: 380000, status: 'Proposed' },
-          { id: 7, cluster_id: 7, title: 'Drinking Water Pipeline Extension', category: 'water', ward_id: 3, estimated_cost: 550000, status: 'Proposed' },
-          { id: 8, cluster_id: 8, title: 'Arterial Bypass Resurfacing Work', category: 'roads', ward_id: 2, estimated_cost: 920000, status: 'Proposed' },
-          { id: 9, cluster_id: 9, title: 'Drainage Network Upgrade & Desilting', category: 'sanitation', ward_id: 5, estimated_cost: 480000, status: 'Proposed' },
-          { id: 10, cluster_id: 10, title: 'Technical Innovation Center Setup', category: 'skill', ward_id: 1, estimated_cost: 1200000, status: 'Proposed' }
-        ];
-
-        for (const clust of extraClusters) {
-          await supabase.from('demand_clusters').upsert(clust, { onConflict: 'id' });
-        }
-        for (const proj of extraProjects) {
-          await supabase.from('projects').upsert(proj, { onConflict: 'id' });
-        }
-        
-        // Recalculate scores with the fresh seeds
-        allProjectsScored = await calculateProjectScores(customWeights);
-      } catch (e) {
-        console.error("Auto-seeding projects 6-10 failed:", e);
-      }
+    // 2. Filter projects by country jurisdiction if specified
+    if (country && country !== 'ALL') {
+      const jur = getJurisdiction(country);
+      const allowedWardIds = new Set(
+        jur?.provinces[0]?.districts[0]?.sectors?.map(s => s.id) || []
+      );
+      allProjectsScored = allProjectsScored.filter(
+        p => p.country_code === country || allowedWardIds.has(p.ward_id)
+      );
     }
 
-    // 2. Correct old projects 1-5 costs in live database if they are scaled incorrectly (< 100,000)
-    const hasOldCosts = allProjectsScored.some(p => p.estimated_cost < 100000);
-    if (hasOldCosts) {
-      try {
-        const correctCosts = {
-          1: 350000,
-          2: 280000,
-          3: 420000,
-          4: 600000,
-          5: 450000
-        };
-
-        for (const [id, cost] of Object.entries(correctCosts)) {
-          await supabase
-            .from('projects')
-            .update({ estimated_cost: cost })
-            .eq('id', parseInt(id, 10));
-        }
-        
-        // Re-calculate scores with corrected costs
-        allProjectsScored = await calculateProjectScores(customWeights);
-      } catch (e) {
-        console.error("Failed to correct old project costs in live database:", e);
-      }
-    }
-
-    // 3. Solve Portfolio Allocation
+    // 3. Solve Portfolio Allocation with MILP / Greedy Knapsack
     const portfolio = optimizePortfolio(allProjectsScored, budgetLimit, scenario);
 
     return NextResponse.json({
@@ -102,7 +58,8 @@ export async function GET(request) {
       },
       weightsUsed: customWeights,
       scenarioUsed: scenario,
-      budgetLimit
+      budgetLimit,
+      country: country || 'ALL'
     });
 
   } catch (error) {

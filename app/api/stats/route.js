@@ -2,20 +2,36 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { BRICS_CURRENCIES } from '@/lib/currency';
+import { getJurisdiction } from '@/lib/jurisdictions';
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const currency = searchParams.get('currency') || 'INR';
+    const country = searchParams.get('country');
     const customBudgetParam = searchParams.get('budget');
 
-    // Fetch all records for aggregation
-    const { data: submissions } = await supabase.from('submissions').select('*');
-    const { data: issues } = await supabase.from('extracted_issues').select('*');
-    const { data: clusters } = await supabase.from('demand_clusters').select('*');
-    const { data: projects } = await supabase.from('projects').select('*');
-    const { data: wards } = await supabase.from('wards').select('*');
-    const { data: logs } = await supabase.from('decision_logs').select('*');
+    // Fetch all records from sovereign database
+    let { data: submissions } = await supabase.from('submissions').select('*');
+    let { data: issues } = await supabase.from('extracted_issues').select('*');
+    let { data: clusters } = await supabase.from('demand_clusters').select('*');
+    let { data: projects } = await supabase.from('projects').select('*');
+    let { data: wards } = await supabase.from('wards').select('*');
+    let { data: logs } = await supabase.from('decision_logs').select('*');
+
+    // Multi-country jurisdiction filtering
+    if (country && country !== 'ALL') {
+      const jur = getJurisdiction(country);
+      const allowedWardIds = new Set(
+        jur?.provinces[0]?.districts[0]?.sectors?.map(s => s.id) || []
+      );
+
+      if (wards) wards = wards.filter(w => w.country_code === country || allowedWardIds.has(w.id));
+      if (submissions) submissions = submissions.filter(s => s.country_code === country);
+      if (issues) issues = issues.filter(i => allowedWardIds.has(i.ward_id));
+      if (clusters) clusters = clusters.filter(c => c.country_code === country || allowedWardIds.has(c.ward_id));
+      if (projects) projects = projects.filter(p => p.country_code === country || allowedWardIds.has(p.ward_id));
+    }
 
     const totalSubmissions = submissions?.length || 0;
     
@@ -72,6 +88,7 @@ export async function GET(request) {
 
     return NextResponse.json({
       success: true,
+      country: country || 'ALL',
       kpis: {
         totalSubmissions,
         verifiedCount,
