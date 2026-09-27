@@ -34,6 +34,17 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
+import { 
+  BRICS_CURRENCIES, 
+  convertCurrency, 
+  formatCurrency, 
+  getCurrencySymbol 
+} from '@/lib/currency';
+import { 
+  BRICS_JURISDICTIONS, 
+  getJurisdiction, 
+  getJurisdictionCoordinatesMap 
+} from '@/lib/jurisdictions';
 
 // Dynamically load Map to prevent Next.js SSR reference errors
 const HotspotMap = dynamic(() => import('@/components/HotspotMap'), { 
@@ -118,13 +129,45 @@ export default function MPDashboard() {
   // Navigation State (CTO Workspace View)
   const [activeTab, setActiveTab] = useState('map'); // map, registry, budget, audit
 
+  // BRICS Administrative Hierarchy & Dynamic Currency States
+  const [selectedCountry, setSelectedCountry] = useState('IND');
+  const [selectedCurrency, setSelectedCurrency] = useState('INR');
+
   // Configurable policy weights
   const [weights, setWeights] = useState(POLICY_PRESETS.standard);
   const [selectedPreset, setSelectedPreset] = useState('standard');
 
-  // Budget Optimization (Seeded in Rupees INR)
-  const [budgetLimit, setBudgetLimit] = useState(1300000); // Default ₹13 Lakhs
+  // Budget Optimization
+  const [budgetLimit, setBudgetLimit] = useState(1300000); // Default in active currency
   const [scenario, setScenario] = useState('max_benefit');
+
+  // Current Jurisdiction & Currency Helpers
+  const currentJurisdiction = getJurisdiction(selectedCountry);
+  const coordinatesMap = getJurisdictionCoordinatesMap(selectedCountry);
+  const currentCurrencyConfig = BRICS_CURRENCIES[selectedCurrency] || BRICS_CURRENCIES.INR;
+
+  // Converts a base INR database cost to the policymaker's chosen BRICS currency
+  const renderCost = (baseAmount) => {
+    const converted = convertCurrency(baseAmount, 'INR', selectedCurrency);
+    return formatCurrency(converted, selectedCurrency);
+  };
+
+  const handleCountryChange = (newCountry) => {
+    setSelectedCountry(newCountry);
+    const jur = getJurisdiction(newCountry);
+    const newCurr = jur.defaultCurrency;
+    setSelectedCurrency(newCurr);
+    const newSlider = BRICS_CURRENCIES[newCurr].budgetSlider;
+    setBudgetLimit(newSlider.default);
+    setSelectedWard(null);
+  };
+
+  const handleCurrencyChange = (newCurr) => {
+    const prevCurr = selectedCurrency;
+    setSelectedCurrency(newCurr);
+    const convertedLimit = convertCurrency(budgetLimit, prevCurr, newCurr);
+    setBudgetLimit(convertedLimit);
+  };
 
   // Database States
   const [allProjects, setAllProjects] = useState([]);
@@ -176,7 +219,10 @@ export default function MPDashboard() {
         .map(([k, v]) => `${k}:${(v / 100).toFixed(2)}`)
         .join(',');
 
-      const url = `/api/projects?weights=${weightString}&budget=${budgetLimit}&scenario=${scenario}`;
+      // Convert active budgetLimit back to base INR for algorithmic parity
+      const budgetLimitInBase = convertCurrency(budgetLimit, selectedCurrency, 'INR');
+
+      const url = `/api/projects?weights=${weightString}&budget=${budgetLimitInBase}&scenario=${scenario}`;
       const res = await fetch(url);
       const data = await res.json();
       if (data.success) {
@@ -575,33 +621,74 @@ export default function MPDashboard() {
       {/* Top Ashoka Stripe */}
       <div className="h-2 w-full bg-gradient-to-r from-[#f97316] via-white to-[#16a34a]"></div>
 
-      {/* Official Government Header */}
-      <header className="border-b border-slate-200 bg-white px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+      {/* Official Government & International DPG Header */}
+      <header className="border-b border-slate-200 bg-white px-6 py-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-4">
           <div className="h-14 w-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-sm">
             <Landmark className="h-8 w-8" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold text-blue-900 tracking-tight">
-              पब्लिक प्रायोरिटीज - निर्वाचन क्षेत्र विकास योजना
+            <div className="flex items-center gap-2">
+              <span className="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
+                BRICS DPG Standard
+              </span>
+              <span className="text-xs text-slate-500 font-bold">Code for Communities 2 — Track 1</span>
+            </div>
+            <h1 className="text-xl font-extrabold text-blue-900 tracking-tight mt-0.5">
+              CIVIS-BRICS: Infrastructure & Governance Platform
             </h1>
-            <h2 className="text-md font-bold text-slate-700">
-              People's Priorities - Pune South-East Constituency Planning Portal
-            </h2>
-            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Government of Maharashtra Initiative</p>
+            <p className="text-xs text-slate-600 font-semibold">
+              {currentJurisdiction.flag} {currentJurisdiction.name} &bull; {currentJurisdiction.description}
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Global Controls: Country Selector + Currency Switcher */}
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+          {/* BRICS Pilot Territory Selector */}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1.5 rounded-xl shadow-xs">
+            <MapPin className="h-4 w-4 text-blue-900 shrink-0" />
+            <select
+              value={selectedCountry}
+              onChange={(e) => handleCountryChange(e.target.value)}
+              className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
+            >
+              {BRICS_JURISDICTIONS.map(j => (
+                <option key={j.countryCode} value={j.countryCode}>
+                  {j.flag} {j.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Dynamic Currency Switcher */}
+          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-300">
+            {Object.keys(BRICS_CURRENCIES).map(currCode => (
+              <button
+                key={currCode}
+                onClick={() => handleCurrencyChange(currCode)}
+                className={`px-2 py-1 rounded-lg text-xs font-bold transition ${
+                  selectedCurrency === currCode
+                    ? 'bg-blue-900 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title={BRICS_CURRENCIES[currCode].name}
+              >
+                {BRICS_CURRENCIES[currCode].symbol} {currCode}
+              </button>
+            ))}
+          </div>
+
+          {/* Portal Switcher */}
           <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-350">
             <Link 
               href="/"
-              className="px-4 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-800 transition"
+              className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-800 transition"
             >
               Citizen Ingest
             </Link>
-            <span className="bg-blue-900 text-white px-4 py-1.5 rounded-lg text-xs font-black shadow-sm">
-              MP Workspace
+            <span className="bg-blue-900 text-white px-3 py-1.5 rounded-lg text-xs font-black shadow-sm">
+              Policy Workspace
             </span>
           </div>
         </div>
@@ -760,6 +847,9 @@ export default function MPDashboard() {
                     onSelectWard={setSelectedWard} 
                     selectedWardId={selectedWard}
                     submissions={stats?.submissions || []}
+                    center={currentJurisdiction.center}
+                    zoom={currentJurisdiction.zoom}
+                    coordinatesMap={coordinatesMap}
                   />
                 </div>
 
@@ -968,7 +1058,7 @@ export default function MPDashboard() {
                               {project.ward_name}
                             </td>
                             <td className="p-3 text-slate-950 font-bold">
-                              ₹{project.estimated_cost.toLocaleString('en-IN')}
+                              {renderCost(project.estimated_cost)}
                             </td>
                             <td className="p-3 text-center text-slate-950 font-extrabold text-sm">
                               {project.total_score}
@@ -1025,25 +1115,25 @@ export default function MPDashboard() {
                 
                 {/* Budget Limit Config */}
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-slate-700 font-bold">Constituency Budget Cap:</span>
+                  <span className="text-xs text-slate-700 font-bold">Capital Budget Cap ({selectedCurrency}):</span>
                   <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 px-3 py-1.5 rounded-lg">
-                    <span className="text-slate-500 font-bold">₹</span>
+                    <span className="text-slate-500 font-bold">{currentCurrencyConfig.symbol}</span>
                     <input 
                       type="number"
                       value={budgetLimit}
                       onChange={(e) => setBudgetLimit(parseInt(e.target.value) || 0)}
-                      step="50000"
+                      step={currentCurrencyConfig.budgetSlider.step}
                       className="bg-transparent text-sm text-slate-950 font-black w-24 focus:outline-none"
                     />
                   </div>
                   <input 
                     type="range" 
-                    min="200000"
-                    max="2500000"
-                    step="50000"
+                    min={currentCurrencyConfig.budgetSlider.min}
+                    max={currentCurrencyConfig.budgetSlider.max}
+                    step={currentCurrencyConfig.budgetSlider.step}
                     value={budgetLimit}
                     onChange={(e) => setBudgetLimit(parseInt(e.target.value, 10))}
-                    className="h-1 w-24 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-900"
+                    className="h-1 w-28 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-900"
                   />
                 </div>
               </div>
@@ -1080,11 +1170,11 @@ export default function MPDashboard() {
               <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border text-center text-xs font-bold">
                 <div>
                   <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Allocated Cost</span>
-                  <span className="text-base font-black text-slate-900">₹{portfolio.totalSpent.toLocaleString('en-IN')}</span>
+                  <span className="text-base font-black text-slate-900">{renderCost(portfolio.totalSpent)}</span>
                 </div>
                 <div className="border-y py-2 min-[480px]:border-y-0 min-[480px]:border-x min-[480px]:py-0 border-slate-200">
                   <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Remaining Balance</span>
-                  <span className="text-base font-black text-blue-900">₹{portfolio.remainingBudget.toLocaleString('en-IN')}</span>
+                  <span className="text-base font-black text-blue-900">{renderCost(portfolio.remainingBudget)}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Project Distribution</span>
@@ -1130,7 +1220,7 @@ export default function MPDashboard() {
                             <p className="text-[10px] text-slate-500 mt-0.5">Ward {proj.ward_id} • {proj.category.toUpperCase()}</p>
                           </div>
                           <div className="text-right shrink-0 ml-4">
-                            <p className="font-extrabold text-slate-900">₹{proj.estimated_cost.toLocaleString('en-IN')}</p>
+                            <p className="font-extrabold text-slate-900">{renderCost(proj.estimated_cost)}</p>
                             <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">Score: {proj.total_score}</span>
                           </div>
                         </div>
@@ -1147,7 +1237,7 @@ export default function MPDashboard() {
                       Deferred / Queue ({portfolio.deferred?.length || 0})
                     </h4>
                     <span className="text-xs font-bold text-slate-600">
-                      Total: ₹{portfolio.deferred?.reduce((sum, p) => sum + p.estimated_cost, 0).toLocaleString('en-IN')}
+                      Total: {renderCost(portfolio.deferred?.reduce((sum, p) => sum + (p.estimated_cost || 0), 0) || 0)}
                     </span>
                   </div>
 
@@ -1162,7 +1252,7 @@ export default function MPDashboard() {
                             <p className="text-[10px] text-slate-500 mt-0.5">Ward {proj.ward_id} • {proj.category.toUpperCase()}</p>
                           </div>
                           <div className="text-right shrink-0 ml-4">
-                            <p className="font-extrabold text-slate-900">₹{proj.estimated_cost.toLocaleString('en-IN')}</p>
+                            <p className="font-extrabold text-slate-900">{renderCost(proj.estimated_cost)}</p>
                             <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">Score: {proj.total_score}</span>
                           </div>
                         </div>

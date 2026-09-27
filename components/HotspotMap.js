@@ -1,19 +1,38 @@
 // components/HotspotMap.js
 'use client';
 
-import { MapContainer, TileLayer, Circle, Popup, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, Circle, Popup, CircleMarker, useMap } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 
-// Centers for the 5 Wards in Pune South-East
-const WARD_COORDINATES = {
-  1: { center: [18.536, 73.893], color: '#16a34a' }, // Ward 1: KP Extension (Green - Low Deficit)
-  2: { center: [18.508, 73.926], color: '#d97706' }, // Ward 2: Hadapsar (Yellow - Medium Deficit)
-  3: { center: [18.488, 73.896], color: '#ea580c' }, // Ward 3: Wanowrie (Orange - Medium-High Deficit)
-  4: { center: [18.479, 73.890], color: '#dc2626' }, // Ward 4: Kondhwa (Red - Severe Water Deficit)
-  5: { center: [18.538, 73.915], color: '#dc2626' }  // Ward 5: Mundhwa (Red - Severe Road Deficit)
+// Default baseline centers for Pune South-East
+const DEFAULT_COORDINATES = {
+  1: { center: [18.536, 73.893], color: '#16a34a' },
+  2: { center: [18.508, 73.926], color: '#d97706' },
+  3: { center: [18.488, 73.896], color: '#ea580c' },
+  4: { center: [18.479, 73.890], color: '#dc2626' },
+  5: { center: [18.538, 73.915], color: '#dc2626' }
 };
 
-export default function HotspotMap({ wardStats, onSelectWard, selectedWardId, submissions = [] }) {
+// Auto-pans the Leaflet map when jurisdiction or nation changes
+function RecenterMap({ center, zoom }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center && Array.isArray(center) && center.length === 2) {
+      map.setView(center, zoom || 12, { animate: true, duration: 1.2 });
+    }
+  }, [center, zoom, map]);
+  return null;
+}
+
+export default function HotspotMap({ 
+  wardStats, 
+  onSelectWard, 
+  selectedWardId, 
+  submissions = [], 
+  center = [18.510, 73.905], 
+  zoom = 12,
+  coordinatesMap = null 
+}) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -28,8 +47,7 @@ export default function HotspotMap({ wardStats, onSelectWard, selectedWardId, su
     );
   }
 
-  // Pune South-East general center
-  const position = [18.510, 73.905];
+  const activeCoordinates = coordinatesMap || DEFAULT_COORDINATES;
 
   // Filter submissions that have valid GPS tags
   const geotaggedSubmissions = submissions.filter(
@@ -39,25 +57,26 @@ export default function HotspotMap({ wardStats, onSelectWard, selectedWardId, su
   return (
     <div className="h-56 sm:h-72 md:h-96 lg:h-[420px] w-full rounded-xl overflow-hidden border border-slate-300 shadow-md relative z-10">
       <MapContainer 
-        center={position} 
-        zoom={12} 
+        center={center} 
+        zoom={zoom} 
         style={{ height: '100%', width: '100%', background: '#f1f5f9' }}
         scrollWheelZoom={false}
       >
+        <RecenterMap center={center} zoom={zoom} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" // Professional Light Voyager Tiles
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         
-        {/* Render Ward Circles */}
+        {/* Render Ward / Sector Hotspot Circles */}
         {wardStats?.map(ward => {
-          const coordInfo = WARD_COORDINATES[ward.ward_id];
+          const coordInfo = activeCoordinates[ward.ward_id] || DEFAULT_COORDINATES[ward.ward_id];
           if (!coordInfo) return null;
 
           const isSelected = selectedWardId === ward.ward_id;
           
-          // Radius scales with citizen count (hotspot size)
-          const radius = 600 + (ward.citizen_count * 15);
+          // Radius scales dynamically with citizen count (hotspot magnitude)
+          const radius = 600 + ((ward.citizen_count || 1) * 15);
 
           return (
             <Circle
