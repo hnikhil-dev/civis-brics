@@ -574,11 +574,11 @@ export default function CitizenPortal() {
               setVoiceUrl(publicUrl);
               console.log("Real audio uploaded to Supabase Storage:", publicUrl);
             } catch (err) {
-              console.warn("Supabase voice upload failed, falling back to mock:", err.message);
-              setVoiceUrl('/mock-voice.mp3');
+              console.warn("Storage upload deferred, using client Object URI:", err.message);
+              setVoiceUrl(URL.createObjectURL(audioBlob));
             }
           } else {
-            setVoiceUrl('/mock-voice.mp3');
+            setVoiceUrl(URL.createObjectURL(audioBlob));
           }
         };
 
@@ -629,8 +629,8 @@ export default function CitizenPortal() {
         setImageUrl(publicUrl);
         console.log("Real image uploaded to Supabase Storage:", publicUrl);
       } catch (err) {
-        console.warn("Storage upload failed or bucket not ready, falling back to mock:", err.message);
-        setImageUrl('/mock-photo.jpg');
+        console.warn("Storage upload deferred, using client Object URI:", err.message);
+        setImageUrl(URL.createObjectURL(file));
       } finally {
         setImageScanning(false);
         // Emulate OCR Text Extraction

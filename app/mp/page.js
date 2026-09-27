@@ -802,7 +802,7 @@ export default function MPDashboard() {
             <div>
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Allocated Portfolio Budget</span>
               <p className="text-2xl font-black text-blue-900 mt-1">
-                ₹{(stats?.kpis?.totalAllocatedBudget || 0).toLocaleString('en-IN')}
+                {renderCost(stats?.kpis?.totalAllocatedBudget || 0)}
               </p>
             </div>
             <div className="h-11 w-11 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900">
@@ -1221,7 +1221,7 @@ export default function MPDashboard() {
                         </button>
                       )}
                       <span className="text-xs font-bold text-emerald-800">
-                        Total: ₹{portfolio.totalSpent.toLocaleString('en-IN')}
+                        Total: {renderCost(portfolio.totalSpent)}
                       </span>
                     </div>
                   </div>
