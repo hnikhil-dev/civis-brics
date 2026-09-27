@@ -70,25 +70,31 @@
 ```
 ├── app/
 │   ├── api/
+│   │   ├── audit/             # Immutable SHA-256 decision ledger & proof verification
+│   │   ├── openapi/           # OpenAPI 3.1.0 specification for national DPI consumers
 │   │   ├── projects/          # Priority scoring & adaptive budget optimization
-│   │   ├── stats/             # Regional indicators & census analytics
-│   │   └── submissions/       # Multilingual intake & lifecycle tracking
+│   │   ├── stats/             # Regional indicators & cross-jurisdiction analytics
+│   │   └── submissions/       # Multilingual intake & W3C Verifiable Credentials
 │   ├── mp/                    # Inter-Ministerial / Policy Dashboard
 │   ├── layout.js              # Global application layout
-│   └── page.js                # Public Citizen Multimodal Portal
+│   └── page.js                # Public Citizen Multimodal Portal (6 BRICS Languages)
 ├── components/
-│   └── HotspotMap.js          # Interactive GIS Hotspot Visualization
+│   └── HotspotMap.js          # Interactive GIS Hotspot Visualization & Leaflet auto-panning
 ├── db/
 │   └── schema.sql             # PostgreSQL relational tables & vector schemas
 ├── lib/
 │   ├── clustering.js          # Spatial-semantic clustering & anti-astroturfing
+│   ├── currency.js            # Real-time multi-currency parity engine (INR, BRL, RUB, CNY, ZAR, USD)
+│   ├── dpg.js                 # W3C Verifiable Credentials & SHA-256 cryptographic audit engine
+│   ├── jurisdictions.js       # N-tier administrative topology (India, Brazil, Russia, China, South Africa)
 │   ├── optimizer.js           # Adaptive Knapsack & DAG dependency solver
 │   ├── parser.js              # Gemini multimodal parser & dialect translation
 │   ├── scoring.js             # Dynamic Multi-Criteria Decision Analysis (MCDA)
 │   ├── security.js            # Token-bucket rate limiter & XSS sanitizer
 │   └── supabase.js            # Database client & high-speed caching
 ├── scratch/
-│   └── stress-test.js         # Automated load, rate limit, & algorithmic test suite
+│   ├── stress-test.js         # Automated 1,000-scenario load, rate limit, & algorithmic test suite
+│   └── test-dpg.mjs           # W3C Verifiable Credential & cryptographic verification tests
 └── system_flowchart.md        # Complete system architecture specification
 ```
 
@@ -115,10 +121,14 @@ npm install
 npm run build
 ```
 
-### 4. Execute Algorithmic Verification Tests
-Run the automated test suite verifying Jaccard similarities, Knapsack DP accuracy, concurrency throughput, and rate limiting:
+### 4. Execute Algorithmic & DPG Verification Tests
+Run the automated test suite verifying Jaccard similarities, Knapsack DP accuracy, 1,000-scenario concurrency throughput, rate limiting, and W3C cryptographic signatures:
 ```bash
+# Algorithmic & 1,000-scenario stress test
 node scratch/stress-test.js
+
+# W3C Verifiable Credentials & cryptographic ledger tests
+node scratch/test-dpg.mjs
 ```
 
 ### 5. Launch Development Server
@@ -127,8 +137,10 @@ npm run dev
 ```
 * **Citizen Portal:** `http://localhost:3000`
 * **Policy & Planning Workspace:** `http://localhost:3000/mp`
+* **OpenAPI 3.1.0 Specification:** `http://localhost:3000/api/openapi`
+* **Immutable Audit Ledger:** `http://localhost:3000/api/audit`
 
 ---
 
 ## 📜 Digital Public Good (DPG) License
-CIVIS-BRICS is released under the **MIT Open Source License**. Designed in adherence with the UN Digital Public Goods Standard for international public sector innovation.
+CIVIS-BRICS is released under the **MIT Open Source License**. Designed in strict adherence with the UN Digital Public Goods Standard (9/9 Criteria) for international public sector innovation.
