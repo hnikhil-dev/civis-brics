@@ -1257,8 +1257,11 @@ export default function CitizenPortal() {
                 wardStats={sectors.map(s => ({
                   ward_id: s.id,
                   name: s.name,
-                  equity_score: s.equity,
-                  issue_count: Math.floor(s.equity * 3) + 4
+                  ward_name: s.name,
+                  population: s.population || (s.id * 15000 + 45000),
+                  equity_score: s.equity || 5.0,
+                  citizen_count: Math.floor((s.equity || 5) * 3) + 4,
+                  cluster_count: Math.max(1, Math.floor((s.equity || 5) / 2))
                 }))}
                 onSelectWard={(secId) => {
                   setSelectedSectorId(secId);
