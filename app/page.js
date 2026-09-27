@@ -461,27 +461,23 @@ const RECENT_BRICS_FEED = [
 ];
 
 export default function CitizenPortal() {
-  // Sovereign BRICS Jurisdiction State (defaults to Brazil, freely switchable across all 5 nations)
-  const [selectedCountry, setSelectedCountry] = useState('BRA');
+  // Multilingual active state - DEFAULT IS ENGLISH
+  const [currentLang, setCurrentLang] = useState('en');
+  const t = LANG_DICTS[currentLang] || LANG_DICTS.en;
+
+  // Sovereign BRICS Jurisdiction State (defaults to India, dynamically auto-detected)
+  const [selectedCountry, setSelectedCountry] = useState('IND');
   const currentJurisdiction = getJurisdiction(selectedCountry);
   const jurisdictionCoordinatesMap = getJurisdictionCoordinatesMap(selectedCountry);
   const sectors = currentJurisdiction.provinces[0]?.districts[0]?.sectors || [];
-  const [selectedSectorId, setSelectedSectorId] = useState(sectors[0]?.id || 101);
+  const [selectedSectorId, setSelectedSectorId] = useState(sectors[0]?.id || 1);
   const [mapSubmissions, setMapSubmissions] = useState([]);
+  const [detectionNotice, setDetectionNotice] = useState('Detecting regional node...');
 
-  // Multilingual active state
-  const [currentLang, setCurrentLang] = useState('pt');
-  const t = LANG_DICTS[currentLang] || LANG_DICTS.en;
-  
-  // Audio recording refs
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
-  const streamRef = useRef(null);
-
-  // Submission Form State (pre-populated with active BRICS demo scenario)
-  const [userName, setUserName] = useState('Lucas Silva');
-  const [suggestionText, setSuggestionText] = useState('No Setor 4 (Itaquera Zona Leste), a drenagem pluvial e rede de saneamento básico requerem ampliação urgente para conter enchentes recorrentes nas avenidas principais.');
-  const [gpsCoords, setGpsCoords] = useState({ lat: -23.541, lng: -46.456 });
+  // Submission Form State (pre-populated with active BRICS demo scenario in English)
+  const [userName, setUserName] = useState('Priyanka Sharma');
+  const [suggestionText, setSuggestionText] = useState('In Ward 4 (Kondhwa Khurd), primary healthcare dispensary and municipal drinking water feeder main require emergency expansion due to rapid population growth.');
+  const [gpsCoords, setGpsCoords] = useState({ lat: 18.479, lng: 73.890 });
   const [gpsStatus, setGpsStatus] = useState('active'); // inactive, acquiring, active, failed
   const [dataConsent, setDataConsent] = useState(true);
   
@@ -503,6 +499,117 @@ export default function CitizenPortal() {
   const [searchId, setSearchId] = useState('sub-init-1');
   const [trackedStatus, setTrackedStatus] = useState(null);
   const [trackError, setTrackError] = useState(null);
+
+  // Automatically detect client location and select sovereign node & language
+  useEffect(() => {
+    // 1. Instant Timezone-based auto-detection
+    const detectFromTimezone = () => {
+      try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        if (tz.includes('Calcutta') || tz.includes('Kolkata') || tz.includes('India') || tz.includes('Colombo')) {
+          return { country: 'IND', lang: 'en', label: 'India (Asia/Kolkata)' };
+        }
+        if (tz.includes('Sao_Paulo') || tz.includes('Brazil') || tz.includes('Fortaleza') || tz.includes('Manaus') || tz.includes('Recife') || tz.includes('Cuiaba')) {
+          return { country: 'BRA', lang: 'pt', label: 'Brazil (America/Sao_Paulo)' };
+        }
+        if (tz.includes('Moscow') || tz.includes('Yekaterinburg') || tz.includes('Novosibirsk') || tz.includes('Samara') || tz.includes('Kaliningrad')) {
+          return { country: 'RUS', lang: 'ru', label: 'Russia (Europe/Moscow)' };
+        }
+        if (tz.includes('Shanghai') || tz.includes('Beijing') || tz.includes('Chongqing') || tz.includes('Urumqi') || tz.includes('Harbin')) {
+          return { country: 'CHN', lang: 'zh', label: 'China (Asia/Shanghai)' };
+        }
+        if (tz.includes('Johannesburg') || tz.includes('South_Africa')) {
+          return { country: 'ZAF', lang: 'en', label: 'South Africa (Africa/Johannesburg)' };
+        }
+      } catch (_) {}
+      return null;
+    };
+
+    const tzResult = detectFromTimezone();
+    if (tzResult) {
+      setSelectedCountry(tzResult.country);
+      setCurrentLang(tzResult.lang);
+      setDetectionNotice(`Auto-detected: ${tzResult.label}`);
+      
+      const jur = getJurisdiction(tzResult.country);
+      const secList = jur.provinces[0]?.districts[0]?.sectors || [];
+      if (secList.length > 0) {
+        setSelectedSectorId(secList[0].id);
+        setGpsCoords({ lat: secList[0].center[0], lng: secList[0].center[1] });
+        setGpsStatus('active');
+      }
+
+      const demo = BRICS_DEMO_CASES[tzResult.country];
+      if (demo) {
+        setUserName(demo.name);
+        setSuggestionText(demo.text);
+      }
+    } else {
+      setDetectionNotice('Global Sovereign Node (Default: English)');
+    }
+
+    // 2. High-precision Geolocation refinement (if browser GPS is enabled)
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          
+          const BRICS_CENTERS = [
+            { code: 'IND', lat: 18.510, lng: 73.905, lang: 'en', name: 'India' },
+            { code: 'BRA', lat: -23.5505, lng: -46.6333, lang: 'pt', name: 'Brazil' },
+            { code: 'RUS', lat: 55.7558, lng: 37.6173, lang: 'ru', name: 'Russia' },
+            { code: 'CHN', lat: 23.1291, lng: 113.2644, lang: 'zh', name: 'China' },
+            { code: 'ZAF', lat: -26.2041, lng: 28.0473, lang: 'en', name: 'South Africa' }
+          ];
+
+          const calcDist = (lat1, lon1, lat2, lon2) => {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          };
+
+          let nearest = BRICS_CENTERS[0];
+          let minDist = Infinity;
+          for (const b of BRICS_CENTERS) {
+            const d = calcDist(lat, lng, b.lat, b.lng);
+            if (d < minDist) {
+              minDist = d;
+              nearest = b;
+            }
+          }
+
+          if (nearest && minDist < 4500) {
+            setSelectedCountry(nearest.code);
+            setCurrentLang(nearest.lang);
+            setDetectionNotice(`GPS Verified: ${nearest.name} (${lat.toFixed(2)}, ${lng.toFixed(2)})`);
+            setGpsCoords({ lat, lng });
+            setGpsStatus('active');
+
+            const jur = getJurisdiction(nearest.code);
+            const secList = jur.provinces[0]?.districts[0]?.sectors || [];
+            if (secList.length > 0) {
+              setSelectedSectorId(secList[0].id);
+            }
+
+            const demo = BRICS_DEMO_CASES[nearest.code];
+            if (demo) {
+              setUserName(demo.name);
+              setSuggestionText(demo.text);
+            }
+          }
+        },
+        () => {
+          // Timezone detection remains active if GPS is declined
+        },
+        { timeout: 4000, maximumAge: 60000 }
+      );
+    }
+  }, []);
 
   // Load submissions for the interactive map
   useEffect(() => {
@@ -874,7 +981,7 @@ export default function CitizenPortal() {
     }
   };
 
-  const handleCountryChange = (countryCode) => {
+  const handleCountryChange = (countryCode, manual = false) => {
     setSelectedCountry(countryCode);
     const jur = getJurisdiction(countryCode);
     const secList = jur.provinces[0]?.districts[0]?.sectors || [];
@@ -887,14 +994,22 @@ export default function CitizenPortal() {
     if (demo) {
       setUserName(demo.name);
       setSuggestionText(demo.text);
-      if (demo.lang) {
+      if (manual && demo.lang) {
         setCurrentLang(demo.lang);
       }
     }
+    const countryNames = {
+      IND: 'India',
+      BRA: 'Brazil',
+      ZAF: 'South Africa',
+      CHN: 'China',
+      RUS: 'Russia'
+    };
+    setDetectionNotice(`Selected: ${countryNames[countryCode] || countryCode}`);
   };
 
   const loadDemoScenario = () => {
-    const demo = BRICS_DEMO_CASES[selectedCountry] || BRICS_DEMO_CASES.BRA;
+    const demo = BRICS_DEMO_CASES[selectedCountry] || BRICS_DEMO_CASES.IND;
     setUserName(demo.name);
     setSuggestionText(demo.text);
     setGpsCoords({ lat: demo.lat, lng: demo.lng });
@@ -936,20 +1051,30 @@ export default function CitizenPortal() {
 
         {/* Center: BRICS Sovereign Nation Switcher */}
         <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-300 overflow-x-auto max-w-full">
-          {BRICS_JURISDICTIONS.map((j) => (
-            <button
-              key={j.countryCode}
-              onClick={() => handleCountryChange(j.countryCode)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition whitespace-nowrap ${
-                selectedCountry === j.countryCode
-                  ? 'bg-blue-900 text-white shadow-sm ring-2 ring-blue-500/20'
-                  : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'
-              }`}
-            >
-              <span className="text-sm">{j.flag}</span>
-              <span>{j.name.split(' ')[0]}</span>
-            </button>
-          ))}
+          {BRICS_JURISDICTIONS.map((j) => {
+            const countryNames = {
+              IND: 'India',
+              BRA: 'Brazil',
+              ZAF: 'South Africa',
+              CHN: 'China',
+              RUS: 'Russia'
+            };
+            const countryLabel = countryNames[j.countryCode] || j.name;
+            return (
+              <button
+                key={j.countryCode}
+                onClick={() => handleCountryChange(j.countryCode, true)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition whitespace-nowrap ${
+                  selectedCountry === j.countryCode
+                    ? 'bg-blue-900 text-white shadow-sm ring-2 ring-blue-500/20'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'
+                }`}
+              >
+                <span className="text-sm">{j.flag}</span>
+                <span>{countryLabel}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Right: Language Switcher & Policymaker Link */}
@@ -993,6 +1118,12 @@ export default function CitizenPortal() {
             <span className="text-base">{currentJurisdiction.flag}</span>
             <span>Active Sovereign Node: {currentJurisdiction.name}</span>
           </span>
+          {detectionNotice && (
+            <span className="bg-emerald-950/90 text-emerald-300 border border-emerald-700/80 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
+              <MapPin className="h-3 w-3 text-emerald-400" />
+              {detectionNotice}
+            </span>
+          )}
           <span className="text-slate-500 hidden sm:inline">&bull;</span>
           <span className="text-slate-300 font-semibold text-[11px] hidden md:inline">
             {currentJurisdiction.description}
