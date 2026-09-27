@@ -13,12 +13,18 @@ const DEFAULT_COORDINATES = {
   5: { center: [18.538, 73.915], color: '#dc2626' }
 };
 
-// Auto-pans the Leaflet map when jurisdiction or nation changes
+// Auto-pans the Leaflet map when jurisdiction or nation changes safely without animation crashes
 function RecenterMap({ center, zoom }) {
   const map = useMap();
   useEffect(() => {
-    if (center && Array.isArray(center) && center.length === 2) {
-      map.setView(center, zoom || 12, { animate: true, duration: 1.2 });
+    if (!map) return;
+    try {
+      const pane = map.getPane ? map.getPane('mapPane') : null;
+      if (pane && center && Array.isArray(center) && center.length === 2) {
+        map.setView(center, zoom || 12, { animate: false });
+      }
+    } catch (_) {
+      // Safe fallback if container is detaching during hot reload
     }
   }, [center, zoom, map]);
   return null;
@@ -37,12 +43,13 @@ export default function HotspotMap({
 
   useEffect(() => {
     setMounted(true);
+    return () => setMounted(false);
   }, []);
 
   if (!mounted) {
     return (
       <div className="h-56 sm:h-72 md:h-96 lg:h-[420px] w-full rounded-xl bg-slate-100 flex items-center justify-center animate-pulse border border-slate-350">
-        <span className="text-slate-500 font-bold">Loading Interactive Maps...</span>
+        <span className="text-slate-500 font-bold text-xs">Loading Interactive Maps...</span>
       </div>
     );
   }
@@ -51,12 +58,16 @@ export default function HotspotMap({
 
   // Filter submissions that have valid GPS tags
   const geotaggedSubmissions = submissions.filter(
-    sub => sub.gps_lat && sub.gps_lng && !isNaN(parseFloat(sub.gps_lat)) && !isNaN(parseFloat(sub.gps_lng))
+    sub => sub && sub.gps_lat && sub.gps_lng && !isNaN(parseFloat(sub.gps_lat)) && !isNaN(parseFloat(sub.gps_lng))
   );
+
+  // Unique key guarantees React-Leaflet never reuses a mutated DOM container
+  const mapKey = `leaflet-canvas-${center?.[0]?.toFixed(2) || '0'}-${center?.[1]?.toFixed(2) || '0'}-${zoom || 12}`;
 
   return (
     <div className="h-56 sm:h-72 md:h-96 lg:h-[420px] w-full rounded-xl overflow-hidden border border-slate-300 shadow-md relative z-10">
       <MapContainer 
+        key={mapKey}
         center={center} 
         zoom={zoom} 
         style={{ height: '100%', width: '100%', background: '#f1f5f9' }}
