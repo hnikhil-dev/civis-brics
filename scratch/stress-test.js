@@ -93,7 +93,7 @@ function runUnitTests() {
 // 2. LOAD & LATENCY PERFORMANCE TESTING
 // ==========================================
 function runLoadTest() {
-  console.log('--- Running Performance Load Tests (100 Concurrent Recalculations) ---');
+  console.log('--- Running Performance Load Tests (1,000 Concurrent Recalculations) ---');
   
   // Simulate concurrent portfolio optimizations
   const mockProjects = Array.from({ length: 15 }, (_, i) => ({
@@ -103,7 +103,7 @@ function runLoadTest() {
     total_score: Math.round(Math.random() * 50 + 50)
   }));
 
-  const iterations = 100;
+  const iterations = 1000;
   const start = Date.now();
   const latencies = [];
 
