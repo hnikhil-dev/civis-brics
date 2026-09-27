@@ -124,10 +124,11 @@ npm run build
 ### 4. Execute Algorithmic & DPG Verification Tests
 Run the automated test suite verifying Jaccard similarities, Knapsack DP accuracy, 1,000-scenario concurrency throughput, rate limiting, and W3C cryptographic signatures:
 ```bash
-# Algorithmic & 1,000-scenario stress test
-node scratch/stress-test.js
+# Run all automated tests (Unit, Stress, Concurrency, and W3C DPG Cryptography)
+npm test
 
-# W3C Verifiable Credentials & cryptographic ledger tests
+# Or run individual test suites:
+node scratch/stress-test.js
 node scratch/test-dpg.mjs
 ```
 

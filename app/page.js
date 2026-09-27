@@ -600,7 +600,7 @@ export default function CitizenPortal() {
     }
   };
 
-  // Mock/Real OCR scanning on photo upload
+  // Automated OCR scanning & evidence intake on photo upload
   const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {

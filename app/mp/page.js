@@ -501,9 +501,9 @@ export default function MPDashboard() {
 
       if (item && item[0]) {
         const { clusterSubmission } = await import('@/lib/clustering');
-        const subMock = { id: item[0].submission_id };
-        const parsedMock = { category, ward_id: wardId, issue_details: details, trust_score: trust, confidence_score: 0.95, status: 'verified' };
-        await clusterSubmission(subMock, parsedMock);
+        const submissionRecord = { id: item[0].submission_id };
+        const parsedData = { category, ward_id: wardId, issue_details: details, trust_score: trust, confidence_score: 0.95, status: 'verified' };
+        await clusterSubmission(submissionRecord, parsedData);
       }
 
       fetchStats();

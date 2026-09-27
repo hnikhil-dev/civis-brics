@@ -1,12 +1,14 @@
 {
-  "name": "constituency-dev",
-  "version": "0.1.0",
+  "name": "civis-brics",
+  "version": "1.0.0",
+  "description": "CIVIS-BRICS: Citizens' Voice & Infrastructure Synthesis - Digital Public Good for Participatory Governance",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node scratch/stress-test.js && node scratch/test-dpg.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.1",
