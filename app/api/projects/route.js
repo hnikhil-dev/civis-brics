@@ -111,11 +111,12 @@ export async function GET(request) {
   }
 }
 
-// POST Handler: Handles MP approvals, status changes, and logs audit decision
+// POST Handler: Handles MP approvals, status changes, and logs cryptographically signed audit decision
 export async function POST(request) {
   try {
+    const { generateAuditRecord } = await import('@/lib/dpg');
     const body = await request.json();
-    const { project_id, action, actor, previous_state, new_state, reason } = body;
+    const { project_id, action, actor, previous_state, new_state, reason, budget_cost, currency } = body;
 
     if (!project_id || !action || !new_state) {
       return NextResponse.json(
@@ -135,26 +136,38 @@ export async function POST(request) {
       return NextResponse.json({ error: projErr.message }, { status: 500 });
     }
 
-    // 2. Insert transaction into audit decision logs
+    // 2. Generate cryptographic audit record with SHA-256 signature
+    const auditRecord = generateAuditRecord({
+      projectId: project_id,
+      action,
+      actor: actor || 'Policymaker Office',
+      previousState: previous_state || 'Proposed',
+      newState: new_state,
+      reason: reason || 'Approved through Pareto optimization workspace',
+      budgetCost: budget_cost,
+      currency: currency || 'INR'
+    });
+
+    // 3. Insert transaction into audit decision logs
     const { error: logErr } = await supabase
       .from('decision_logs')
       .insert({
         project_id,
         action,
-        actor: actor || 'MP Office',
+        actor: actor || 'Policymaker Office',
         previous_state: previous_state || 'Proposed',
         new_state,
-        reason: reason || 'Approved through dashboard workspace'
+        reason: auditRecord.reason
       });
 
     if (logErr) {
       console.error("Error writing audit decision log:", logErr);
-      // Don't fail the whole request if only the log fails, but warn
     }
 
     return NextResponse.json({
       success: true,
       message: `Project ${project_id} transitioned from ${previous_state} to ${new_state} successfully.`,
+      audit: auditRecord.auditMetadata,
       logged: !logErr
     });
 

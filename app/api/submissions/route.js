@@ -79,6 +79,10 @@ export async function POST(request) {
     // 3. semantic clustering, duplicate campaign evaluation, and project mapping
     const clusteringResult = await clusterSubmission(submission, parsed);
 
+    // 4. Generate W3C Verifiable Credential digital receipt
+    const { generateSubmissionCredential } = await import('@/lib/dpg');
+    const verifiableCredential = generateSubmissionCredential(submission, parsed);
+
     return NextResponse.json({
       success: true,
       submission_id: submissionId,
@@ -92,7 +96,8 @@ export async function POST(request) {
         is_campaign: parsed.is_campaign,
         original_language: parsed.original_language
       },
-      clustering: clusteringResult
+      clustering: clusteringResult,
+      verifiable_credential: verifiableCredential
     });
 
   } catch (error) {
@@ -148,7 +153,15 @@ export async function GET(request) {
       }
     }
 
-    // Build unified status lifecycle response
+    // Build unified status lifecycle response with W3C Verifiable Credential
+    const { generateSubmissionCredential } = await import('@/lib/dpg');
+    const credential = generateSubmissionCredential(submission, {
+      category: issue?.category || 'general',
+      ward_id: issue?.ward_id || null,
+      trust_score: issue?.trust_score || 5.0,
+      is_campaign: issue?.is_campaign || false
+    });
+
     const trackingInfo = {
       id: submission.id,
       user_name: submission.user_name,
@@ -156,7 +169,8 @@ export async function GET(request) {
       issue_details: issue ? issue.issue_details : submission.raw_text,
       status: issue ? issue.status : 'pending_review',
       project_status: projectStatus,
-      created_at: submission.created_at
+      created_at: submission.created_at,
+      verifiable_credential: credential
     };
 
     return NextResponse.json({
