@@ -79,91 +79,52 @@ export default function BricsSolutionTwinning({ currentCategory = 'roads', onAdo
   };
 
   return (
-    <div className="bg-blue-50/70 border border-blue-200 rounded-xl overflow-hidden transition shadow-xs">
-      {/* Clickable Header Bar */}
+    <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 transition">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-3.5 py-2.5 flex items-center justify-between text-left hover:bg-blue-100/50 transition cursor-pointer"
+        className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-100/70 transition cursor-pointer"
       >
-        <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0">
-            <Globe2 className="h-3.5 w-3.5" />
-          </div>
+        <div className="flex items-center gap-2.5">
+          <span className="text-base shrink-0">💡</span>
           <div>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-[11px] font-bold text-blue-950">
-                💡 Global Best Practice Idea
-              </span>
-              <span className="text-[10px] text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded font-semibold">
-                {twin.capexSavings}
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-600 truncate max-w-[280px] sm:max-w-md">
-              {twin.twinnedCity}: {twin.blueprintTitle}
-            </p>
+            <span className="text-xs font-bold text-slate-900 block">
+              Inspiration: {twin.blueprintTitle}
+            </span>
+            <span className="text-[11px] text-slate-500 block">
+              Proven in {twin.twinnedCity}
+            </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 text-blue-700 shrink-0">
-          <span className="text-[11px] font-bold hidden sm:inline">
-            {isOpen ? 'Hide' : 'Explore'}
-          </span>
+        <div className="flex items-center gap-1 text-slate-500 shrink-0 ml-2">
+          <span className="text-xs font-semibold hidden sm:inline">{isOpen ? 'Hide' : 'View'}</span>
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </div>
       </button>
 
-      {/* Expanded Blueprint Details */}
       {isOpen && (
-        <div className="px-3.5 pb-3.5 pt-1 space-y-2.5 border-t border-blue-200/80 bg-white/60 animate-in fade-in duration-200">
-          <p className="text-xs text-slate-700 leading-relaxed font-medium">
+        <div className="px-4 pb-4 pt-1 space-y-3 border-t border-slate-200 bg-white animate-in fade-in duration-150">
+          <p className="text-xs text-slate-600 leading-relaxed font-normal">
             {twin.summary}
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-            <div className="bg-emerald-50 border border-emerald-200 p-2 rounded-lg flex items-center gap-2">
-              <Leaf className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-              <span className="text-emerald-950 font-medium">
-                <strong>Impact:</strong> {twin.coBenefit}
-              </span>
-            </div>
-            <div className="bg-blue-50 border border-blue-200 p-2 rounded-lg flex items-center gap-2">
-              <Users className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-              <span className="text-blue-950 font-medium">
-                <strong>Source:</strong> {twin.twinnedCity}
-              </span>
-            </div>
+          <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs text-slate-700">
+            <strong>Key Benefit:</strong> {twin.coBenefit}
           </div>
 
           <div className="flex items-center justify-between pt-1 gap-2 flex-wrap">
-            <div className="flex items-center gap-1 flex-wrap">
-              {twin.sdgs.map((sdg, i) => (
-                <span key={i} className="bg-blue-100/80 text-blue-900 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-200">
-                  {sdg}
-                </span>
-              ))}
-            </div>
-
+            <span className="text-[11px] text-emerald-700 font-semibold">{twin.capexSavings}</span>
             <button
               type="button"
               onClick={handleAdopt}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer ${
+              className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition cursor-pointer ${
                 adopted 
-                  ? 'bg-emerald-600 text-white' 
-                  : 'bg-blue-900 hover:bg-blue-800 text-white'
+                  ? 'bg-emerald-100 text-emerald-800' 
+                  : 'bg-slate-900 hover:bg-slate-800 text-white'
               }`}
             >
-              {adopted ? (
-                <>
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  Included in Suggestion
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Adopt This Solution
-                </>
-              )}
+              {adopted ? '✓ Added to Suggestion' : 'Reference this Idea'}
             </button>
           </div>
         </div>

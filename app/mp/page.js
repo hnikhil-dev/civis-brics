@@ -702,7 +702,7 @@ export default function MPDashboard() {
               </span>
             </div>
             <p className="text-xs text-slate-500 font-medium">
-              {currentJurisdiction.flag} {currentJurisdiction.name} &bull; Capital Project Allocation & Knapsack Prioritization
+              {currentJurisdiction.flag} {currentJurisdiction.name} &bull; Capital Project Allocation & Priority Optimization
             </p>
           </div>
         </div>
@@ -762,7 +762,7 @@ export default function MPDashboard() {
             href="/"
             className="px-3 py-1.5 rounded-lg text-xs font-bold text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition"
           >
-            &larr; Citizen View
+            &larr; Public Portal
           </Link>
         </div>
       </header>
@@ -779,7 +779,7 @@ export default function MPDashboard() {
             }`}
           >
             <Map className="h-4 w-4" />
-            1. City Map & Hotspots
+            City Map & Hotspots
           </button>
           
           <button
@@ -791,7 +791,7 @@ export default function MPDashboard() {
             }`}
           >
             <ClipboardList className="h-4 w-4" />
-            2. Capital Projects & Priorities
+            Capital Projects & Priorities
           </button>
 
           <button
@@ -803,7 +803,7 @@ export default function MPDashboard() {
             }`}
           >
             <DollarSign className="h-4 w-4" />
-            3. Budget Allocation & Knapsack Solver
+            Budget Allocation & Optimization
           </button>
 
           <button
@@ -815,7 +815,7 @@ export default function MPDashboard() {
             }`}
           >
             <ShieldAlert className="h-4 w-4" />
-            4. Citizen Verification Queue ({verificationQueue.length})
+            Verification Queue ({verificationQueue.length})
           </button>
         </div>
       </div>

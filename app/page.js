@@ -1059,146 +1059,151 @@ export default function CitizenPortal() {
   return (
     <div className="w-full flex-1 flex flex-col bg-slate-50 text-slate-900 font-sans min-h-screen">
       
-      {/* BRICS Digital Public Infrastructure Multi-Nation Gradient Stripe */}
-      <div className="h-1.5 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
+      {/* Subtle Civic Accent Stripe */}
+      <div className="h-1 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
 
-      {/* Simplified, Modern Government & DPG Header */}
-      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3 shadow-xs w-full">
-        {/* Left: Branding & Initiative */}
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-xs">
-            <Landmark className="h-5 w-5 sm:h-6 sm:w-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-black text-blue-900 tracking-tight">CIVIS-BRICS</h1>
-              <span className="bg-amber-100 text-amber-950 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
-                Civic DPG
-              </span>
+      {/* Unified Master Header & Navigation */}
+      <header className="border-b border-slate-200 bg-white sticky top-0 z-30 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-3">
+          
+          {/* Left: Branding & City Scope */}
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-blue-900 text-white flex items-center justify-center font-black shadow-xs shrink-0">
+              <Landmark className="h-5 w-5 text-white" />
             </div>
-            <p className="text-xs text-slate-500 font-medium">Citizens’ Voice & Infrastructure Synthesis</p>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-blue-950 tracking-tight text-base sm:text-lg">CIVIS</span>
+                <span className="text-xs font-semibold text-slate-500 hidden sm:inline">&bull; {currentJurisdiction.flag} {currentJurisdiction.name}</span>
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium hidden md:block">Community Infrastructure & Capital Planning</p>
+            </div>
           </div>
-        </div>
 
-        {/* Right Controls: Country Select + Language Select + Policymaker Workspace */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-          {/* Sovereign Country Select */}
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-semibold">
-            <Globe className="h-4 w-4 text-blue-700 shrink-0" />
+          {/* Center: Segmented Navigation Control (Desktop & Tablet) */}
+          <div className="hidden md:inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+            <button
+              onClick={() => setActivePortalTab('submit')}
+              className={`px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                activePortalTab === 'submit'
+                  ? 'bg-white text-blue-950 font-bold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <FileText className="h-3.5 w-3.5 text-blue-700" />
+              <span>Report a Need</span>
+            </button>
+
+            <button
+              onClick={() => setActivePortalTab('map')}
+              className={`px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                activePortalTab === 'map'
+                  ? 'bg-white text-blue-950 font-bold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Globe className="h-3.5 w-3.5 text-blue-700" />
+              <span>City Map</span>
+            </button>
+
+            <button
+              onClick={() => setActivePortalTab('budget')}
+              className={`px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                activePortalTab === 'budget'
+                  ? 'bg-white text-blue-950 font-bold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Coins className="h-3.5 w-3.5 text-blue-700" />
+              <span>Budget Sandbox</span>
+            </button>
+
+            <button
+              onClick={() => setActivePortalTab('track')}
+              className={`px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                activePortalTab === 'track'
+                  ? 'bg-white text-blue-950 font-bold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Search className="h-3.5 w-3.5 text-blue-700" />
+              <span>Track Status</span>
+            </button>
+          </div>
+
+          {/* Right Controls: Country Select + Language + Admin Access */}
+          <div className="flex items-center gap-2">
             <select
               value={selectedCountry}
               onChange={(e) => handleCountryChange(e.target.value, true)}
-              className="bg-transparent font-bold text-slate-800 focus:outline-none cursor-pointer"
+              className="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-none cursor-pointer"
             >
-              <option value="IND">🇮🇳 India (Pune)</option>
-              <option value="BRA">🇧🇷 Brazil (São Paulo)</option>
-              <option value="ZAF">🇿🇦 South Africa (Joburg)</option>
-              <option value="CHN">🇨🇳 China (Guangzhou)</option>
-              <option value="RUS">🇷🇺 Russia (Moscow)</option>
+              <option value="IND">🇮🇳 India</option>
+              <option value="BRA">🇧🇷 Brazil</option>
+              <option value="ZAF">🇿🇦 S. Africa</option>
+              <option value="CHN">🇨🇳 China</option>
+              <option value="RUS">🇷🇺 Russia</option>
             </select>
+
+            <select
+              value={currentLang}
+              onChange={(e) => setCurrentLang(e.target.value)}
+              className="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer hidden sm:block"
+            >
+              <option value="en">EN</option>
+              <option value="hi">हिन्दी</option>
+              <option value="pt">PT</option>
+              <option value="ru">RU</option>
+              <option value="zh">中文</option>
+              <option value="mr">मराठी</option>
+            </select>
+
+            <Link
+              href="/mp"
+              className="text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1 whitespace-nowrap shadow-xs"
+            >
+              <span>Admin</span>
+              <ArrowRight className="h-3 w-3 text-slate-300" />
+            </Link>
           </div>
-
-          {/* Language Select */}
-          <select
-            value={currentLang}
-            onChange={(e) => setCurrentLang(e.target.value)}
-            className="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none cursor-pointer"
-          >
-            <option value="en">English</option>
-            <option value="hi">हिन्दी (Hindi)</option>
-            <option value="pt">Português (BR)</option>
-            <option value="ru">Русский</option>
-            <option value="zh">中文 (Chinese)</option>
-            <option value="mr">मराठी (Marathi)</option>
-          </select>
-
-          {/* Link to Policymaker Workspace */}
-          <Link
-            href="/mp"
-            className="text-xs sm:text-sm bg-blue-900 hover:bg-blue-800 text-white font-bold px-3.5 py-1.5 rounded-lg shadow-xs transition flex items-center gap-1.5 whitespace-nowrap"
-          >
-            <Lock className="h-3.5 w-3.5 text-amber-400" />
-            <span>{t.btn_mp_workspace}</span>
-          </Link>
         </div>
-      </header>
 
-      {/* Clean Subtle Territory Status Bar */}
-      <div className="bg-slate-100/90 border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-extrabold text-blue-900 flex items-center gap-1">
-            <span>{currentJurisdiction.flag}</span>
-            <span>{currentJurisdiction.name}</span>
-          </span>
-          <span>&bull;</span>
-          <span className="text-slate-700 font-medium">
-            {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
-          </span>
-          {detectionNotice && (
-            <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-md text-[11px] font-semibold flex items-center gap-1">
-              <MapPin className="h-3 w-3 text-emerald-600" />
-              {detectionNotice}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-1.5 text-emerald-700 font-semibold text-[11px] sm:text-xs">
-          <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
-          Official Public Planning Portal &bull; Direct Municipal Review
-        </div>
-      </div>
-
-      {/* Prominent Tab Navigation Bar */}
-      <nav className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 shadow-xs sticky top-0 z-30">
-        <div className="flex gap-2 sm:gap-3 overflow-x-auto py-2">
+        {/* Mobile Tab Bar */}
+        <div className="md:hidden border-t border-slate-100 bg-slate-50/90 px-3 py-1.5 flex gap-1 overflow-x-auto text-xs font-semibold">
           <button
             onClick={() => setActivePortalTab('submit')}
-            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
-              activePortalTab === 'submit'
-                ? 'bg-blue-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            className={`px-3 py-1 rounded-md shrink-0 transition ${
+              activePortalTab === 'submit' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <FileText className="h-4 w-4" />
-            <span>1. Submit a Need</span>
+            Report a Need
           </button>
-
           <button
             onClick={() => setActivePortalTab('map')}
-            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
-              activePortalTab === 'map'
-                ? 'bg-blue-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            className={`px-3 py-1 rounded-md shrink-0 transition ${
+              activePortalTab === 'map' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Globe className="h-4 w-4" />
-            <span>2. City Priorities Map</span>
+            City Map
           </button>
-
           <button
             onClick={() => setActivePortalTab('budget')}
-            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
-              activePortalTab === 'budget'
-                ? 'bg-blue-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            className={`px-3 py-1 rounded-md shrink-0 transition ${
+              activePortalTab === 'budget' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Coins className="h-4 w-4" />
-            <span>3. Citizen Budget Sandbox</span>
+            Budget Sandbox
           </button>
-
           <button
             onClick={() => setActivePortalTab('track')}
-            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
-              activePortalTab === 'track'
-                ? 'bg-blue-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            className={`px-3 py-1 rounded-md shrink-0 transition ${
+              activePortalTab === 'track' ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Search className="h-4 w-4" />
-            <span>4. Track My Proposal</span>
+            Track Status
           </button>
         </div>
-      </nav>
+      </header>
 
       {/* Main Tabbed Content Area */}
       <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-5 max-w-7xl mx-auto">
@@ -1208,48 +1213,45 @@ export default function CitizenPortal() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             {/* Left: Submission Form (col-span-12 lg:col-span-7) */}
-            <div className="lg:col-span-7 bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-sm space-y-4">
-              <div className="border-b border-slate-100 pb-3 flex items-start justify-between gap-3 flex-wrap">
+            <div className="lg:col-span-7 bg-white border border-slate-200 p-6 sm:p-7 rounded-2xl shadow-xs space-y-5">
+              <div className="border-b border-slate-100 pb-4 flex items-start justify-between gap-3 flex-wrap">
                 <div>
-                  <h2 className="text-base sm:text-lg font-black text-blue-900 flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-[#f97316]" />
+                  <h2 className="text-lg font-bold text-slate-900 tracking-tight">
                     {t.form_title}
                   </h2>
-                  <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{t.form_desc}</p>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t.form_desc}</p>
                 </div>
                 <button
                   type="button"
                   onClick={loadDemoScenario}
-                  className="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer shrink-0"
+                  className="bg-slate-50 hover:bg-slate-100 text-blue-900 border border-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer shrink-0"
                   title="Prefill sample scenario for this territory"
                 >
-                  <Sparkles className="h-3.5 w-3.5 text-amber-600" />
+                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
                   <span>Try Sample Scenario</span>
                 </button>
               </div>
 
               <form onSubmit={handleSubmitSuggestion} className="space-y-4">
                 {/* Full Name */}
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                    <User className="h-3.5 w-3.5 text-slate-500" />
-                    {t.label_name} <span className="text-red-500">*</span>
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    {t.label_name} <span className="text-slate-400 font-normal">(or anonymous alias)</span>
                   </label>
                   <input 
                     type="text" 
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     placeholder={t.placeholder_name}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition"
                     required
                   />
                 </div>
 
                 {/* District / Ward Select */}
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-blue-700" />
-                    Administrative District / Neighborhood <span className="text-red-500">*</span>
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    Administrative District / Neighborhood
                   </label>
                   <select
                     value={selectedSectorId}
@@ -1262,7 +1264,7 @@ export default function CitizenPortal() {
                         setGpsStatus('active');
                       }
                     }}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition cursor-pointer"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition cursor-pointer"
                   >
                     {sectors.map(s => (
                       <option key={s.id} value={s.id}>
@@ -1273,107 +1275,89 @@ export default function CitizenPortal() {
                 </div>
 
                 {/* Details Textarea */}
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-800 block">
-                    {t.label_suggestion} <span className="text-red-500">*</span>
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    {t.label_suggestion}
                   </label>
                   <textarea 
-                    rows="3"
+                    rows="4"
                     value={suggestionText}
                     onChange={(e) => setSuggestionText(e.target.value)}
                     placeholder={t.placeholder_suggestion}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition leading-relaxed"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition leading-relaxed resize-y"
                     required
                   />
-                </div>
 
-                {/* Audio Recording & Photo Upload Buttons */}
-                <div className="flex items-center gap-2.5">
-                  <button
-                    type="button"
-                    onClick={toggleRecording}
-                    className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                      isRecording 
-                        ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' 
-                        : voiceUrl 
-                          ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                          : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    {isRecording ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
-                    <span>
-                      {isRecording ? t.btn_voice_active : voiceUrl ? t.btn_voice_attached : t.btn_voice_start}
-                    </span>
-                  </button>
+                  {/* Attachment Toolbar (Voice, Photo, Sample) */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={toggleRecording}
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+                          isRecording 
+                            ? 'bg-rose-50 border-rose-300 text-rose-700 animate-pulse' 
+                            : voiceUrl 
+                              ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                              : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {isRecording ? <MicOff className="h-3.5 w-3.5 text-rose-600" /> : <Mic className="h-3.5 w-3.5 text-slate-600" />}
+                        <span>
+                          {isRecording ? t.btn_voice_active : voiceUrl ? t.btn_voice_attached : t.btn_voice_start}
+                        </span>
+                      </button>
 
-                  <label className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition ${
-                    imageScanning 
-                      ? 'bg-amber-50 border-amber-300 text-amber-600' 
-                      : imageUrl 
-                        ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                        : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
-                  }`}>
-                    <Image className="h-3.5 w-3.5" />
-                    <span>{imageScanning ? t.btn_photo_scanning : imageUrl ? t.btn_photo_attached : t.btn_photo_scan}</span>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handlePhotoUpload} 
-                      className="hidden" 
-                      disabled={imageScanning}
-                    />
-                  </label>
-                </div>
-
-                {/* Secondary Voice Helper Row */}
-                <div className="flex items-center justify-between text-[11px] text-slate-500 px-1 -mt-1">
-                  <span>Voice Note with Real-time AI Sonar</span>
-                  <button
-                    type="button"
-                    onClick={attachDemoAudio}
-                    className="text-blue-700 hover:text-blue-900 font-bold underline cursor-pointer"
-                  >
-                    {voiceUrl ? 'Re-attach Sample Voice' : 'Test with Sample Voice'}
-                  </button>
-                </div>
-
-                {/* Microphone Permission / Hardware Notice with Graceful Fallback */}
-                {micError && (
-                  <div className="bg-amber-50 border border-amber-300 rounded-xl p-3 text-xs space-y-2 animate-in fade-in duration-200">
-                    <div className="flex items-start gap-2">
-                      <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-                      <div className="space-y-0.5">
-                        <p className="font-bold text-amber-950">
-                          {micError === 'hardware'
-                            ? 'No Microphone Hardware Detected'
-                            : micError === 'unsupported'
-                              ? 'Microphone Not Supported on this Browser'
-                              : 'Microphone Permission Needed'}
-                        </p>
-                        <p className="text-slate-600 leading-relaxed text-[11px]">
-                          {micError === 'hardware'
-                            ? 'Connect an external headset/mic, or attach a sample audio note to test speech ingestion.'
-                            : micError === 'unsupported'
-                              ? 'Your browser does not support audio recording. You can test with the sample audio note.'
-                              : 'Click the lock or tune icon 🔒 in your browser address bar and switch Microphone to "Allow".'}
-                        </p>
-                      </div>
+                      <label className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition ${
+                        imageScanning 
+                          ? 'bg-amber-50 border-amber-300 text-amber-800' 
+                          : imageUrl 
+                            ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                            : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+                      }`}>
+                        <Image className="h-3.5 w-3.5 text-slate-600" />
+                        <span>{imageScanning ? t.btn_photo_scanning : imageUrl ? t.btn_photo_attached : t.btn_photo_scan}</span>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={handlePhotoUpload} 
+                          className="hidden" 
+                          disabled={imageScanning}
+                        />
+                      </label>
                     </div>
-                    <div className="flex items-center gap-2 pt-1 flex-wrap">
+
+                    <button
+                      type="button"
+                      onClick={attachDemoAudio}
+                      className="text-xs text-blue-700 hover:text-blue-900 font-medium cursor-pointer"
+                    >
+                      {voiceUrl ? 'Re-attach Sample Voice' : 'Test with sample voice note'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Non-intrusive Mic Fallback Notice */}
+                {micError && (
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600 flex items-center justify-between gap-2 animate-in fade-in duration-200">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                      <span>Microphone access was unavailable. You can type above or test with the sample audio note.</span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
                       <button
                         type="button"
                         onClick={attachDemoAudio}
-                        className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition text-xs shadow-xs cursor-pointer"
+                        className="text-blue-800 hover:underline font-bold"
                       >
-                        <Sparkles className="h-3.5 w-3.5" />
-                        <span>Attach Sample Audio Note</span>
+                        Use Sample
                       </button>
                       <button
                         type="button"
                         onClick={() => setMicError(null)}
-                        className="text-slate-500 hover:text-slate-700 font-semibold px-2 py-1 text-xs cursor-pointer"
+                        className="text-slate-400 hover:text-slate-600 font-bold px-1"
                       >
-                        Dismiss
+                        &times;
                       </button>
                     </div>
                   </div>
@@ -1381,12 +1365,12 @@ export default function CitizenPortal() {
 
                 {/* Attached Audio Preview Player */}
                 {voiceUrl && (
-                  <div className="bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl text-xs flex items-center justify-between gap-2 animate-in fade-in duration-200">
+                  <div className="bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs flex items-center justify-between gap-2 animate-in fade-in duration-200">
                     <div className="flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0" />
                       <div>
-                        <span className="font-bold text-emerald-950 block">Voice Note Attached</span>
-                        <span className="text-[10px] text-emerald-700 block">Ready to submit with proposal</span>
+                        <span className="font-bold text-slate-900 block">Voice Note Ready</span>
+                        <span className="text-[11px] text-slate-500 block">Will be submitted with your proposal</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -1394,7 +1378,7 @@ export default function CitizenPortal() {
                       <button
                         type="button"
                         onClick={() => setVoiceUrl(null)}
-                        className="text-rose-600 hover:text-rose-700 text-xs font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                        className="text-slate-500 hover:text-rose-600 text-xs font-semibold px-1.5 py-0.5 rounded cursor-pointer"
                         title="Remove attached audio"
                       >
                         Remove
@@ -1412,64 +1396,53 @@ export default function CitizenPortal() {
                   onStop={toggleRecording} 
                 />
 
-                {/* Location Verification Tag */}
-                <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                {/* Location Verification */}
+                <div className="flex items-center justify-between bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs">
                   <div className="flex items-center gap-2">
                     <MapPin className={`h-4 w-4 ${gpsStatus === 'active' ? 'text-emerald-600' : 'text-slate-400'}`} />
-                    <div>
-                      <span className="text-xs font-bold text-slate-800 block">{t.label_gps}</span>
-                      <span className="text-[11px] text-slate-500 block">
-                        {gpsCoords ? '✓ Location confirmed for planning' : t.label_gps_desc}
-                      </span>
-                    </div>
+                    <span className="text-slate-700">
+                      Location: <strong className="text-slate-900">{sectors.find(s => s.id === selectedSectorId)?.name || 'Central District'}</strong>
+                    </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleGPSAcquisition}
                     disabled={gpsStatus === 'acquiring'}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                      gpsStatus === 'active' 
-                        ? 'bg-emerald-100 border border-emerald-300 text-emerald-700' 
-                        : gpsStatus === 'acquiring'
-                          ? 'bg-slate-200 text-slate-500 animate-pulse'
-                          : 'bg-blue-900 hover:bg-blue-800 text-white shadow-xs'
-                    }`}
+                    className="text-xs font-semibold text-blue-900 hover:underline cursor-pointer disabled:opacity-50"
                   >
-                    {gpsStatus === 'active' ? t.btn_gps_active : gpsStatus === 'acquiring' ? t.btn_gps_loading : t.btn_gps}
+                    {gpsStatus === 'active' ? '✓ Location Confirmed' : gpsStatus === 'acquiring' ? 'Locating...' : 'Refresh GPS'}
                   </button>
                 </div>
 
                 {/* Consent Checkbox */}
-                <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
-                  <div className="flex items-start gap-2">
-                    <input 
-                      type="checkbox" 
-                      id="consentCheckbox"
-                      checked={dataConsent}
-                      onChange={(e) => setDataConsent(e.target.checked)}
-                      className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-blue-900 focus:ring-blue-900 cursor-pointer"
-                    />
-                    <label htmlFor="consentCheckbox" className="text-xs text-slate-700 leading-snug font-medium cursor-pointer">
-                      {t.security_declaration}
-                    </label>
-                  </div>
+                <div className="flex items-start gap-2 pt-1">
+                  <input 
+                    type="checkbox" 
+                    id="consentCheckbox"
+                    checked={dataConsent}
+                    onChange={(e) => setDataConsent(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-900 focus:ring-blue-900 cursor-pointer"
+                  />
+                  <label htmlFor="consentCheckbox" className="text-xs text-slate-600 leading-snug cursor-pointer">
+                    {t.security_declaration}
+                  </label>
                 </div>
 
                 {/* Submit Action */}
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
+                  className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-2 shadow-xs transition cursor-pointer disabled:opacity-50"
                 >
                   {submitting ? (
                     <>
                       <Activity className="h-4 w-4 animate-spin" />
-                      {t.btn_submitting}
+                      <span>{t.btn_submitting}</span>
                     </>
                   ) : (
                     <>
-                      <Send className="h-4 w-4" />
-                      {t.btn_submit}
+                      <span>{t.btn_submit}</span>
+                      <ArrowRight className="h-4 w-4" />
                     </>
                   )}
                 </button>
@@ -1477,11 +1450,11 @@ export default function CitizenPortal() {
 
               {/* Submission Success Banner */}
               {submitResult && (
-                <div className="space-y-3 pt-2 animate-in fade-in duration-300">
-                  <div className="bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-2">
+                <div className="space-y-3 pt-3 border-t border-slate-100 animate-in fade-in duration-300">
+                  <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2">
                     <div className="flex items-center justify-between flex-wrap gap-2">
-                      <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm">
-                        <CheckCircle className="h-4 w-4 shrink-0" />
+                      <div className="flex items-center gap-2 text-emerald-900 font-bold text-sm">
+                        <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0" />
                         <span>{t.success_title}</span>
                       </div>
                       <button
@@ -1513,74 +1486,67 @@ export default function CitizenPortal() {
               )}
             </div>
 
-            {/* Right: Planning Context & Civic Assurance (col-span-12 lg:col-span-5) */}
-            <div className="lg:col-span-5 space-y-4">
+            {/* Right: Unified Community Context & Planning Impact (col-span-12 lg:col-span-5) */}
+            <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl shadow-xs p-6 space-y-5">
               
-              {/* Selected Neighborhood Planning Profile */}
-              <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                  <h3 className="text-xs font-black text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-blue-700" />
-                    Selected Area Overview
-                  </h3>
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Community Overview
+                  </span>
+                  <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                     Active Capital Zone
                   </span>
                 </div>
-
-                <div className="grid grid-cols-2 gap-2.5 text-xs">
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <span className="text-[11px] text-slate-500 font-bold uppercase block">Neighborhood</span>
-                    <span className="font-extrabold text-blue-950 text-xs sm:text-sm truncate block mt-0.5">
-                      {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
-                    </span>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <span className="text-[11px] text-slate-500 font-bold uppercase block">Population</span>
-                    <span className="font-extrabold text-slate-900 text-xs sm:text-sm block mt-0.5">
-                      {(sectors.find(s => s.id === selectedSectorId)?.population || (selectedSectorId * 15000 + 45000)).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                  Your suggestion is clustered with neighbor requests and evaluated using multi-criteria optimization to allocate municipal capital funds fairly.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => setActivePortalTab('map')}
-                  className="w-full bg-slate-100 hover:bg-slate-200 text-blue-900 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
-                >
-                  <Globe className="h-3.5 w-3.5" />
-                  View On City Priorities Map &rarr;
-                </button>
+                <h3 className="text-base font-extrabold text-slate-900 mt-1">
+                  {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
+                </h3>
               </div>
 
-              {/* Cross-Border BRICS Solution Twinning Engine (Collapsible) */}
-              <BricsSolutionTwinning 
-                currentCategory={suggestionText || 'roads'} 
-                onAdoptBlueprint={(bp) => {
-                  setSuggestionText(prev => prev ? `${prev} [Adopting BRICS Model: ${bp.blueprintTitle}]` : `[Adopting BRICS Model: ${bp.blueprintTitle}]`);
-                }} 
-              />
-
-              {/* Citizen Privacy & Trust Guarantee */}
-              <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-sm space-y-2">
-                <h3 className="font-black text-xs text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                  Citizen Privacy & Civic Trust
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                  Submissions are cryptographically hashed and evaluated by city engineers. Personal contact details remain confidential under international Digital Public Good privacy standards.
-                </p>
-                <div className="pt-1 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-500">
-                  <span className="text-emerald-700 font-bold">✓ Confidential & Protected</span>
-                  <span>&bull;</span>
-                  <span>Tamper-Resistant</span>
-                  <span>&bull;</span>
-                  <span>Fair Community Voice</span>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <span className="text-slate-500 block text-[11px]">Estimated Population</span>
+                  <span className="font-extrabold text-slate-900 text-sm mt-0.5 block">
+                    {(sectors.find(s => s.id === selectedSectorId)?.population || (selectedSectorId * 15000 + 45000)).toLocaleString()} residents
+                  </span>
                 </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <span className="text-slate-500 block text-[11px]">Priority Tier</span>
+                  <span className="font-extrabold text-blue-900 text-sm mt-0.5 block">
+                    Zone Tier {(selectedSectorId % 3) + 1}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Your suggestion is clustered with neighbor requests and evaluated using multi-criteria optimization to allocate municipal capital funds fairly.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setActivePortalTab('map')}
+                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-semibold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <Globe className="h-3.5 w-3.5 text-blue-700" />
+                <span>Explore on City Map &rarr;</span>
+              </button>
+
+              {/* Cross-Border Sister City Solutions */}
+              <div className="pt-3 border-t border-slate-150">
+                <BricsSolutionTwinning 
+                  currentCategory={suggestionText || 'roads'} 
+                  onAdoptBlueprint={(bp) => {
+                    setSuggestionText(prev => prev ? `${prev} [Adopting model: ${bp.blueprintTitle}]` : `[Adopting model: ${bp.blueprintTitle}]`);
+                  }} 
+                />
+              </div>
+
+              {/* Citizen Privacy & Civic Trust Assurance */}
+              <div className="pt-3 border-t border-slate-150 flex items-start gap-2.5 text-xs text-slate-500">
+                <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                <p className="text-[11px] leading-relaxed">
+                  <strong>Direct Municipal Review:</strong> Submissions are verified and evaluated by city planning engineers. Personal identity and contact details remain confidential.
+                </p>
               </div>
 
             </div>
@@ -1592,19 +1558,18 @@ export default function CitizenPortal() {
         {activePortalTab === 'map' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Map Canvas (col-span-12 lg:col-span-8) */}
-            <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl shadow-sm p-4 sm:p-5 space-y-3.5">
+            <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl shadow-xs p-5 sm:p-6 space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
                 <div>
-                  <h2 className="text-base sm:text-lg font-black text-blue-900 flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-blue-700" />
-                    City Priorities & Hotspot Map
+                  <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+                    City Priorities & Map
                   </h2>
-                  <p className="text-xs text-slate-600 mt-0.5">
-                    Explore active infrastructure suggestions and priority zones in {currentJurisdiction.flag} {currentJurisdiction.name}
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Explore community infrastructure needs and active planning zones in {currentJurisdiction.flag} {currentJurisdiction.name}
                   </p>
                 </div>
-                <span className="bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shrink-0">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shrink-0">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
                   Live GIS View
                 </span>
               </div>
@@ -1638,22 +1603,22 @@ export default function CitizenPortal() {
               </div>
 
               {/* Selected Area Details Card */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                 <div>
                   <span className="text-[11px] text-slate-500 font-bold uppercase block">Active Area</span>
-                  <span className="font-extrabold text-blue-950 text-xs sm:text-sm truncate block mt-0.5">
+                  <span className="font-extrabold text-slate-900 text-sm truncate block mt-0.5">
                     {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
                   </span>
                 </div>
                 <div>
                   <span className="text-[11px] text-slate-500 font-bold uppercase block">Population</span>
-                  <span className="font-bold text-slate-900 text-xs sm:text-sm block mt-0.5">
+                  <span className="font-bold text-slate-900 text-sm block mt-0.5">
                     {(sectors.find(s => s.id === selectedSectorId)?.population || (selectedSectorId * 15000 + 45000)).toLocaleString()} residents
                   </span>
                 </div>
                 <div>
                   <span className="text-[11px] text-slate-500 font-bold uppercase block">Planning Status</span>
-                  <span className="font-bold text-emerald-700 text-xs flex items-center gap-1 mt-0.5">
+                  <span className="font-bold text-emerald-800 text-xs flex items-center gap-1 mt-0.5">
                     <CheckCircle className="h-3.5 w-3.5 text-emerald-600 inline" />
                     Capital Allocation Active
                   </span>
@@ -1663,13 +1628,13 @@ export default function CitizenPortal() {
 
             {/* Sidebar: Live Feed across Community (col-span-12 lg:col-span-4) */}
             <div className="lg:col-span-4 space-y-4">
-              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 sm:p-5 space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                  <h3 className="text-xs font-black text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-xs p-5 space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                     <Activity className="h-3.5 w-3.5 text-emerald-600" />
                     Recent Community Suggestions
                   </h3>
-                  <span className="text-[11px] text-slate-500 font-bold">Real-time Stream</span>
+                  <span className="text-[11px] text-slate-400 font-medium">Real-time</span>
                 </div>
                 <div className="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
                   {RECENT_BRICS_FEED.map((feed) => (
@@ -1679,12 +1644,12 @@ export default function CitizenPortal() {
                           <span>{feed.flag}</span>
                           <span>{feed.location}</span>
                         </span>
-                        <span className="text-[11px] font-mono text-slate-500">{feed.time}</span>
+                        <span className="text-[11px] font-mono text-slate-400">{feed.time}</span>
                       </div>
                       <p className="text-xs text-slate-700 font-medium leading-snug">{feed.text}</p>
                       <div className="flex items-center justify-between pt-0.5 text-[11px]">
-                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">{feed.category}</span>
-                        <span className="text-emerald-700 font-bold font-mono">Trust: {feed.trust}</span>
+                        <span className="bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded font-semibold">{feed.category}</span>
+                        <span className="text-emerald-800 font-semibold">Verified</span>
                       </div>
                     </div>
                   ))}
@@ -1700,7 +1665,7 @@ export default function CitizenPortal() {
             <CitizenBudgetSandbox 
               countryCode={selectedCountry} 
               onVoteSubmitted={(alloc) => {
-                alert("Your civic budget allocation vote has been recorded into the municipal optimization matrix!");
+                alert("Your civic budget allocation vote has been recorded and submitted for municipal planning review!");
               }} 
             />
           </div>
@@ -1709,13 +1674,12 @@ export default function CitizenPortal() {
         {/* ================= TAB 4: TRACK MY PROPOSAL ================= */}
         {activePortalTab === 'track' && (
           <div className="max-w-3xl mx-auto space-y-5">
-            <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-sm space-y-4">
+            <div className="bg-white border border-slate-200 p-6 sm:p-7 rounded-2xl shadow-xs space-y-4">
               <div className="border-b border-slate-100 pb-3">
-                <h2 className="text-base sm:text-lg font-black text-blue-900 flex items-center gap-2">
-                  <Search className="h-5 w-5 text-[#f97316]" />
+                <h2 className="text-lg font-bold text-slate-900 tracking-tight">
                   {t.tracker_title}
                 </h2>
-                <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{t.tracker_desc}</p>
+                <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{t.tracker_desc}</p>
               </div>
 
               {/* Search Bar */}
