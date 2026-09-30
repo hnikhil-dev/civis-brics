@@ -27,7 +27,8 @@ import {
   ChevronRight,
   Coins,
   Vote,
-  ArrowRight
+  ArrowRight,
+  AlertTriangle
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { BRICS_JURISDICTIONS, getJurisdiction, getJurisdictionCoordinatesMap } from '@/lib/jurisdictions';
@@ -501,6 +502,7 @@ export default function CitizenPortal() {
   const [isRecording, setIsRecording] = useState(false);
   const [recognition, setRecognition] = useState(null);
   const [recordingMode, setRecordingMode] = useState('speech'); // 'speech' or 'audio'
+  const [micError, setMicError] = useState(null); // null | 'permission' | 'hardware' | 'unsupported'
 
   // Ingestion Processing States
   const [submitting, setSubmitting] = useState(false);
@@ -677,10 +679,10 @@ export default function CitizenPortal() {
           
           if (event.error === 'not-allowed') {
             setIsRecording(false);
-            alert("Microphone Permission Required:\nPlease click the microphone icon in your browser's address bar and select 'Allow' to enable voice input.");
+            setMicError('permission');
           } else if (event.error === 'audio-capture') {
             setIsRecording(false);
-            alert("Microphone Capture Error:\nNo microphone hardware was detected. Please connect a mic and try again.");
+            setMicError('hardware');
           } else if (event.error === 'no-speech') {
             console.log("Speech recognition: No speech detected (user paused).");
           } else if (event.error === 'network') {
@@ -724,7 +726,7 @@ export default function CitizenPortal() {
     );
   };
 
-  // Toggle voice recorder
+  // Toggle voice recorder with graceful permission fallback
   const toggleRecording = async () => {
     if (isRecording) {
       // 1. Stop Speech recognition if running
@@ -747,9 +749,11 @@ export default function CitizenPortal() {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
     } else {
+      setMicError(null);
+
       // 1. Request microphone access
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert("Microphone recording is not supported on this browser.");
+        setMicError('unsupported');
         return;
       }
 
@@ -821,9 +825,24 @@ export default function CitizenPortal() {
           }
         }
       } catch (err) {
-        console.error("Microphone capture failed:", err);
-        alert("Failed to access your microphone. Please enable mic permissions in your browser bar.");
+        console.warn("Microphone capture failed:", err);
+        setIsRecording(false);
+        if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          setMicError('hardware');
+        } else {
+          setMicError('permission');
+        }
       }
+    }
+  };
+
+  // Graceful fallback: Attach sample community voice note
+  const attachDemoAudio = () => {
+    setVoiceUrl('/audio/demo_citizen_sample.wav');
+    setMicError(null);
+    if (!suggestionText || suggestionText.length < 20) {
+      const demo = BRICS_DEMO_CASES[selectedCountry] || BRICS_DEMO_CASES.IND;
+      setSuggestionText(demo.text);
     }
   };
 
@@ -1305,6 +1324,84 @@ export default function CitizenPortal() {
                     />
                   </label>
                 </div>
+
+                {/* Secondary Voice Helper Row */}
+                <div className="flex items-center justify-between text-[11px] text-slate-500 px-1 -mt-1">
+                  <span>Voice Note with Real-time AI Sonar</span>
+                  <button
+                    type="button"
+                    onClick={attachDemoAudio}
+                    className="text-blue-700 hover:text-blue-900 font-bold underline cursor-pointer"
+                  >
+                    {voiceUrl ? 'Re-attach Sample Voice' : 'Test with Sample Voice'}
+                  </button>
+                </div>
+
+                {/* Microphone Permission / Hardware Notice with Graceful Fallback */}
+                {micError && (
+                  <div className="bg-amber-50 border border-amber-300 rounded-xl p-3 text-xs space-y-2 animate-in fade-in duration-200">
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                      <div className="space-y-0.5">
+                        <p className="font-bold text-amber-950">
+                          {micError === 'hardware'
+                            ? 'No Microphone Hardware Detected'
+                            : micError === 'unsupported'
+                              ? 'Microphone Not Supported on this Browser'
+                              : 'Microphone Permission Needed'}
+                        </p>
+                        <p className="text-slate-600 leading-relaxed text-[11px]">
+                          {micError === 'hardware'
+                            ? 'Connect an external headset/mic, or attach a sample audio note to test speech ingestion.'
+                            : micError === 'unsupported'
+                              ? 'Your browser does not support audio recording. You can test with the sample audio note.'
+                              : 'Click the lock or tune icon 🔒 in your browser address bar and switch Microphone to "Allow".'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 pt-1 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={attachDemoAudio}
+                        className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition text-xs shadow-xs cursor-pointer"
+                      >
+                        <Sparkles className="h-3.5 w-3.5" />
+                        <span>Attach Sample Audio Note</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setMicError(null)}
+                        className="text-slate-500 hover:text-slate-700 font-semibold px-2 py-1 text-xs cursor-pointer"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Attached Audio Preview Player */}
+                {voiceUrl && (
+                  <div className="bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl text-xs flex items-center justify-between gap-2 animate-in fade-in duration-200">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0" />
+                      <div>
+                        <span className="font-bold text-emerald-950 block">Voice Note Attached</span>
+                        <span className="text-[10px] text-emerald-700 block">Ready to submit with proposal</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <audio controls src={voiceUrl} className="h-7 w-36 sm:w-48" />
+                      <button
+                        type="button"
+                        onClick={() => setVoiceUrl(null)}
+                        className="text-rose-600 hover:text-rose-700 text-xs font-bold px-1.5 py-0.5 rounded cursor-pointer"
+                        title="Remove attached audio"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Voice Visualizer (ONLY appears when recording!) */}
                 <VoiceSonarVisualizer 
