@@ -684,32 +684,31 @@ export default function MPDashboard() {
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans">
       
       {/* BRICS Digital Public Infrastructure Multi-Nation Gradient Stripe */}
-      <div className="h-2.5 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
+      <div className="h-1.5 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
 
       {/* Official Government & International DPG Header */}
-      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 shadow-xs">
+      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-xs">
-            <Landmark className="h-6 w-6 sm:h-7 sm:w-7" />
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-xs">
+            <Landmark className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="bg-amber-100 text-amber-900 text-[11px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
-                BRICS DPG Standard
+            <div className="flex items-center gap-2">
+              <h1 className="text-base sm:text-lg font-black text-blue-900 tracking-tight">
+                CIVIS Authority Workspace
+              </h1>
+              <span className="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
+                Planning & Budget
               </span>
-              <span className="text-xs text-slate-500 font-bold">Code for Communities 2 — Track 1</span>
             </div>
-            <h1 className="text-lg sm:text-xl font-extrabold text-blue-900 tracking-tight mt-0.5">
-              CIVIS-BRICS: Infrastructure & Governance Platform
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-semibold mt-0.5">
-              {currentJurisdiction.flag} {currentJurisdiction.name} &bull; {currentJurisdiction.description}
+            <p className="text-xs text-slate-500 font-medium">
+              {currentJurisdiction.flag} {currentJurisdiction.name} &bull; Capital Project Allocation & Knapsack Prioritization
             </p>
           </div>
         </div>
 
-        {/* Global Controls: Country Selector + Currency Switcher */}
-        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-between lg:justify-end">
+        {/* Global Controls: Country Selector + Currency Switcher + Actions */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
           {/* BRICS Pilot Territory Selector */}
           <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-xs">
             <MapPin className="h-4 w-4 text-blue-900 shrink-0" />
@@ -727,92 +726,65 @@ export default function MPDashboard() {
           </div>
 
           {/* Dynamic Currency Switcher */}
-          <div className="flex items-center gap-0.5 bg-slate-100 p-1 rounded-lg border border-slate-300">
-            {Object.keys(BRICS_CURRENCIES).map(currCode => (
-              <button
-                key={currCode}
-                onClick={() => handleCurrencyChange(currCode)}
-                className={`px-2 py-1 rounded-md text-xs font-bold transition ${
-                  selectedCurrency === currCode
-                    ? 'bg-blue-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                title={BRICS_CURRENCIES[currCode].name}
-              >
-                {BRICS_CURRENCIES[currCode].symbol} {currCode}
-              </button>
-            ))}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-xs">
+            <DollarSign className="h-4 w-4 text-emerald-700 shrink-0" />
+            <select
+              value={selectedCurrency}
+              onChange={(e) => handleCurrencyChange(e.target.value)}
+              className="bg-transparent text-xs sm:text-sm font-bold text-slate-800 focus:outline-none cursor-pointer"
+            >
+              {Object.keys(BRICS_CURRENCIES).map(currCode => (
+                <option key={currCode} value={currCode}>
+                  {BRICS_CURRENCIES[currCode].symbol} {currCode}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* Quick Seed / Reset Sovereign BRICS Datasets */}
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={handleSeedBRICSData}
-              disabled={isSeeding}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-extrabold text-xs px-3 py-1.5 rounded-lg shadow-xs transition active:scale-95 disabled:opacity-50"
-              title="Prime database with real-world benchmark datasets for Brazil, Russia, India, China, and South Africa"
-            >
-              <Activity className={`h-3.5 w-3.5 ${isSeeding ? 'animate-spin' : ''}`} />
-              <span>{isSeeding ? 'Priming...' : '⚡ Prime BRICS Data'}</span>
-            </button>
-            {seedSuccessMsg && (
-              <span className="hidden md:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-lg shadow-xs">
-                {seedSuccessMsg}
-              </span>
-            )}
-          </div>
-
-          {/* Portal Switcher */}
-          <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-300">
-            <Link 
-              href="/"
-              className="px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-800 transition"
-            >
-              Citizen Ingest
-            </Link>
-            <span className="bg-blue-900 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-xs">
-              Policy Workspace
+          {/* Re-seed Sovereign Benchmark Datasets */}
+          <button
+            onClick={handleSeedBRICSData}
+            disabled={isSeeding}
+            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 font-bold text-xs px-3 py-1.5 rounded-lg shadow-xs transition active:scale-95 disabled:opacity-50 cursor-pointer"
+            title="Prime database with real-world benchmark datasets"
+          >
+            <Activity className={`h-3.5 w-3.5 text-amber-600 ${isSeeding ? 'animate-spin' : ''}`} />
+            <span>{isSeeding ? 'Priming...' : 'Reset Data'}</span>
+          </button>
+          {seedSuccessMsg && (
+            <span className="hidden md:inline-block text-[11px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-lg shadow-xs">
+              {seedSuccessMsg}
             </span>
-          </div>
+          )}
+
+          {/* Back to Citizen Portal */}
+          <Link 
+            href="/"
+            className="px-3 py-1.5 rounded-lg text-xs font-bold text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition"
+          >
+            &larr; Citizen View
+          </Link>
         </div>
       </header>
 
-      {/* Official Civic Administration Status Bar */}
-      <div className="bg-slate-900 text-slate-200 px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-2.5 text-xs shadow-inner">
-        <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Civic Planning Authority Workspace</span>
-          </div>
-          <span className="hidden sm:inline text-slate-600">|</span>
-          <span className="text-slate-300 text-xs">
-            Participatory budgeting & capital project prioritization based on verified community feedback
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5 text-xs">
-          <span className="text-slate-400">Territory:</span>
-          <span className="font-extrabold text-white">{currentJurisdiction.flag} {currentJurisdiction.name}</span>
-        </div>
-      </div>
-
       {/* Navigation Tabs (Public Planning Hierarchy) */}
-      <div className="bg-white border-b border-slate-200 shadow-xs px-4 sm:px-6 lg:px-8">
+      <div className="bg-white border-b border-slate-200 shadow-xs px-4 sm:px-6 lg:px-8 sticky top-0 z-20">
         <div className="w-full flex overflow-x-auto gap-2 py-1">
           <button
             onClick={() => setActiveTab('map')}
-            className={`px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap cursor-pointer ${
               activeTab === 'map' 
                 ? 'border-blue-900 text-blue-900' 
                 : 'border-transparent text-slate-500 hover:text-slate-700'
             }`}
           >
             <Map className="h-4 w-4" />
-            1. City Map & Community Priorities
+            1. City Map & Hotspots
           </button>
           
           <button
             onClick={() => setActiveTab('registry')}
-            className={`px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap cursor-pointer ${
               activeTab === 'registry' 
                 ? 'border-blue-900 text-blue-900' 
                 : 'border-transparent text-slate-500 hover:text-slate-700'
@@ -824,26 +796,26 @@ export default function MPDashboard() {
 
           <button
             onClick={() => setActiveTab('budget')}
-            className={`px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap cursor-pointer ${
               activeTab === 'budget' 
                 ? 'border-blue-900 text-blue-900' 
                 : 'border-transparent text-slate-500 hover:text-slate-700'
             }`}
           >
             <DollarSign className="h-4 w-4" />
-            3. Budget Allocation & Planning
+            3. Budget Allocation & Knapsack Solver
           </button>
 
           <button
             onClick={() => setActiveTab('audit')}
-            className={`px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap ${
+            className={`px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition whitespace-nowrap cursor-pointer ${
               activeTab === 'audit' 
                 ? 'border-blue-900 text-blue-900' 
                 : 'border-transparent text-slate-500 hover:text-slate-700 font-semibold'
             }`}
           >
             <ShieldAlert className="h-4 w-4" />
-            4. Citizen Submissions & Verification ({verificationQueue.length})
+            4. Citizen Verification Queue ({verificationQueue.length})
           </button>
         </div>
       </div>

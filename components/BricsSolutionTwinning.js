@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, Globe2, ArrowRight, CheckCircle2, TrendingDown, Leaf, Users, Award } from 'lucide-react';
+import { Sparkles, Globe2, ArrowRight, CheckCircle2, TrendingDown, Leaf, Users, ChevronDown, ChevronUp } from 'lucide-react';
 
 const TWINNING_DATABASE = {
   water: {
@@ -60,7 +60,8 @@ const TWINNING_DATABASE = {
   }
 };
 
-export default function BricsSolutionTwinning({ currentCategory = 'roads', onAdoptBlueprint }) {
+export default function BricsSolutionTwinning({ currentCategory = 'roads', onAdoptBlueprint, defaultOpen = false }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [adopted, setAdopted] = useState(false);
 
   // Normalize key
@@ -78,97 +79,95 @@ export default function BricsSolutionTwinning({ currentCategory = 'roads', onAdo
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-slate-900 text-white rounded-xl p-4 sm:p-5 border border-blue-800 shadow-md space-y-3.5">
-      
-      {/* Header with BRICS Flags */}
-      <div className="flex items-center justify-between border-b border-blue-800/80 pb-3 flex-wrap gap-2">
+    <div className="bg-blue-50/70 border border-blue-200 rounded-xl overflow-hidden transition shadow-xs">
+      {/* Clickable Header Bar */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-3.5 py-2.5 flex items-center justify-between text-left hover:bg-blue-100/50 transition cursor-pointer"
+      >
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300">
-            <Globe2 className="h-4 w-4" />
+          <div className="h-6 w-6 rounded-md bg-blue-600 text-white flex items-center justify-center shrink-0">
+            <Globe2 className="h-3.5 w-3.5" />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-400">
-                BRICS Solution Twinning Engine
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[11px] font-bold text-blue-950">
+                💡 Global Best Practice Idea
               </span>
-              <span className="text-xs">🇧🇷 🇷🇺 🇮🇳 🇨🇳 🇿🇦</span>
+              <span className="text-[10px] text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded font-semibold">
+                {twin.capexSavings}
+              </span>
             </div>
-            <h3 className="text-xs sm:text-sm font-bold text-white">Cross-Border Civic Digital Twin</h3>
+            <p className="text-[11px] text-slate-600 truncate max-w-[280px] sm:max-w-md">
+              {twin.twinnedCity}: {twin.blueprintTitle}
+            </p>
           </div>
         </div>
-        
-        <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-          <TrendingDown className="h-3 w-3" />
-          {twin.capexSavings}
-        </span>
-      </div>
 
-      {/* Blueprint Title and Twinned Cities */}
-      <div className="space-y-1">
-        <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">
-          Twinned Partner Cities: <strong className="text-slate-200">{twin.twinnedCity}</strong>
-        </span>
-        <h4 className="text-sm sm:text-base font-extrabold text-blue-200 leading-snug">
-          {twin.blueprintTitle}
-        </h4>
-        <p className="text-xs text-slate-300 leading-relaxed font-medium pt-1">
-          {twin.summary}
-        </p>
-      </div>
-
-      {/* Impact Metrics & SDG Badges */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
-        <div className="bg-white/5 border border-white/10 p-2.5 rounded-lg flex items-center gap-2">
-          <Leaf className="h-4 w-4 text-emerald-400 shrink-0" />
-          <span className="text-[11px] text-slate-200 font-medium">
-            <strong>Co-Benefit:</strong> {twin.coBenefit}
+        <div className="flex items-center gap-1 text-blue-700 shrink-0">
+          <span className="text-[11px] font-bold hidden sm:inline">
+            {isOpen ? 'Hide' : 'Explore'}
           </span>
+          {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </div>
-        <div className="bg-white/5 border border-white/10 p-2.5 rounded-lg flex items-center gap-2">
-          <Users className="h-4 w-4 text-blue-400 shrink-0" />
-          <span className="text-[11px] text-slate-200 font-medium">
-            <strong>Scalability:</strong> Sovereign DPGA Certified
-          </span>
+      </button>
+
+      {/* Expanded Blueprint Details */}
+      {isOpen && (
+        <div className="px-3.5 pb-3.5 pt-1 space-y-2.5 border-t border-blue-200/80 bg-white/60 animate-in fade-in duration-200">
+          <p className="text-xs text-slate-700 leading-relaxed font-medium">
+            {twin.summary}
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+            <div className="bg-emerald-50 border border-emerald-200 p-2 rounded-lg flex items-center gap-2">
+              <Leaf className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+              <span className="text-emerald-950 font-medium">
+                <strong>Impact:</strong> {twin.coBenefit}
+              </span>
+            </div>
+            <div className="bg-blue-50 border border-blue-200 p-2 rounded-lg flex items-center gap-2">
+              <Users className="h-3.5 w-3.5 text-blue-600 shrink-0" />
+              <span className="text-blue-950 font-medium">
+                <strong>Source:</strong> {twin.twinnedCity}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-1 gap-2 flex-wrap">
+            <div className="flex items-center gap-1 flex-wrap">
+              {twin.sdgs.map((sdg, i) => (
+                <span key={i} className="bg-blue-100/80 text-blue-900 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-200">
+                  {sdg}
+                </span>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAdopt}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer ${
+                adopted 
+                  ? 'bg-emerald-600 text-white' 
+                  : 'bg-blue-900 hover:bg-blue-800 text-white'
+              }`}
+            >
+              {adopted ? (
+                <>
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Included in Suggestion
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Adopt This Solution
+                </>
+              )}
+            </button>
+          </div>
         </div>
-      </div>
-
-      {/* UN SDG Pills */}
-      <div className="flex items-center gap-1.5 flex-wrap pt-1">
-        {twin.sdgs.map((sdg, i) => (
-          <span key={i} className="bg-blue-500/20 text-blue-200 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-400/20">
-            {sdg}
-          </span>
-        ))}
-      </div>
-
-      {/* Bottom Action */}
-      <div className="pt-2 border-t border-blue-800/80 flex items-center justify-between gap-2">
-        <span className="text-[11px] text-slate-400 font-medium">
-          Evidence-based multilateral best practice transfer
-        </span>
-        <button
-          type="button"
-          onClick={handleAdopt}
-          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer ${
-            adopted 
-              ? 'bg-emerald-600 text-white' 
-              : 'bg-amber-500 hover:bg-amber-600 text-slate-950 font-black'
-          }`}
-        >
-          {adopted ? (
-            <>
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              Blueprint Adopted
-            </>
-          ) : (
-            <>
-              <Sparkles className="h-3.5 w-3.5" />
-              Adopt Twinning Model
-            </>
-          )}
-        </button>
-      </div>
-
+      )}
     </div>
   );
 }

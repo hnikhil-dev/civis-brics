@@ -24,7 +24,10 @@ import {
   Sparkles,
   ExternalLink,
   Lock,
-  ChevronRight
+  ChevronRight,
+  Coins,
+  Vote,
+  ArrowRight
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { BRICS_JURISDICTIONS, getJurisdiction, getJurisdictionCoordinatesMap } from '@/lib/jurisdictions';
@@ -466,6 +469,9 @@ const RECENT_BRICS_FEED = [
 ];
 
 export default function CitizenPortal() {
+  // Navigation Tab State for simplified citizen experience
+  const [activePortalTab, setActivePortalTab] = useState('submit'); // 'submit' | 'map' | 'budget' | 'track'
+
   // Multilingual active state - DEFAULT IS ENGLISH
   const [currentLang, setCurrentLang] = useState('en');
   const t = LANG_DICTS[currentLang] || LANG_DICTS.en;
@@ -924,10 +930,14 @@ export default function CitizenPortal() {
   };
 
   // Lookup submission state by ID
-  const handleTrackSubmission = async (e) => {
-    e.preventDefault();
-    if (!searchId.trim()) return;
+  const handleTrackSubmission = async (e, directId = null) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const queryId = (directId || searchId || '').trim();
+    if (!queryId) return;
 
+    if (directId) {
+      setSearchId(directId);
+    }
     setTrackError(null);
     setTrackedStatus(null);
 
@@ -937,7 +947,7 @@ export default function CitizenPortal() {
       const { data: sub } = await supabase
         .from('submissions')
         .select('*')
-        .eq('id', searchId.trim())
+        .eq('id', queryId)
         .limit(1);
 
       if (!sub || sub.length === 0) {
@@ -1031,84 +1041,62 @@ export default function CitizenPortal() {
     <div className="w-full flex-1 flex flex-col bg-slate-50 text-slate-900 font-sans min-h-screen">
       
       {/* BRICS Digital Public Infrastructure Multi-Nation Gradient Stripe */}
-      <div className="h-2 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
+      <div className="h-1.5 w-full bg-gradient-to-r from-blue-700 via-emerald-600 via-amber-500 to-rose-600"></div>
 
-      {/* Official BRICS DPG Header across 100% width */}
-      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-3 shadow-xs w-full">
+      {/* Simplified, Modern Government & DPG Header */}
+      <header className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3 shadow-xs w-full">
         {/* Left: Branding & Initiative */}
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-xs">
-            <Landmark className="h-6 w-6 sm:h-7 sm:w-7" />
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-900 shrink-0 shadow-xs">
+            <Landmark className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="bg-amber-100 text-amber-950 text-[11px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
-                BRICS Innovation Challenge 2026
+            <div className="flex items-center gap-2">
+              <h1 className="text-base sm:text-lg font-black text-blue-900 tracking-tight">CIVIS-BRICS</h1>
+              <span className="bg-amber-100 text-amber-950 text-[10px] font-black uppercase px-2 py-0.5 rounded border border-amber-300">
+                Civic DPG
               </span>
-              <span className="text-xs text-slate-500 font-bold hidden sm:inline">Track 1: AI for Digital Public Infrastructure</span>
             </div>
-            <h1 className="text-lg sm:text-xl font-black text-blue-900 tracking-tight flex items-center gap-2 mt-0.5">
-              CIVIS-BRICS
-              <span className="text-xs sm:text-sm font-semibold text-slate-500 hidden md:inline">| Citizens’ Voice & Infrastructure Synthesis</span>
-            </h1>
+            <p className="text-xs text-slate-500 font-medium">Citizens’ Voice & Infrastructure Synthesis</p>
           </div>
         </div>
 
-        {/* Center: BRICS Sovereign Nation Switcher */}
-        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-300 overflow-x-auto max-w-full">
-          {BRICS_JURISDICTIONS.map((j) => {
-            const countryNames = {
-              IND: 'India',
-              BRA: 'Brazil',
-              ZAF: 'South Africa',
-              CHN: 'China',
-              RUS: 'Russia'
-            };
-            const countryLabel = countryNames[j.countryCode] || j.name;
-            return (
-              <button
-                key={j.countryCode}
-                onClick={() => handleCountryChange(j.countryCode, true)}
-                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1.5 transition whitespace-nowrap ${
-                  selectedCountry === j.countryCode
-                    ? 'bg-blue-900 text-white shadow-xs'
-                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200'
-                }`}
-              >
-                <span className="text-sm sm:text-base">{j.flag}</span>
-                <span>{countryLabel}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right: Language Switcher & Policymaker Link */}
-        <div className="flex items-center gap-2.5 flex-wrap">
-          {/* 6 Languages */}
-          <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-300 gap-0.5">
-            {[
-              { code: 'en', label: 'EN' },
-              { code: 'hi', label: 'हिन्दी' },
-              { code: 'zh', label: '中文' },
-              { code: 'ru', label: 'РУ' },
-              { code: 'pt', label: 'PT' },
-              { code: 'mr', label: 'मराठी' }
-            ].map((l) => (
-              <button
-                key={l.code}
-                onClick={() => setCurrentLang(l.code)}
-                className={`px-2 py-1 rounded-md text-xs font-bold transition ${
-                  currentLang === l.code ? 'bg-blue-900 text-white shadow-xs' : 'text-slate-650 hover:text-slate-900'
-                }`}
-              >
-                {l.label}
-              </button>
-            ))}
+        {/* Right Controls: Country Select + Language Select + Policymaker Workspace */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          {/* Sovereign Country Select */}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-semibold">
+            <Globe className="h-4 w-4 text-blue-700 shrink-0" />
+            <select
+              value={selectedCountry}
+              onChange={(e) => handleCountryChange(e.target.value, true)}
+              className="bg-transparent font-bold text-slate-800 focus:outline-none cursor-pointer"
+            >
+              <option value="IND">🇮🇳 India (Pune)</option>
+              <option value="BRA">🇧🇷 Brazil (São Paulo)</option>
+              <option value="ZAF">🇿🇦 South Africa (Joburg)</option>
+              <option value="CHN">🇨🇳 China (Guangzhou)</option>
+              <option value="RUS">🇷🇺 Russia (Moscow)</option>
+            </select>
           </div>
 
+          {/* Language Select */}
+          <select
+            value={currentLang}
+            onChange={(e) => setCurrentLang(e.target.value)}
+            className="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none cursor-pointer"
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="pt">Português (BR)</option>
+            <option value="ru">Русский</option>
+            <option value="zh">中文 (Chinese)</option>
+            <option value="mr">मराठी (Marathi)</option>
+          </select>
+
+          {/* Link to Policymaker Workspace */}
           <Link
             href="/mp"
-            className="text-xs sm:text-sm bg-blue-900 hover:bg-blue-800 text-white font-bold px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5 whitespace-nowrap"
+            className="text-xs sm:text-sm bg-blue-900 hover:bg-blue-800 text-white font-bold px-3.5 py-1.5 rounded-lg shadow-xs transition flex items-center gap-1.5 whitespace-nowrap"
           >
             <Lock className="h-3.5 w-3.5 text-amber-400" />
             <span>{t.btn_mp_workspace}</span>
@@ -1116,510 +1104,653 @@ export default function CitizenPortal() {
         </div>
       </header>
 
-      {/* City & Region Notice Bar */}
-      <div className="bg-blue-950 text-white px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-2.5 text-xs sm:text-sm shadow-inner w-full">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <span className="flex items-center gap-1.5 font-extrabold text-amber-300 text-xs sm:text-sm">
+      {/* Clean Subtle Territory Status Bar */}
+      <div className="bg-slate-100/90 border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-extrabold text-blue-900 flex items-center gap-1">
             <span>{currentJurisdiction.flag}</span>
             <span>{currentJurisdiction.name}</span>
           </span>
-          <span className="text-blue-400 hidden sm:inline">&bull;</span>
-          <span className="text-slate-200 font-medium text-xs sm:text-sm">
-            {currentJurisdiction.description}
+          <span>&bull;</span>
+          <span className="text-slate-700 font-medium">
+            {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
           </span>
           {detectionNotice && (
-            <span className="bg-emerald-900/80 text-emerald-200 border border-emerald-600/60 px-2.5 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1">
-              <MapPin className="h-3 w-3 text-emerald-300" />
+            <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-md text-[11px] font-semibold flex items-center gap-1">
+              <MapPin className="h-3 w-3 text-emerald-600" />
               {detectionNotice}
             </span>
           )}
         </div>
-
-        <div className="flex items-center gap-2.5 text-slate-300 text-xs sm:text-sm">
-          <span className="text-emerald-300 font-semibold flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
-            Official Public Planning Portal
-          </span>
-          <span className="text-blue-800 hidden sm:inline">|</span>
-          <span className="text-slate-300 hidden md:inline">
-            Directly informing city capital improvements
-          </span>
+        <div className="flex items-center gap-1.5 text-emerald-700 font-semibold text-[11px] sm:text-xs">
+          <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+          Official Public Planning Portal &bull; Direct Municipal Review
         </div>
       </div>
 
-      {/* Main 100% Fluid 3-Column Grid */}
-      <main className="flex-1 w-full px-3 sm:px-6 lg:px-8 py-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      {/* Prominent Tab Navigation Bar */}
+      <nav className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 shadow-xs sticky top-0 z-30">
+        <div className="flex gap-2 sm:gap-3 overflow-x-auto py-2">
+          <button
+            onClick={() => setActivePortalTab('submit')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
+              activePortalTab === 'submit'
+                ? 'bg-blue-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <FileText className="h-4 w-4" />
+            <span>1. Submit a Need</span>
+          </button>
+
+          <button
+            onClick={() => setActivePortalTab('map')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
+              activePortalTab === 'map'
+                ? 'bg-blue-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <Globe className="h-4 w-4" />
+            <span>2. City Priorities Map</span>
+          </button>
+
+          <button
+            onClick={() => setActivePortalTab('budget')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
+              activePortalTab === 'budget'
+                ? 'bg-blue-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <Coins className="h-4 w-4" />
+            <span>3. Citizen Budget Sandbox</span>
+          </button>
+
+          <button
+            onClick={() => setActivePortalTab('track')}
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
+              activePortalTab === 'track'
+                ? 'bg-blue-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            <Search className="h-4 w-4" />
+            <span>4. Track My Proposal</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Main Tabbed Content Area */}
+      <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-5 max-w-7xl mx-auto">
         
-        {/* COLUMN 1: Citizen Multimodal Input Form (col-span-12 lg:col-span-4) */}
-        <section className="col-span-12 lg:col-span-4 bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-sm space-y-4">
-          <div className="border-b border-slate-100 pb-3 flex items-start justify-between gap-2">
-            <div>
-              <h2 className="text-base sm:text-lg font-black text-blue-900 flex items-center gap-2">
-                <FileText className="h-5 w-5 text-[#f97316]" />
-                {t.form_title}
-              </h2>
-              <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{t.form_desc}</p>
-            </div>
-            <span className="bg-blue-50 text-blue-900 border border-blue-200 text-xs font-bold px-2.5 py-0.5 rounded-full shrink-0">
-              {currentJurisdiction.flag} {currentJurisdiction.countryCode}
-            </span>
-          </div>
-
-          <form onSubmit={handleSubmitSuggestion} className="space-y-3.5">
+        {/* ================= TAB 1: SUBMIT A NEED ================= */}
+        {activePortalTab === 'submit' && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
-            {/* Citizen Full Name */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5 text-slate-500" />
-                {t.label_name} <span className="text-red-500">*</span>
-              </label>
-              <input 
-                type="text" 
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder={t.placeholder_name}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
-                required
-              />
-            </div>
-
-            {/* Administrative Jurisdiction / Sector Dropdown */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 text-blue-700" />
-                Administrative District / Neighborhood <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={selectedSectorId}
-                onChange={(e) => {
-                  const sId = parseInt(e.target.value);
-                  setSelectedSectorId(sId);
-                  const sec = sectors.find(s => s.id === sId);
-                  if (sec) {
-                    setGpsCoords({ lat: sec.center[0], lng: sec.center[1] });
-                    setGpsStatus('active');
-                  }
-                }}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition cursor-pointer"
-              >
-                {sectors.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Suggestion Text */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-800 block">
-                {t.label_suggestion} <span className="text-red-500">*</span>
-              </label>
-              <textarea 
-                rows="3"
-                value={suggestionText}
-                onChange={(e) => setSuggestionText(e.target.value)}
-                placeholder={t.placeholder_suggestion}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition leading-relaxed"
-                required
-              />
-            </div>
-
-            {/* Media Attachment buttons */}
-            <div className="flex items-center gap-2.5">
-              {/* Voice Note Recording Button */}
-              <button
-                type="button"
-                onClick={toggleRecording}
-                className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition ${
-                  isRecording 
-                    ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' 
-                    : voiceUrl 
-                      ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                      : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                {isRecording ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
-                <span>
-                  {isRecording ? (recordingMode === 'speech' ? t.btn_voice_active : t.btn_audio_active) : voiceUrl ? t.btn_voice_attached : t.btn_voice_start}
-                </span>
-              </button>
-
-              {/* Photo Upload Trigger */}
-              <label className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition ${
-                imageScanning 
-                  ? 'bg-amber-50 border-amber-300 text-amber-600' 
-                  : imageUrl 
-                    ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                    : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
-              }`}>
-                <Image className="h-3.5 w-3.5" />
-                <span>{imageScanning ? t.btn_photo_scanning : imageUrl ? t.btn_photo_attached : t.btn_photo_scan}</span>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handlePhotoUpload} 
-                  className="hidden" 
-                  disabled={imageScanning}
-                />
-              </label>
-            </div>
-
-            {/* Real-Time AI Voice Sonar Visualizer (Audio Telemetry & Acoustic Waveform) */}
-            <VoiceSonarVisualizer 
-              isRecording={isRecording} 
-              currentLang={currentLang} 
-              transcript={suggestionText} 
-              onApplyTranscript={(txt) => setSuggestionText(txt)} 
-              onStop={toggleRecording} 
-            />
-
-            {/* Neighborhood Location Tagging */}
-            <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-              <div className="flex items-center gap-2">
-                <MapPin className={`h-4 w-4 ${gpsStatus === 'active' ? 'text-emerald-600' : 'text-slate-400'}`} />
+            {/* Left: Submission Form (col-span-12 lg:col-span-7) */}
+            <div className="lg:col-span-7 bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-sm space-y-4">
+              <div className="border-b border-slate-100 pb-3 flex items-start justify-between gap-3 flex-wrap">
                 <div>
-                  <span className="text-xs font-bold text-slate-800 block">{t.label_gps}</span>
-                  <span className="text-[11px] text-slate-500 block">
-                    {gpsCoords ? '✓ Location confirmed for planning' : t.label_gps_desc}
+                  <h2 className="text-base sm:text-lg font-black text-blue-900 flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-[#f97316]" />
+                    {t.form_title}
+                  </h2>
+                  <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{t.form_desc}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={loadDemoScenario}
+                  className="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer shrink-0"
+                  title="Prefill sample scenario for this territory"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-amber-600" />
+                  <span>Try Sample Scenario</span>
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmitSuggestion} className="space-y-4">
+                {/* Full Name */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <User className="h-3.5 w-3.5 text-slate-500" />
+                    {t.label_name} <span className="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    placeholder={t.placeholder_name}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                    required
+                  />
+                </div>
+
+                {/* District / Ward Select */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-blue-700" />
+                    Administrative District / Neighborhood <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={selectedSectorId}
+                    onChange={(e) => {
+                      const sId = parseInt(e.target.value);
+                      setSelectedSectorId(sId);
+                      const sec = sectors.find(s => s.id === sId);
+                      if (sec) {
+                        setGpsCoords({ lat: sec.center[0], lng: sec.center[1] });
+                        setGpsStatus('active');
+                      }
+                    }}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-900 focus:bg-white transition cursor-pointer"
+                  >
+                    {sectors.map(s => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} (Pop: {(s.population || (s.id * 15000 + 45000)).toLocaleString()})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Details Textarea */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-800 block">
+                    {t.label_suggestion} <span className="text-red-500">*</span>
+                  </label>
+                  <textarea 
+                    rows="3"
+                    value={suggestionText}
+                    onChange={(e) => setSuggestionText(e.target.value)}
+                    placeholder={t.placeholder_suggestion}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition leading-relaxed"
+                    required
+                  />
+                </div>
+
+                {/* Audio Recording & Photo Upload Buttons */}
+                <div className="flex items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={toggleRecording}
+                    className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                      isRecording 
+                        ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' 
+                        : voiceUrl 
+                          ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                          : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    {isRecording ? <MicOff className="h-3.5 w-3.5" /> : <Mic className="h-3.5 w-3.5" />}
+                    <span>
+                      {isRecording ? t.btn_voice_active : voiceUrl ? t.btn_voice_attached : t.btn_voice_start}
+                    </span>
+                  </button>
+
+                  <label className={`flex-1 py-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition ${
+                    imageScanning 
+                      ? 'bg-amber-50 border-amber-300 text-amber-600' 
+                      : imageUrl 
+                        ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                        : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+                  }`}>
+                    <Image className="h-3.5 w-3.5" />
+                    <span>{imageScanning ? t.btn_photo_scanning : imageUrl ? t.btn_photo_attached : t.btn_photo_scan}</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handlePhotoUpload} 
+                      className="hidden" 
+                      disabled={imageScanning}
+                    />
+                  </label>
+                </div>
+
+                {/* Voice Visualizer (ONLY appears when recording!) */}
+                <VoiceSonarVisualizer 
+                  isRecording={isRecording} 
+                  currentLang={currentLang} 
+                  transcript={suggestionText} 
+                  onApplyTranscript={(txt) => setSuggestionText(txt)} 
+                  onStop={toggleRecording} 
+                />
+
+                {/* Location Verification Tag */}
+                <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                  <div className="flex items-center gap-2">
+                    <MapPin className={`h-4 w-4 ${gpsStatus === 'active' ? 'text-emerald-600' : 'text-slate-400'}`} />
+                    <div>
+                      <span className="text-xs font-bold text-slate-800 block">{t.label_gps}</span>
+                      <span className="text-[11px] text-slate-500 block">
+                        {gpsCoords ? '✓ Location confirmed for planning' : t.label_gps_desc}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleGPSAcquisition}
+                    disabled={gpsStatus === 'acquiring'}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                      gpsStatus === 'active' 
+                        ? 'bg-emerald-100 border border-emerald-300 text-emerald-700' 
+                        : gpsStatus === 'acquiring'
+                          ? 'bg-slate-200 text-slate-500 animate-pulse'
+                          : 'bg-blue-900 hover:bg-blue-800 text-white shadow-xs'
+                    }`}
+                  >
+                    {gpsStatus === 'active' ? t.btn_gps_active : gpsStatus === 'acquiring' ? t.btn_gps_loading : t.btn_gps}
+                  </button>
+                </div>
+
+                {/* Consent Checkbox */}
+                <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                  <div className="flex items-start gap-2">
+                    <input 
+                      type="checkbox" 
+                      id="consentCheckbox"
+                      checked={dataConsent}
+                      onChange={(e) => setDataConsent(e.target.checked)}
+                      className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-blue-900 focus:ring-blue-900 cursor-pointer"
+                    />
+                    <label htmlFor="consentCheckbox" className="text-xs text-slate-700 leading-snug font-medium cursor-pointer">
+                      {t.security_declaration}
+                    </label>
+                  </div>
+                </div>
+
+                {/* Submit Action */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
+                >
+                  {submitting ? (
+                    <>
+                      <Activity className="h-4 w-4 animate-spin" />
+                      {t.btn_submitting}
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      {t.btn_submit}
+                    </>
+                  )}
+                </button>
+              </form>
+
+              {/* Submission Success Banner */}
+              {submitResult && (
+                <div className="space-y-3 pt-2 animate-in fade-in duration-300">
+                  <div className="bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm">
+                        <CheckCircle className="h-4 w-4 shrink-0" />
+                        <span>{t.success_title}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActivePortalTab('track');
+                          handleTrackSubmission(null, submitResult.submission_id);
+                        }}
+                        className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-lg flex items-center gap-1 cursor-pointer transition shadow-xs"
+                      >
+                        Track Status &rarr;
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Tracking ID: <strong className="text-emerald-950 font-mono text-sm">{submitResult.submission_id}</strong> &bull; {t.success_footer}
+                    </p>
+                  </div>
+
+                  {/* W3C Digital Public Credential Card */}
+                  <CivicPassportCard
+                    submissionId={submitResult.submission_id}
+                    userName={userName || 'Citizen Contributor'}
+                    countryCode={selectedCountry}
+                    category={submitResult.parsed?.category || 'Public Infrastructure'}
+                    wardName={sectors.find(s => s.id === (submitResult.parsed?.ward_id || selectedSectorId))?.name || 'Central District'}
+                    timestamp={new Date().toISOString()}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Right: Planning Context & Civic Assurance (col-span-12 lg:col-span-5) */}
+            <div className="lg:col-span-5 space-y-4">
+              
+              {/* Selected Neighborhood Planning Profile */}
+              <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                  <h3 className="text-xs font-black text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-blue-700" />
+                    Selected Area Overview
+                  </h3>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    Active Capital Zone
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5 text-xs">
+                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <span className="text-[11px] text-slate-500 font-bold uppercase block">Neighborhood</span>
+                    <span className="font-extrabold text-blue-950 text-xs sm:text-sm truncate block mt-0.5">
+                      {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
+                    </span>
+                  </div>
+                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <span className="text-[11px] text-slate-500 font-bold uppercase block">Population</span>
+                    <span className="font-extrabold text-slate-900 text-xs sm:text-sm block mt-0.5">
+                      {(sectors.find(s => s.id === selectedSectorId)?.population || (selectedSectorId * 15000 + 45000)).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  Your suggestion is clustered with neighbor requests and evaluated using multi-criteria optimization to allocate municipal capital funds fairly.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setActivePortalTab('map')}
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-blue-900 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  View On City Priorities Map &rarr;
+                </button>
+              </div>
+
+              {/* Cross-Border BRICS Solution Twinning Engine (Collapsible) */}
+              <BricsSolutionTwinning 
+                currentCategory={suggestionText || 'roads'} 
+                onAdoptBlueprint={(bp) => {
+                  setSuggestionText(prev => prev ? `${prev} [Adopting BRICS Model: ${bp.blueprintTitle}]` : `[Adopting BRICS Model: ${bp.blueprintTitle}]`);
+                }} 
+              />
+
+              {/* Citizen Privacy & Trust Guarantee */}
+              <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-sm space-y-2">
+                <h3 className="font-black text-xs text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                  Citizen Privacy & Civic Trust
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  Submissions are cryptographically hashed and evaluated by city engineers. Personal contact details remain confidential under international Digital Public Good privacy standards.
+                </p>
+                <div className="pt-1 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-500">
+                  <span className="text-emerald-700 font-bold">✓ Confidential & Protected</span>
+                  <span>&bull;</span>
+                  <span>Tamper-Resistant</span>
+                  <span>&bull;</span>
+                  <span>Fair Community Voice</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 2: CITY PRIORITIES MAP ================= */}
+        {activePortalTab === 'map' && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Map Canvas (col-span-12 lg:col-span-8) */}
+            <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl shadow-sm p-4 sm:p-5 space-y-3.5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
+                <div>
+                  <h2 className="text-base sm:text-lg font-black text-blue-900 flex items-center gap-2">
+                    <Globe className="h-5 w-5 text-blue-700" />
+                    City Priorities & Hotspot Map
+                  </h2>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    Explore active infrastructure suggestions and priority zones in {currentJurisdiction.flag} {currentJurisdiction.name}
+                  </p>
+                </div>
+                <span className="bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shrink-0">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Live GIS View
+                </span>
+              </div>
+
+              {/* Interactive Map Component */}
+              <div className="relative rounded-xl overflow-hidden border border-slate-200">
+                <HotspotMap
+                  wardStats={sectors.map(s => ({
+                    ward_id: s.id,
+                    name: s.name,
+                    ward_name: s.name,
+                    population: s.population || (s.id * 15000 + 45000),
+                    equity_score: s.equity || 5.0,
+                    citizen_count: Math.floor((s.equity || 5) * 3) + 4,
+                    cluster_count: Math.max(1, Math.floor((s.equity || 5) / 2))
+                  }))}
+                  onSelectWard={(secId) => {
+                    setSelectedSectorId(secId);
+                    const sec = sectors.find(s => s.id === secId);
+                    if (sec) {
+                      setGpsCoords({ lat: sec.center[0], lng: sec.center[1] });
+                      setGpsStatus('active');
+                    }
+                  }}
+                  selectedWardId={selectedSectorId}
+                  submissions={mapSubmissions}
+                  center={currentJurisdiction.center}
+                  zoom={currentJurisdiction.zoom}
+                  coordinatesMap={jurisdictionCoordinatesMap}
+                />
+              </div>
+
+              {/* Selected Area Details Card */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div>
+                  <span className="text-[11px] text-slate-500 font-bold uppercase block">Active Area</span>
+                  <span className="font-extrabold text-blue-950 text-xs sm:text-sm truncate block mt-0.5">
+                    {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[11px] text-slate-500 font-bold uppercase block">Population</span>
+                  <span className="font-bold text-slate-900 text-xs sm:text-sm block mt-0.5">
+                    {(sectors.find(s => s.id === selectedSectorId)?.population || (selectedSectorId * 15000 + 45000)).toLocaleString()} residents
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[11px] text-slate-500 font-bold uppercase block">Planning Status</span>
+                  <span className="font-bold text-emerald-700 text-xs flex items-center gap-1 mt-0.5">
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-600 inline" />
+                    Capital Allocation Active
                   </span>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={handleGPSAcquisition}
-                disabled={gpsStatus === 'acquiring'}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                  gpsStatus === 'active' 
-                    ? 'bg-emerald-100 border border-emerald-300 text-emerald-700' 
-                    : gpsStatus === 'acquiring'
-                      ? 'bg-slate-200 text-slate-500 animate-pulse'
-                      : 'bg-blue-900 hover:bg-blue-800 text-white shadow-xs'
-                }`}
-              >
-                {gpsStatus === 'active' ? t.btn_gps_active : gpsStatus === 'acquiring' ? t.btn_gps_loading : t.btn_gps}
-              </button>
             </div>
 
-            {/* Citizen Confirmation Checklist */}
-            <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-xl space-y-1">
-              <div className="flex items-start gap-2">
-                <input 
-                  type="checkbox" 
-                  id="consentCheckbox"
-                  checked={dataConsent}
-                  onChange={(e) => setDataConsent(e.target.checked)}
-                  className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-blue-900 focus:ring-blue-900 cursor-pointer"
-                />
-                <label htmlFor="consentCheckbox" className="text-xs text-slate-700 leading-snug font-medium cursor-pointer">
-                  {t.security_declaration}
-                </label>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full bg-[#f97316] hover:bg-[#e06317] text-white font-bold text-sm py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
-            >
-              {submitting ? (
-                <>
-                  <Activity className="h-4 w-4 animate-spin" />
-                  {t.btn_submitting}
-                </>
-              ) : (
-                <>
-                  <Send className="h-4 w-4" />
-                  {t.btn_submit}
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Submission Success Alert & W3C Civic Passport */}
-          {submitResult && (
-            <div className="space-y-3 animate-in fade-in duration-300">
-              <div className="bg-emerald-50 border border-emerald-300 p-3.5 rounded-xl space-y-2">
-                <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-xs sm:text-sm">
-                  <CheckCircle className="h-4 w-4 shrink-0" />
-                  <span>{t.success_title}</span>
+            {/* Sidebar: Live Feed across Community (col-span-12 lg:col-span-4) */}
+            <div className="lg:col-span-4 space-y-4">
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 sm:p-5 space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                  <h3 className="text-xs font-black text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <Activity className="h-3.5 w-3.5 text-emerald-600" />
+                    Recent Community Suggestions
+                  </h3>
+                  <span className="text-[11px] text-slate-500 font-bold">Real-time Stream</span>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                  {t.success_footer}
-                </p>
+                <div className="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
+                  {RECENT_BRICS_FEED.map((feed) => (
+                    <div key={feed.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
+                          <span>{feed.flag}</span>
+                          <span>{feed.location}</span>
+                        </span>
+                        <span className="text-[11px] font-mono text-slate-500">{feed.time}</span>
+                      </div>
+                      <p className="text-xs text-slate-700 font-medium leading-snug">{feed.text}</p>
+                      <div className="flex items-center justify-between pt-0.5 text-[11px]">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">{feed.category}</span>
+                        <span className="text-emerald-700 font-bold font-mono">Trust: {feed.trust}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-
-              {/* Digital Public Credential Card */}
-              <CivicPassportCard
-                submissionId={submitResult.submission_id}
-                userName={userName || 'Citizen Contributor'}
-                countryCode={selectedCountry}
-                category={submitResult.parsed?.category || 'Public Infrastructure'}
-                wardName={sectors.find(s => s.id === (submitResult.parsed?.ward_id || selectedSectorId))?.name || 'Central District'}
-                timestamp={new Date().toISOString()}
-              />
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Cross-Border BRICS Solution Twinning Engine */}
-          <div className="pt-2">
-            <BricsSolutionTwinning 
-              currentCategory={suggestionText || 'roads'} 
-              onAdoptBlueprint={(bp) => {
-                setSuggestionText(prev => prev ? `${prev} [Adopting BRICS Model: ${bp.blueprintTitle}]` : `[Adopting BRICS Model: ${bp.blueprintTitle}]`);
+        {/* ================= TAB 3: CITIZEN BUDGET SANDBOX ================= */}
+        {activePortalTab === 'budget' && (
+          <div className="max-w-4xl mx-auto">
+            <CitizenBudgetSandbox 
+              countryCode={selectedCountry} 
+              onVoteSubmitted={(alloc) => {
+                alert("Your civic budget allocation vote has been recorded into the municipal optimization matrix!");
               }} 
             />
           </div>
-        </section>
+        )}
 
-        {/* COLUMN 2: Live Community Needs Map (col-span-12 lg:col-span-5) */}
-        <section className="col-span-12 lg:col-span-5 space-y-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 sm:p-5 space-y-3.5">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
-              <div>
+        {/* ================= TAB 4: TRACK MY PROPOSAL ================= */}
+        {activePortalTab === 'track' && (
+          <div className="max-w-3xl mx-auto space-y-5">
+            <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-sm space-y-4">
+              <div className="border-b border-slate-100 pb-3">
                 <h2 className="text-base sm:text-lg font-black text-blue-900 flex items-center gap-2">
-                  <Globe className="h-5 w-5 text-blue-700" />
-                  Live Community Needs Map
+                  <Search className="h-5 w-5 text-[#f97316]" />
+                  {t.tracker_title}
                 </h2>
-                <p className="text-xs text-slate-600 mt-0.5">
-                  Explore active infrastructure suggestions and priority areas in {currentJurisdiction.flag} {currentJurisdiction.name}
+                <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{t.tracker_desc}</p>
+              </div>
+
+              {/* Search Bar */}
+              <form onSubmit={handleTrackSubmission} className="flex gap-2 items-center">
+                <input 
+                  type="text" 
+                  value={searchId}
+                  onChange={(e) => setSearchId(e.target.value)}
+                  placeholder={t.placeholder_tracker}
+                  className="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-950 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-xs transition shrink-0 cursor-pointer"
+                >
+                  {t.btn_track}
+                </button>
+              </form>
+
+              {/* Sample IDs Pill Selector for Fast Testing */}
+              <div className="flex items-center gap-2 flex-wrap text-xs text-slate-500 pt-0.5">
+                <span className="font-semibold">Quick Sample IDs:</span>
+                {['sub-init-1', 'sub-init-2', 'sub-init-3'].map(id => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => handleTrackSubmission(null, id)}
+                    className="bg-slate-100 hover:bg-slate-200 text-blue-900 font-mono font-bold px-2 py-0.5 rounded-md border border-slate-300 cursor-pointer transition"
+                  >
+                    {id}
+                  </button>
+                ))}
+              </div>
+
+              {trackError && (
+                <p className="text-xs text-rose-600 text-center font-bold bg-rose-50 py-2 rounded-lg border border-rose-200">
+                  {trackError}
                 </p>
-              </div>
-              <span className="bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shrink-0">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Live Overview
-              </span>
-            </div>
+              )}
 
-            {/* Interactive Map Component */}
-            <div className="relative">
-              <HotspotMap
-                wardStats={sectors.map(s => ({
-                  ward_id: s.id,
-                  name: s.name,
-                  ward_name: s.name,
-                  population: s.population || (s.id * 15000 + 45000),
-                  equity_score: s.equity || 5.0,
-                  citizen_count: Math.floor((s.equity || 5) * 3) + 4,
-                  cluster_count: Math.max(1, Math.floor((s.equity || 5) / 2))
-                }))}
-                onSelectWard={(secId) => {
-                  setSelectedSectorId(secId);
-                  const sec = sectors.find(s => s.id === secId);
-                  if (sec) {
-                    setGpsCoords({ lat: sec.center[0], lng: sec.center[1] });
-                    setGpsStatus('active');
-                  }
-                }}
-                selectedWardId={selectedSectorId}
-                submissions={mapSubmissions}
-                center={currentJurisdiction.center}
-                zoom={currentJurisdiction.zoom}
-                coordinatesMap={jurisdictionCoordinatesMap}
-              />
-            </div>
+              {/* Tracker Timeline & Details Output */}
+              {trackedStatus && (
+                <div className="space-y-4 pt-3 border-t border-slate-150 animate-in fade-in duration-300">
+                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1.5 text-xs">
+                    <div className="flex items-center justify-between">
+                      <p className="text-slate-800 font-bold">Contributor: <strong className="text-blue-950">{trackedStatus.submission.user_name}</strong></p>
+                      <span className="text-[11px] font-mono text-slate-500">{trackedStatus.submission.id}</span>
+                    </div>
+                    <p className="text-slate-700 italic leading-relaxed">"{trackedStatus.submission.raw_text}"</p>
+                    {trackedStatus.projectTitle && (
+                      <p className="text-xs text-blue-900 pt-1.5 border-t border-slate-200 font-bold">
+                        Linked City Project: {trackedStatus.projectTitle}
+                      </p>
+                    )}
+                  </div>
 
-            {/* Map Legend & Active Sector Details */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
-              <div>
-                <span className="text-[11px] text-slate-500 font-bold uppercase block">Selected Area</span>
-                <span className="font-extrabold text-blue-950 text-xs sm:text-sm truncate block mt-0.5">
-                  {sectors.find(s => s.id === selectedSectorId)?.name || 'General Sector'}
-                </span>
-              </div>
-              <div>
-                <span className="text-[11px] text-slate-500 font-bold uppercase block">Planning Status</span>
-                <span className="font-bold text-emerald-700 text-xs flex items-center gap-1 mt-0.5">
-                  <CheckCircle className="h-3.5 w-3.5 text-emerald-600 inline" />
-                  Active Capital Planning Zone
-                </span>
-              </div>
-            </div>
-          </div>
+                  {/* 4-Step Vertical Timeline */}
+                  <div className="space-y-4 pl-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
+                    {/* Status 1: Ingested */}
+                    <div className="flex gap-3 relative">
+                      <div className="h-3.5 w-3.5 rounded-full bg-emerald-600 border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs"></div>
+                      <div>
+                        <h4 className="font-bold text-slate-900 text-xs sm:text-sm">{t.timeline_step1}</h4>
+                        <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step1_sub}</p>
+                      </div>
+                    </div>
 
-          {/* Participatory Budget Sandbox (What-If Citizen Mayor Mode) */}
-          <CitizenBudgetSandbox 
-            countryCode={selectedCountry} 
-            onVoteSubmitted={(alloc) => {
-              alert("Your civic budget allocation vote has been cryptographically recorded into the municipal optimization matrix!");
-            }} 
-          />
-        </section>
+                    {/* Status 2: Grouped */}
+                    <div className="flex gap-3 relative">
+                      <div className={`h-3.5 w-3.5 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
+                        trackedStatus.issue?.status === 'verified' ? 'bg-emerald-600' : 'bg-slate-350'
+                      }`}></div>
+                      <div>
+                        <h4 className={`font-bold text-xs sm:text-sm ${trackedStatus.issue?.status === 'verified' ? 'text-slate-900' : 'text-slate-400'}`}>
+                          {t.timeline_step2}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step2_sub}</p>
+                      </div>
+                    </div>
 
-        {/* COLUMN 3: Proposal Tracker, Live Feed & DPI Trust (col-span-12 lg:col-span-3) */}
-        <section className="col-span-12 lg:col-span-3 space-y-4">
-          
-          {/* Proposal Status Tracker */}
-          <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-sm space-y-3.5">
-            <div className="border-b border-slate-100 pb-2.5">
-              <h2 className="text-base sm:text-lg font-black text-blue-900 flex items-center gap-2">
-                <Search className="h-4 w-4 text-[#f97316]" />
-                {t.tracker_title}
-              </h2>
-              <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{t.tracker_desc}</p>
-            </div>
+                    {/* Status 3: Review */}
+                    <div className="flex gap-3 relative">
+                      <div className={`h-3.5 w-3.5 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
+                        (trackedStatus.projectStatus !== 'Proposed' && trackedStatus.projectStatus !== 'Rejected') ? 'bg-emerald-600' : 'bg-slate-350'
+                      }`}></div>
+                      <div>
+                        <h4 className={`font-bold text-xs sm:text-sm ${
+                          (trackedStatus.projectStatus !== 'Proposed' && trackedStatus.projectStatus !== 'Rejected') ? 'text-slate-900' : 'text-slate-400'
+                        }`}>
+                          {t.timeline_step3}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step3_sub}</p>
+                      </div>
+                    </div>
 
-            <form onSubmit={handleTrackSubmission} className="flex gap-2 items-center">
-              <input 
-                type="text" 
-                value={searchId}
-                onChange={(e) => setSearchId(e.target.value)}
-                placeholder={t.placeholder_tracker}
-                className="flex-1 min-w-0 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-950 placeholder-slate-400 focus:outline-none focus:border-blue-900 focus:bg-white transition"
-              />
-              <button
-                type="submit"
-                className="bg-blue-900 hover:bg-blue-800 text-white px-3.5 py-2 rounded-xl font-bold text-xs shadow-xs transition shrink-0"
-              >
-                {t.btn_track}
-              </button>
-            </form>
-
-            {trackError && (
-              <p className="text-xs text-rose-600 text-center font-bold bg-rose-50 py-1.5 rounded-lg border border-rose-200">
-                {trackError}
-              </p>
-            )}
-
-            {/* Tracker Status Output Timeline */}
-            {trackedStatus && (
-              <div className="space-y-3 animate-in fade-in duration-300">
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-xs">
-                  <p className="text-slate-700 font-bold">Proposal: <strong className="text-slate-900">{trackedStatus.submission.user_name}</strong></p>
-                  <p className="text-slate-600 italic leading-relaxed">"{trackedStatus.submission.raw_text}"</p>
-                  {trackedStatus.projectTitle && (
-                    <p className="text-xs text-blue-900 pt-1.5 border-t border-slate-200 font-bold">
-                      Identified Project: {trackedStatus.projectTitle}
-                    </p>
-                  )}
-                </div>
-
-                {/* Timeline display */}
-                <div className="space-y-3 pl-3.5 relative before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
-                  {/* Status 1: Ingested */}
-                  <div className="flex gap-2.5 relative">
-                    <div className="h-3 w-3 rounded-full bg-emerald-600 border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs"></div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 text-xs sm:text-sm">{t.timeline_step1}</h4>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step1_sub}</p>
+                    {/* Status 4: Tendering & Construction */}
+                    <div className="flex gap-3 relative">
+                      <div className={`h-3.5 w-3.5 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
+                        ['Tendering', 'Construction', 'Completed'].includes(trackedStatus.projectStatus) ? 'bg-emerald-600' : 'bg-slate-350'
+                      }`}></div>
+                      <div>
+                        <h4 className={`font-bold text-xs sm:text-sm ${
+                          ['Tendering', 'Construction', 'Completed'].includes(trackedStatus.projectStatus) ? 'text-slate-900' : 'text-slate-400'
+                        }`}>
+                          {t.timeline_step4}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step4_sub} <strong className="text-blue-900">{trackedStatus.projectStatus}</strong></p>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Status 2: Grouped */}
-                  <div className="flex gap-2.5 relative">
-                    <div className={`h-3 w-3 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
-                      trackedStatus.issue?.status === 'verified' ? 'bg-emerald-600' : 'bg-slate-350'
-                    }`}></div>
-                    <div>
-                      <h4 className={`font-bold text-xs sm:text-sm ${trackedStatus.issue?.status === 'verified' ? 'text-slate-900' : 'text-slate-400'}`}>
-                        {t.timeline_step2}
-                      </h4>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step2_sub}</p>
-                    </div>
-                  </div>
-
-                  {/* Status 3: Review */}
-                  <div className="flex gap-2.5 relative">
-                    <div className={`h-3 w-3 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
-                      (trackedStatus.projectStatus !== 'Proposed' && trackedStatus.projectStatus !== 'Rejected') ? 'bg-emerald-600' : 'bg-slate-350'
-                    }`}></div>
-                    <div>
-                      <h4 className={`font-bold text-xs sm:text-sm ${
-                        (trackedStatus.projectStatus !== 'Proposed' && trackedStatus.projectStatus !== 'Rejected') ? 'text-slate-900' : 'text-slate-400'
-                      }`}>
-                        {t.timeline_step3}
-                      </h4>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step3_sub}</p>
-                    </div>
-                  </div>
-
-                  {/* Status 4: Tendering & Construction */}
-                  <div className="flex gap-2.5 relative">
-                    <div className={`h-3.5 w-3.5 rounded-full border-2 border-white z-10 shrink-0 mt-0.5 shadow-xs ${
-                      ['Tendering', 'Construction', 'Completed'].includes(trackedStatus.projectStatus) ? 'bg-emerald-600' : 'bg-slate-350'
-                    }`}></div>
-                    <div>
-                      <h4 className={`font-bold text-xs sm:text-sm ${
-                        ['Tendering', 'Construction', 'Completed'].includes(trackedStatus.projectStatus) ? 'text-slate-900' : 'text-slate-400'
-                      }`}>
-                        {t.timeline_step4}
-                      </h4>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{t.timeline_step4_sub} <strong className="text-blue-900">{trackedStatus.projectStatus}</strong></p>
-                    </div>
+                  {/* Verified W3C Civic Passport Card for Tracked Proposal */}
+                  <div className="pt-2 border-t border-slate-200">
+                    <CivicPassportCard
+                      submissionId={trackedStatus.submission.id || searchId}
+                      userName={trackedStatus.submission.user_name || 'Citizen Contributor'}
+                      countryCode={selectedCountry}
+                      category={trackedStatus.submission.category || 'Roads & Urban Mobility'}
+                      wardName={trackedStatus.submission.ward_name || `District/Ward ${trackedStatus.submission.ward_id || '14'}`}
+                      timestamp={trackedStatus.submission.created_at || new Date().toISOString()}
+                    />
                   </div>
                 </div>
-
-                {/* Verified W3C Civic Passport Card for Tracked Proposal */}
-                <div className="pt-2 border-t border-slate-200">
-                  <CivicPassportCard
-                    submissionId={trackedStatus.submission.id || searchId}
-                    userName={trackedStatus.submission.user_name || 'Citizen Contributor'}
-                    countryCode={selectedCountry}
-                    category={trackedStatus.submission.category || 'Roads & Urban Mobility'}
-                    wardName={trackedStatus.submission.ward_name || `District/Ward ${trackedStatus.submission.ward_id || '14'}`}
-                    timestamp={trackedStatus.submission.created_at || new Date().toISOString()}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Live BRICS Demand Feed */}
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 space-y-3">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-              <h3 className="text-xs font-black text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Activity className="h-3.5 w-3.5 text-emerald-600" />
-                Live Feed across BRICS
-              </h3>
-              <span className="text-[11px] text-slate-500 font-bold">Real-time Stream</span>
-            </div>
-            <div className="space-y-2">
-              {RECENT_BRICS_FEED.map((feed) => (
-                <div key={feed.id} className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
-                      <span>{feed.flag}</span>
-                      <span>{feed.location}</span>
-                    </span>
-                    <span className="text-[11px] font-mono text-slate-500">{feed.time}</span>
-                  </div>
-                  <p className="text-xs text-slate-700 font-medium leading-snug">{feed.text}</p>
-                  <div className="flex items-center justify-between pt-0.5 text-[11px]">
-                    <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">{feed.category}</span>
-                    <span className="text-emerald-700 font-bold font-mono">{feed.trust}</span>
-                  </div>
-                </div>
-              ))}
+              )}
             </div>
           </div>
-
-          {/* Citizen Privacy & Civic Trust */}
-          <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm space-y-2">
-            <h3 className="font-black text-xs text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              Civic Trust & Privacy Guarantee
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-medium">
-              Your feedback is verified, protected, and directly delivered to municipal planning engineers. Personal identities remain private while ensuring every community member gets an equal voice.
-            </p>
-            <div className="pt-1 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-500">
-              <span className="inline-flex items-center gap-1 text-emerald-700 font-bold">
-                ✓ Public Record Protected
-              </span>
-              <span>&bull;</span>
-              <span>Tamper-Resistant</span>
-              <span>&bull;</span>
-              <span>Fair Community Voice</span>
-            </div>
-          </div>
-
-        </section>
+        )}
 
       </main>
 
       {/* Full-Width Global BRICS Footer */}
-      <footer className="border-t border-slate-200 py-3.5 px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 bg-white shadow-xs w-full flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="border-t border-slate-200 py-3.5 px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 bg-white shadow-xs w-full flex flex-col sm:flex-row items-center justify-between gap-3 mt-auto">
         <div className="flex items-center gap-2.5 text-slate-700 font-bold text-xs flex-wrap justify-center">
           <span>🇧🇷 Brasil</span>
           <span>&bull;</span>
@@ -1632,7 +1763,7 @@ export default function CitizenPortal() {
           <span>🇿🇦 South Africa</span>
         </div>
         <p className="text-xs text-slate-500">
-          © 2026 CIVIS-BRICS Initiative &bull; Open Digital Public Good (DPG) for Participatory Infrastructure Planning & Goverance.
+          © 2026 CIVIS-BRICS Initiative &bull; Open Digital Public Good (DPG) for Participatory Infrastructure Planning & Governance.
         </p>
       </footer>
 
