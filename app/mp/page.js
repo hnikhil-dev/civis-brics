@@ -550,6 +550,9 @@ export default function MPDashboard() {
   };
 
   const handleVerifyQueueItem = async (itemId, category, wardId, details, trust) => {
+    // Optimistically remove from local queue state immediately
+    setVerificationQueue(prev => prev.filter(q => q.id !== itemId));
+
     try {
       const { supabase } = await import('@/lib/supabase');
       await supabase
@@ -564,17 +567,23 @@ export default function MPDashboard() {
         .limit(1);
 
       if (item && item[0]) {
-        const { clusterSubmission } = await import('@/lib/clustering');
-        const submissionRecord = { id: item[0].submission_id };
-        const parsedData = { category, ward_id: wardId, issue_details: details, trust_score: trust, confidence_score: 0.95, status: 'verified' };
-        await clusterSubmission(submissionRecord, parsedData);
+        try {
+          const { clusterSubmission } = await import('@/lib/clustering');
+          const submissionRecord = { id: item[0].submission_id };
+          const parsedData = { category, ward_id: wardId, issue_details: details, trust_score: trust, confidence_score: 0.95, status: 'verified' };
+          await clusterSubmission(submissionRecord, parsedData);
+        } catch (clusterErr) {
+          console.warn("Clustering post-verification note:", clusterErr);
+        }
       }
 
-      fetchStats();
-      fetchVerificationQueue();
-      fetchScoringAndPortfolio();
+      await fetchStats();
+      await fetchVerificationQueue();
+      await fetchScoringAndPortfolio();
     } catch (e) {
-      console.error("Verification verification failed:", e);
+      console.error("Verification process error:", e);
+      // Re-fetch to ensure sync
+      fetchVerificationQueue();
     }
   };
 

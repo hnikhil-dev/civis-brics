@@ -45,3 +45,6 @@ next-env.d.ts
 *.pptx
 *.pdf
 ~$*
+videos/
+*.webm
+*.mp4
